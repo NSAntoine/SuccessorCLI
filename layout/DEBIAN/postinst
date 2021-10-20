@@ -1,0 +1,6 @@
+#!/bin/sh
+
+mkdir -p /var/mobile/Media/SuccessorCLI
+mkdir -p /var/mnt/successor/
+echo 'SuccessorCLI Credits go to the following people:\nDabezt, for creating this program\nSamgisaninja, for creating the original Succession program, of which this is a contination of\nAmy While, for providing a Swift wrapper to libzip (although thats not used anymore)'
+
