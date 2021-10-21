@@ -265,7 +265,6 @@ class DMGManager {
         let output = String(data: data, encoding: .utf8)
         completionHandler(mountTask.terminationStatus, output ?? nil, mountTask.terminationReason)
     }
-    
 }
 
 /// Class which manages rsync and SBDataReset

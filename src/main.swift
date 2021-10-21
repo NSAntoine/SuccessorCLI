@@ -224,10 +224,10 @@ DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shar
     }
 
     print("Verifying if mount was successful..")
-    if fm.fileExists(atPath: "\(SCLIInfo.shared.mountPoint)/Applications") {
-        print("One of the directory exists, assuming that mount was successful!")
+    if SCLIInfo.shared.isMountPointMounted() {
+        print("Verified that Mount Point \(SCLIInfo.shared.mountPoint) is mounted, Will continue.")
     } else {
-        print("Seems that mount wasn't successful, exiting.")
+        print("Wasn't able to mount successfully. Exiting..")
         exit(1)
     }
  }
