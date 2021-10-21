@@ -26,10 +26,13 @@ if !CMDLineArgs.isEmpty {
                 exit(1)
             }
             guard unmount(path, 0) == 0 else {
-                if errno == 16 {
-                    print("ERROR: Couldn't unmount \(SCLIInfo.shared.mountPoint) because the device seems to be resource busy, try rebooting and rejailbreaking your device then try to unmount again")
-                } else {
-                    print("ERROR: Couldn't unmount \(SCLIInfo.shared.mountPoint), Cause: Unkown")
+                switch errno {
+                case 16:
+                    print("ERROR: Coulnd't unmount because the device is resource busy right now, try rebooting, rejailbreaking then running --unmount again")
+                case 1:
+                    print("ERROR: Couldn't unmount because of an error to do with permissions, are you running SuccessorCLI with sudo?")
+                default:
+                    print("Error while unmounting, cause: Unknown")
                 }
                 print("Error code encountered while unmounting: \(errno)")
                 print("Exiting..")
@@ -44,7 +47,7 @@ if !CMDLineArgs.isEmpty {
                 print("\(SCLIInfo.shared.mountPoint) is not mounted.")
             }
             exit(0)
-        case "--ipsw-path":
+        case "--ipsw-path", "-i":
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path") else {
                 print("ERROR: user used --ipsw-path but did NOT specify the iPSW Path..Exiting..")
                 exit(1)
