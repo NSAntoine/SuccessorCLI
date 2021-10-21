@@ -4,12 +4,6 @@ let fm = FileManager.default
 /// CommandLine.arguements but filters out "succesorcli"
 let CMDLineArgs = CommandLine.arguments.filter() { $0 != CommandLine.arguments[0] }
 
- //Quick way i sometimes use to check if SpringBoardServices works
-if CMDLineArgs.contains("--sb-testing") {
-    print("SBServer port: \(SBSSpringBoardServerPort())")
-    exit(0)
-}
-
 if !CMDLineArgs.isEmpty {
     for arguments in CMDLineArgs {
         switch arguments {
