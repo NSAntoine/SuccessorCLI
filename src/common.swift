@@ -17,7 +17,7 @@ class deviceInfo {
             return identifier + String(UnicodeScalar(UInt8(value)))
         }
     }
-
+    
         var deviceiOSBuildID:String {
             let sysVersionPlist = "/System/Library/CoreServices/SystemVersion.plist"
             let sysVersionPlistDict = NSDictionary(contentsOfFile: sysVersionPlist)!

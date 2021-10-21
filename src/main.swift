@@ -44,10 +44,21 @@ if !CMDLineArgs.isEmpty {
                 print("\(SCLIInfo.shared.mountPoint) is not mounted.")
             }
             exit(0)
+        case "--ipsw-path":
+            guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path") else {
+                print("ERROR: user used --ipsw-path but did NOT specify the iPSW Path..Exiting..")
+                exit(1)
+            }
+            let iPSWPath = CMDLineArgs[index + 1]
+            print("User manually specified iPSW Path as \(iPSWPath)")
+            guard fm.fileExists(atPath: iPSWPath) else {
+                print("Can't use path \"\(iPSWPath)\" if it doesnt even exist! Exiting..")
+                exit(1)
+            }
+            iPSWManager.onboardiPSWPath =  iPSWPath
+            iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
         default:
-            print("Argument \"\(arguments)\" not understood")
-            SCLIInfo.shared.printHelp()
-            exit(0)
+            break
         }
     }
     
