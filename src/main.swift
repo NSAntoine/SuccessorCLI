@@ -187,6 +187,9 @@ if CMDLineArgs.contains("--no-attach") {
 
 var diskNameToMount = ""
 
+if SCLIInfo.shared.isMountPointMounted() {
+    print("\(SCLIInfo.shared.mountPoint) is already mounted, skipping right ahead to the restore.")
+} else {
 DMGManager.attachDMG(dmgPath: SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg") { exitCode, output, reason in
     guard exitCode == 0,
           let output = output else {
@@ -225,7 +228,7 @@ DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shar
         exit(1)
     }
  }
-
+}
 if CMDLineArgs.contains("--no-restore") {
     print("Successfully downloaded, archived, attached and mounted iPSW, exiting now.")
     exit(0)
