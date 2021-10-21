@@ -210,7 +210,7 @@ class DMGManager {
     }
     var rfsDMGToUseName = "rfs.dmg" // By default this is rfs.dmg but can later on be changed if renaming fails.
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
-    class func attachDMG(dmgPath: String, completionHandler: (_ exitCode: Int32, _ output: String?, _ reason: Int64) -> Void) {
+    class func attachDMG(dmgPath: String, completionHandler: (_ exitCode: Int32, _ output: String?) -> Void) {
         let pipe = Pipe()
         let task = NSTask()
         task.setLaunchPath("/usr/sbin/hdik")
@@ -222,7 +222,7 @@ class DMGManager {
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: .utf8)
 //        print(output)
-        completionHandler(task.terminationStatus, output ?? nil, task.terminationReason)
+        completionHandler(task.terminationStatus, output ?? nil)
     }
     
     /// Parses the name of the disk to mount.
@@ -242,7 +242,7 @@ class DMGManager {
         return diskToMountName
     }
 
-    class func mountDisk(devDiskName: String, mountPointPath: String, completionHandler: (_ exitCode: Int32, _ output:String?, _ reason: Int64) -> Void ) {
+    class func mountDisk(devDiskName: String, mountPointPath: String, completionHandler: (_ exitCode: Int32, _ output:String?) -> Void ) {
         if !fm.fileExists(atPath: mountPointPath) {
             print("Mount point at \(mountPointPath) does not exist, will try to make it..")
             do {
@@ -263,7 +263,7 @@ class DMGManager {
         mountTask.waitUntilExit()
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: .utf8)
-        completionHandler(mountTask.terminationStatus, output ?? nil, mountTask.terminationReason)
+        completionHandler(mountTask.terminationStatus, output ?? nil)
     }
 }
 
@@ -276,12 +276,7 @@ class deviceRestoreManager {
         let serverPort = SBSSpringBoardServerPort()
         print("Located SBSSpringBoardServerPort at \(serverPort)")
         print("And now we bring forth mass destruction. Do your job, mobile obliterator!")
-        let reset = SBDataReset(serverPort, 5)
-        if reset == 0 {
-            print("Device Reseting successfully")
-        } else {
-            print("Huh?! Couldn't reset successfully?!")
-        }
+        SBDataReset(serverPort, 5)
     }
     
      /// Function which launches rsync.

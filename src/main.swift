@@ -52,7 +52,7 @@ if !CMDLineArgs.isEmpty {
                 print("Can't use path \"\(iPSWPath)\" if it doesnt even exist! Exiting..")
                 exit(1)
             }
-            iPSWManager.onboardiPSWPath =  iPSWPath
+            iPSWManager.onboardiPSWPath = iPSWPath
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
         default:
             break
@@ -190,14 +190,13 @@ var diskNameToMount = ""
 if SCLIInfo.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) is already mounted, skipping right ahead to the restore.")
 } else {
-DMGManager.attachDMG(dmgPath: SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg") { exitCode, output, reason in
+DMGManager.attachDMG(dmgPath: SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg") { exitCode, output in
     guard exitCode == 0,
           let output = output else {
         print("Failed to attach DMG.")
         print("If you need the following details in order to debug:")
         print("Command that was ran: /usr/sbin/hdik -nomount \(SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg")")
         print("Task exited with Exit Code (Supposed to be 0): \(exitCode)")
-        print("Reason: \(reason)")
         exit(1)
     }
     diskNameToMount = DMGManager.shared.parseDiskName(output)
@@ -210,13 +209,12 @@ if diskNameToMount.isEmpty {
 print("Disk name to mount: \(diskNameToMount)")
 print("Proceeding to (try) to mount..")
 
-DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shared.mountPoint) { exitCode, output, reason in
+DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shared.mountPoint) { exitCode, output in
     guard exitCode == 0, output != nil else {
         print("Wasn't able to mount disk, the following info may be useful to you:")
         print("Command that was run: /sbin/mount -t apfs -o ro \(diskNameToMount) \(SCLIInfo.shared.mountPoint)")
         print("Output: \(output ??  "Unknown")")
         print("Task exited with Exit Code (Supposed to be 0): \(exitCode)")
-        print("Reason: \(reason)")
         exit(1)
     }
 
