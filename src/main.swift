@@ -99,16 +99,6 @@ print("URL of iPSW to download: \(iPSWManager.onlineiPSWURLStr)")
 print("Size of iPSW to download in bytes: \(iPSWManager.onlineiPSWSizeUnformatted)")
 print("Size of iPSW to download, formatted: \(iPSWManager.onlineiPSWSizeformatted)")
 
-if fm.returnPathOwner(path: SCLIInfo.shared.SuccessorCLIPath) != "mobile" {
-    print("Will (try to) Set \(SCLIInfo.shared.SuccessorCLIPath)'s owner as \"mobile\" rather than current owner \(fm.returnPathOwner(path: SCLIInfo.shared.SuccessorCLIPath)).")
-    
-    let setPath = fm.setPathOwner(path: SCLIInfo.shared.SuccessorCLIPath, newOwnerName: "mobile")
-    guard setPath == nil else {
-        print("Couldn't set owner of \(SCLIInfo.shared.SuccessorCLIPath) as mobile, error: \(setPath!)\nExiting.")
-        exit(1)
-    }
-    print("Set owner as mobile successfully, continiung.")
-}
 switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
     case false where fm.fileExists(atPath: iPSWManager.extractedOnboardiPSWPath):
         print("Found extracted iPSW Path at \(iPSWManager.extractedOnboardiPSWPath), would you like to use it?")

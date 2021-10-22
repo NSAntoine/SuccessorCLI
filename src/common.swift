@@ -109,25 +109,6 @@ extension FileManager {
     let biggestFile = sortedFiles.first?.key ?? "Unknown"
     print("Biggest file: \(biggestFile)")
     return biggestFile
-}
-
-    func returnPathOwner(path:String) -> String {
-        guard let attribs = try? fm.attributesOfItem(atPath: path), let accOwnerName = attribs[FileAttributeKey.ownerAccountName] as? String else {
-            print("Couldn't get path owner of path \(path), exiting.")
-            exit(1)
-        }
-        return accOwnerName
-    }
-    func setPathOwner(path: String, newOwnerName:String) -> String? {
-        do {
-            let currentOwner = fm.returnPathOwner(path: path)
-            print("Current owner of \(path): \(currentOwner), setting it to \(newOwnerName)")
-            try fm.setAttributes([FileAttributeKey.ownerAccountName: newOwnerName], ofItemAtPath: path)
-            print("New owner set to \(newOwnerName) for \(path)")
-            return nil
-        } catch {
-            return error.localizedDescription
-        }
     }
 }
 
