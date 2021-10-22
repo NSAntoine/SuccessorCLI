@@ -57,7 +57,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     func isMountPointMounted() -> Bool {
         let path = strdup(SCLIInfo.shared.mountPoint)
                 defer {
-                    free(path)
+                    free(path!)
                 }
                 
                 var buffer = stat()
