@@ -169,7 +169,7 @@ class iPSWManager {
         do {
             try fm.moveItem(atPath: "\(destinationPath)/\(DMGManager.shared.locateRFSDMG)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg*/
         } catch {
-            print("Couldnt rename and move iPSW...error: \(error)\nExiting..")
+            print("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..")
             exit(1)
         }
 }
@@ -231,7 +231,7 @@ class DMGManager {
                 try fm.createDirectory(atPath: mountPointPath, withIntermediateDirectories: true, attributes: nil)
                 print("Successfully created Mount Point \(mountPointPath), will continue.")
             } catch {
-                print("Couldn't create Mount Point \(mountPointPath)\nError: \(error)\nPlease create the folder yourself and run SuccessorCLI again.")
+                print("Couldn't create Mount Point \(mountPointPath)\nError: \(error.localizedDescription)\nPlease create the folder yourself and run SuccessorCLI again.")
                 exit(1)
             }
         }
@@ -302,7 +302,7 @@ class deviceRestoreManager {
                 print("Error decoding data: \(pipe.availableData)")
                 return
             }
-            print("\(line)", terminator: "\r")
+            print(line)
         }
         task.launch()
         task.waitUntilExit()

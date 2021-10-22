@@ -91,7 +91,7 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
         try fm.createDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath, withIntermediateDirectories: true, attributes: nil)
         print("Created directory.")
     } catch {
-        print("Couldnt create \(SCLIInfo.shared.SuccessorCLIPath), error: \(error)\nNote: Please create \(SCLIInfo.shared.SuccessorCLIPath) manually and run SuccessorCLI again.")
+        print("Couldnt create \(SCLIInfo.shared.SuccessorCLIPath), error: \(error.localizedDescription)\nNote: Please create \(SCLIInfo.shared.SuccessorCLIPath) manually and run SuccessorCLI again.")
     }
 }
 
@@ -111,7 +111,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
                 do {
                     try fm.moveItem(atPath: iPSWManager.extractedOnboardiPSWPath + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath), toPath: DMGManager.shared.rfsDMGToUseFullPath)
                 } catch {
-                    print("Couldn't move \(iPSWManager.extractedOnboardiPSWPath + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath)) to \(DMGManager.shared.rfsDMGToUseFullPath)\nError: \(error)\nExiting..")
+                    print("Couldn't move \(iPSWManager.extractedOnboardiPSWPath + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath)) to \(DMGManager.shared.rfsDMGToUseFullPath)\nError: \(error.localizedDescription)\nExiting..")
                     exit(1)
                 }
             case "2", "N", "n":
@@ -126,7 +126,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
                             print("Removed \(iPSWManager.extractedOnboardiPSWPath)\nExiting..")
                             exit(0)
                         } catch {
-                            print("Couldn't remove path \(iPSWManager.extractedOnboardiPSWPath), error: \(error)\nExiting..")
+                            print("Couldn't remove path \(iPSWManager.extractedOnboardiPSWPath), error: \(error.localizedDescription)\nExiting..")
                             exit(1)
                         }
                     case "2", "N", "n":

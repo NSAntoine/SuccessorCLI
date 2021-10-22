@@ -14,7 +14,7 @@ class NetworkUtilities:NSObject {
             let response = response as? HTTPURLResponse, response.statusCode == 200,
             let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             else {
-                fatalError("There seems to have been an error connecting to ipsw.me API.\n\nError:\(error)\nExiting..")
+                fatalError("There seems to have been an error connecting to ipsw.me API.\n\nError:\(error?.localizedDescription)\nExiting..")
             }
             completion(json)
             group.leave()
