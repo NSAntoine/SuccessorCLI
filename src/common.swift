@@ -46,6 +46,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
                 --ipsw-path    /PATH/TO/IPSW           Manually specify path of iPSW to use.
                 --dmg-path     /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
                 --no-restore    Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
+                --dont-move-to-tmp When used, the old, unneeded iPSW wont be moved to \(NSTemporaryDirectory()) after its extracted
                 --no-attach    Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then exit.
                 --no-wait      Removes the 15 seconds given for the user to cancel the restore before it starts
                 --mnt-status   Prints whether or not /var/mnt/successor is mounted
@@ -173,13 +174,17 @@ class iPSWManager {
             exit(1)
         }
         
+        if CMDLineArgs.contains("--dont-move-to-tmp") {
+            print("User specified that the iPSW Should not be moved to \(NSTemporaryDirectory()) After extraction")
+        } else {
         // Moves the now unneeded ipsw to /var/tmp
         do {
-            try fm.moveItem(atPath: iPSWFilePath, toPath: "\(NSTemporaryDirectory())/oldipsw.ipsw")
+            try fm.moveItem(atPath: iPSWFilePath, toPath: "\(NSTemporaryDirectory())/ipsw.ipsw")
             print("Successfully moved old, unneeded ipsw to /var/tmp")
         } catch {
-            print("Couldn't move \(iPSWFilePath) to \(NSTemporaryDirectory())/oldipsw.ipsw\nError: \(error.localizedDescription), still continiuing")
+            print("Couldn't move \(iPSWFilePath) to \(NSTemporaryDirectory())/ipsw.ipsw\nError: \(error.localizedDescription), still continiuing")
         }
+    }
 }
     
     class func downloadAndExtractiPSW(iPSWURL: URL) {
