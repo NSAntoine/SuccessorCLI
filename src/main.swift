@@ -4,7 +4,10 @@ let fm = FileManager.default
 /// CommandLine.arguements but filters out "succesorcli"
 let CMDLineArgs = CommandLine.arguments.filter() { $0 != CommandLine.arguments[0] }
 
-if !CMDLineArgs.isEmpty {
+if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
+    print("ERROR: Cannot use --ipsw-path and --dmg-path together, please use only one. Exiting..")
+    exit(1)
+}
     for arguments in CMDLineArgs {
         switch arguments {
         case "-h", "--help":
@@ -48,8 +51,8 @@ if !CMDLineArgs.isEmpty {
             }
             let iPSWPath = CMDLineArgs[index + 1]
             print("User manually specified iPSW Path as \(iPSWPath)")
-            guard fm.fileExists(atPath: iPSWPath) else {
-                print("Can't use path \"\(iPSWPath)\" if it doesnt even exist! Exiting..")
+            guard fm.fileExists(atPath: iPSWPath), NSString(string: iPSWPath).pathExtension == "ipsw" else {
+                print("Path \"\(iPSWPath)\" either doesn't exist or is not an iPSW. Exiting..")
                 exit(1)
             }
             iPSWManager.onboardiPSWPath = iPSWPath
@@ -60,8 +63,8 @@ if !CMDLineArgs.isEmpty {
                 exit(1)
             }
             let dmgSpecified = CMDLineArgs[index + 1]
-            guard fm.fileExists(atPath: dmgSpecified) else {
-                print("ERROR: Can't use \(dmgSpecified) if it doesnt even exist! Exiting..")
+            guard fm.fileExists(atPath: dmgSpecified), NSString(string: dmgSpecified).pathExtension == "dmg" else {
+                print("Path \"\(dmgSpecified)\" either doesn't exist or isnt a DMG file. Exiting..")
                 exit(1)
             }
             DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
@@ -69,8 +72,7 @@ if !CMDLineArgs.isEmpty {
             break
         }
     }
-    
-} else if CMDLineArgs.isEmpty {
+    if CMDLineArgs.isEmpty {
     print("No arguments used, will do a normal restore..")
 }
 
@@ -206,7 +208,7 @@ if SCLIInfo.shared.isMountPointMounted() {
           let output = output else {
         print("Failed to attach DMG.")
         print("If you need the following details in order to debug:")
-        print("Command that was ran: /usr/sbin/hdik -nomount \(SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg")")
+        print("Command that was ran: /usr/sbin/hdik -nomount \(DMGManager.shared.rfsDMGToUseFullPath)")
         print("Task exited with Exit Code (Supposed to be 0): \(exitCode)")
         exit(1)
     }
