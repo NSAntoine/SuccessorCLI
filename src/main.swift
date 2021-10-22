@@ -176,8 +176,21 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
         break
         
     case true:
-        print("Found RFS.dmg, proceeding to use it.")
-    
+    print("Found rfs.dmg at \(DMGManager.shared.rfsDMGToUseFullPath), Would you like to use it?")
+    print("[1] Yes")
+    print("[2] No")
+    if let choice = readLine() {
+        switch choice {
+        case "1", "Y", "y":
+            print("Proceeding with rootfsDMG at \(DMGManager.shared.rfsDMGToUseFullPath)")
+        case "2", "N", "n":
+            print("User doesn't want to use rootfsDMG at \(DMGManager.shared.rfsDMGToUseFullPath), please figure out what you want to do then run successorcli again. If you dont want this message to pop up again, move the rootfsDMG file from \(DMGManager.shared.rfsDMGToUseFullPath) to somewhere else. Exiting..")
+            exit(0)
+        default:
+            print("Input \"\(choice)\" not understood, Exiting..")
+            exit(1)
+        }
+    }
     default:
         break
 }
