@@ -211,7 +211,7 @@ class DMGManager {
     let parseDiskName = { (_ input:String) -> String in
         var components = input.components(separatedBy: .newlines)
         var diskToMountName = ""
-         for number in 0...30 { // Honestly, i didnt know what number to put here, so i just put 30.
+         for number in 0...60 { // Honestly, i didnt know what number to put here, so i just put 60.
             for objects in components {
                 if objects.contains("/dev/disk\(number)s1s1") {
                     guard let firstObject = objects.components(separatedBy: " ").first else {
