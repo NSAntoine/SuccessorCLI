@@ -167,10 +167,18 @@ class iPSWManager {
         }
         
         do {
-            try fm.moveItem(atPath: "\(destinationPath)/\(DMGManager.shared.locateRFSDMG)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg*/
+            try fm.moveItem(atPath: "\(destinationPath)/\(DMGManager.shared.locateRFSDMG)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
         } catch {
             print("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..")
             exit(1)
+        }
+        
+        // Moves the now unneeded ipsw to /var/tmp
+        do {
+            try fm.moveItem(atPath: iPSWFilePath, toPath: "\(NSTemporaryDirectory())/oldipsw.ipsw")
+            print("Successfully moved old, unneeded ipsw to /var/tmp")
+        } catch {
+            print("Couldn't move \(iPSWFilePath) to \(NSTemporaryDirectory())/oldipsw.ipsw\nError: \(error.localizedDescription), still continiuing")
         }
 }
     
