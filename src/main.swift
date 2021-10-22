@@ -43,7 +43,7 @@ if !CMDLineArgs.isEmpty {
             exit(0)
         case "--ipsw-path", "-i":
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path") else {
-                print("ERROR: user used --ipsw-path but did NOT specify the iPSW Path..Exiting..")
+                print("ERROR: User did not specify iPSW Path, Exiting.")
                 exit(1)
             }
             let iPSWPath = CMDLineArgs[index + 1]
@@ -54,6 +54,17 @@ if !CMDLineArgs.isEmpty {
             }
             iPSWManager.onboardiPSWPath = iPSWPath
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
+        case "--dmg-path":
+            guard let index = CMDLineArgs.firstIndex(of: "--dmg-path") else {
+                print("ERROR: User did not specify dmg path, Exiting.")
+                exit(1)
+            }
+            let dmgSpecified = CMDLineArgs[index + 1]
+            guard fm.fileExists(atPath: dmgSpecified) else {
+                print("ERROR: Can't use \(dmgSpecified) if it doesnt even exist! Exiting..")
+                exit(1)
+            }
+            DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
         default:
             break
         }
@@ -190,7 +201,7 @@ var diskNameToMount = ""
 if SCLIInfo.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) is already mounted, skipping right ahead to the restore.")
 } else {
-DMGManager.attachDMG(dmgPath: SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg") { exitCode, output in
+    DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { exitCode, output in
     guard exitCode == 0,
           let output = output else {
         print("Failed to attach DMG.")
