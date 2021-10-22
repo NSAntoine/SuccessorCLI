@@ -44,7 +44,7 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
                 print("\(SCLIInfo.shared.mountPoint) is not mounted.")
             }
             exit(0)
-        case "--ipsw-path", "-i":
+        case "--ipsw-path":
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path") else {
                 print("ERROR: User did not specify iPSW Path, Exiting.")
                 exit(1)
