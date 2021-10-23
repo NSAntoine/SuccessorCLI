@@ -31,6 +31,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     func printHelp() {
         print("""
             SuccessorCLI - A CLI Utility to restore iOS devices, based off Succession
+            Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
                  -h, --help         Prints this help message
                  -v, --version      Prints current SuccessorCLI Version
