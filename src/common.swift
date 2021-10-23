@@ -41,6 +41,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --no-attach        Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then exit.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts
                  --mnt-status       Prints whether or not /var/mnt/successor is mounted
+                 --attach-nstask    Uses NSTask() in order to spawn hdik to attach the rootfs-DMG instead of doing it natively, only use this option if normally attaching the RootfsDMG Fails for you
             """)
     }
     
@@ -197,6 +198,7 @@ class DMGManager {
     var rfsDMGToUseName = "rfs.dmg" // By default this is rfs.dmg but can later on be changed if renaming fails.
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
     class func attachDMGNSTask(dmgPath: String, completionHandler: (_ exitCode: Int32, _ output: String?) -> Void) {
+        print("Proceeding to (try) to use hdik in order to attach \(dmgPath), using NSTask")
         let pipe = Pipe()
         let task = NSTask()
         task.setLaunchPath("/usr/sbin/hdik")

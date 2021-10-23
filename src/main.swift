@@ -206,7 +206,8 @@ var diskNameToMount = ""
 if SCLIInfo.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) is already mounted, skipping right ahead to the restore.")
 } else {
-    /* DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { exitCode, output in
+    if CMDLineArgs.contains("--attach-nstask") {
+    DMGManager.attachDMGNSTask(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { exitCode, output in
     guard exitCode == 0,
           let output = output else {
         print("Failed to attach DMG.")
@@ -216,7 +217,8 @@ if SCLIInfo.shared.isMountPointMounted() {
         exit(1)
     }
     diskNameToMount = DMGManager.shared.parseDiskName(output)
-     */
+    }
+} else {
     DMGManager.attachDMGNative(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, error in
         guard error == nil else {
             print("Error encountered while attaching \(DMGManager.shared.rfsDMGToUseFullPath): \(error!)")
@@ -239,6 +241,7 @@ if SCLIInfo.shared.isMountPointMounted() {
         }
         let modifiedBSDName = "/dev/\(bsdName)s1s1"
         diskNameToMount = modifiedBSDName
+    }
 }
 
 if diskNameToMount.isEmpty {
