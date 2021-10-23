@@ -1,6 +1,6 @@
 Package: com.dabezt.successorcli
 Name: Successorcli
-Version: 1.0.1
+Version: 1.0.2
 Architecture: iphoneos-arm
 Description: A CLI Tool to Restore iOS devices on versions
 Maintainer: Dabezt
