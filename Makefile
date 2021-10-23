@@ -9,7 +9,7 @@ TOOL_NAME = successorcli
 
 successorcli_FILES = $(wildcard src/*.swift)
 successorcli_SWIFT_BRIDGING_HEADER = src/Bridge.h
-successorcli_LDFLAGS = src/SpringboardServices/SpringBoardServices.tbd
+successorcli_LDFLAGS = $(wildcard src/libs/*.tbd)
 successorcli_CODESIGN_FLAGS = -Sentitlements.plist
 successorcli_INSTALL_PATH = /usr/local/bin
 include $(THEOS_MAKE_PATH)/tool.mk

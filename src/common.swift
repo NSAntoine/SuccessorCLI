@@ -5,25 +5,17 @@ import UIKit
 /// Includes info such as the device iOS version, machine name, and the build ID
 class deviceInfo {
     static let shared = deviceInfo()
-    var deviceiOSVersion = UIDevice.current.systemVersion
-    var machineName: String {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let machineMirror = Mirror(reflecting: systemInfo.machine)
-        return machineMirror.children.reduce("") { identifier, element in
-            guard let value = element.value as? Int8, value != 0 else {
-                return identifier
-            }
-            return identifier + String(UnicodeScalar(UInt8(value)))
+    static let deviceiOSVersion = UIDevice.current.systemVersion
+    static func sysctl(name: String) -> String {
+            var size = 0
+            sysctlbyname(name, nil, &size, nil, 0)
+            var value = [CChar](repeating: 0,  count: size)
+            sysctlbyname(name, &value, &size, nil, 0)
+            return String(cString: value)
         }
-    }
-    
-        var deviceiOSBuildID:String {
-            let sysVersionPlist = "/System/Library/CoreServices/SystemVersion.plist"
-            let sysVersionPlistDict = NSDictionary(contentsOfFile: sysVersionPlist)!
-            let buildID = sysVersionPlistDict["ProductBuildVersion"] as! String
-            return buildID
-        }
+    static let machineName = sysctl(name: "hw.machine")
+    static let buildID = sysctl(name: "kern.osversion")
+
 }
 
 /// Provides information about SuccessorCLI App, such as its path in ~/ and the mount point.
@@ -119,7 +111,7 @@ class iPSWManager {
 
     static var onlineiPSWSizeUnformatted:Int {
         var ret = 0
-        NetworkUtilities.shared.returnInfoOfOnlineIPSW(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.shared.machineName)/\(deviceInfo.shared.deviceiOSBuildID)") { jsonResponse in
+        NetworkUtilities.shared.returnInfoOfOnlineIPSW(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { jsonResponse in
             ret = jsonResponse["filesize"] as! Int
         }
         return ret
@@ -129,7 +121,7 @@ class iPSWManager {
     }
     static var onlineiPSWURLStr:String {
         var ret = ""
-        NetworkUtilities.shared.returnInfoOfOnlineIPSW(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.shared.machineName)/\(deviceInfo.shared.deviceiOSBuildID)") { jsonResponse in
+        NetworkUtilities.shared.returnInfoOfOnlineIPSW(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { jsonResponse in
             ret = jsonResponse["url"] as! String
         }
         return ret
@@ -235,7 +227,23 @@ class DMGManager {
         }
         return diskToMountName
     }
-
+    
+    class func attachDMGNative(dmgPath:String, completionHandler: (String?, AnyObject?) -> Void ) {
+        let url = URL(fileURLWithPath: dmgPath)
+        var attachParamsErr:AnyObject?
+        var attachErr:NSError?
+        var handler: DIDeviceHandle?
+        var attachParams = DIAttachParams(url: url, error: &attachParamsErr)
+        guard attachParamsErr == nil else {
+            return completionHandler(nil, attachParamsErr)
+        }
+        attachParams?.autoMount = false
+        DiskImages2.attach(with: attachParams, handle: &handler, error: &attachErr)
+        guard attachErr == nil else {
+            return completionHandler(nil, attachErr)
+        }
+        completionHandler(handler?.bsdName(), nil)
+    }
     class func mountDisk(devDiskName: String, mountPointPath: String, completionHandler: (_ exitCode: Int32, _ output:String?) -> Void ) {
         if !fm.fileExists(atPath: mountPointPath) {
             print("Mount point at \(mountPointPath) does not exist, will try to make it..")

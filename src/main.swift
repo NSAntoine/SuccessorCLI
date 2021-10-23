@@ -81,9 +81,9 @@ guard getuid() == 0 else {
 }
 
 print("Welcome to SuccessorCLI! Build: \(SCLIInfo.shared.ver)")
-print("Device iOS Version: \(deviceInfo.shared.deviceiOSVersion)")
-print("Device Machine Name: \(deviceInfo.shared.machineName)")
-print("Device iOS BuildID: \(deviceInfo.shared.deviceiOSBuildID)")
+print("Device iOS Version: \(deviceInfo.deviceiOSVersion)")
+print("Device Machine Name: \(deviceInfo.machineName)")
+print("Device iOS BuildID: \(deviceInfo.buildID)")
 
 if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
     print("\(SCLIInfo.shared.SuccessorCLIPath) does NOT exist! Will try to make it..")
@@ -206,7 +206,7 @@ var diskNameToMount = ""
 if SCLIInfo.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) is already mounted, skipping right ahead to the restore.")
 } else {
-    DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { exitCode, output in
+    /* DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { exitCode, output in
     guard exitCode == 0,
           let output = output else {
         print("Failed to attach DMG.")
@@ -216,6 +216,18 @@ if SCLIInfo.shared.isMountPointMounted() {
         exit(1)
     }
     diskNameToMount = DMGManager.shared.parseDiskName(output)
+     */
+    DMGManager.attachDMGNative(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, error in
+        guard error == nil else {
+            print("Error encountered while attaching \(DMGManager.shared.rfsDMGToUseFullPath): \(error!)")
+            exit(1)
+    }
+        guard let bsdName = bsdName else {
+            print("Couldn't get name of Attached Disk, exiting.")
+            exit(1)
+        }
+        let modifiedBSDName = "/dev/\(bsdName)s1s1"
+        diskNameToMount = modifiedBSDName
 }
 
 if diskNameToMount.isEmpty {
