@@ -196,7 +196,7 @@ class DMGManager {
     }
     var rfsDMGToUseName = "rfs.dmg" // By default this is rfs.dmg but can later on be changed if renaming fails.
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
-    class func attachDMG(dmgPath: String, completionHandler: (_ exitCode: Int32, _ output: String?) -> Void) {
+    class func attachDMGNSTask(dmgPath: String, completionHandler: (_ exitCode: Int32, _ output: String?) -> Void) {
         let pipe = Pipe()
         let task = NSTask()
         task.setLaunchPath("/usr/sbin/hdik")

@@ -220,6 +220,17 @@ if SCLIInfo.shared.isMountPointMounted() {
     DMGManager.attachDMGNative(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, error in
         guard error == nil else {
             print("Error encountered while attaching \(DMGManager.shared.rfsDMGToUseFullPath): \(error!)")
+            if errno != 0 {
+                switch errno {
+                case EPERM, EACCES:
+                    print("Operation not permitted.")
+                case EPERM:
+                    print("No such file or directory as \(DMGManager.shared.rfsDMGToUseFullPath)?? I dont even know how this happened..")
+                default:
+                    break
+                }
+                print("Encountered following errno while attaching \(DMGManager.shared.rfsDMGToUseFullPath): \(errno)")
+            }
             exit(1)
     }
         guard let bsdName = bsdName else {
