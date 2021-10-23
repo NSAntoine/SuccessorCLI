@@ -18,7 +18,7 @@ class deviceInfo {
 
 }
 
-/// Provides information about SuccessorCLI App, such as its path in ~/ and the mount point.
+/// Provides information about SuccessorCLI App, such as its path in /var/mobile and the mount point.
 class SCLIInfo { // SCLI = SuccessorCLI
     static let shared = SCLIInfo()
     var SuccessorCLIPath = "/var/mobile/Media/SuccessorCLI"

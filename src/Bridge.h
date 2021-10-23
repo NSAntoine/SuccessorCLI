@@ -79,34 +79,17 @@ NSUInteger IOEJECT = DKIOCEJECT;
 -(NSURL *)inputMountedOnURL;
 -(long long)fileMode;
 -(void)setFileMode:(long long)arg1 ;
--(BOOL)reOpenIfWritableWithError:(id*)arg1 ;
 -(void)setAutoMount:(BOOL)arg1 ;
--(void)setConcurrency:(unsigned long long)arg1 ;
--(void)setCommandSize:(unsigned long long)arg1 ;
--(void)setRegEntryID:(unsigned long long)arg1 ;
--(void)setInputMountedOnURL:(NSURL *)arg1 ;
 @end
 
 @interface DIDeviceHandle : NSObject
-+(BOOL)supportsSecureCoding;
 +(unsigned)copyIOMediaWithService:(unsigned)arg1 error:(id*)arg2 ;
 +(id)copyBSDNameWithService:(unsigned)arg1 error:(id*)arg2 ;
 -(NSString *)BSDName;
 -(void)setIoMedia:(unsigned)arg1 ;
--(unsigned)ioMedia;
 -(id)initWithCoder:(id)arg1 ;
--(void)encodeWithCoder:(id)arg1 ;
 -(id)description;
--(void)dealloc;
--(void)setHandleRefCount:(BOOL)arg1 ;
 -(id)initWithRegEntryID:(unsigned long long)arg1 xpcEndpoint:(id)arg2 ;
--(unsigned long long)regEntryID;
--(unsigned)copyKernelServiceWithError:(id*)arg1 ;
--(void)setBSDName:(NSString *)arg1 ;
--(void)waitForQuietWithService:(unsigned)arg1 ;
--(BOOL)updateBSDNameWithError:(id*)arg1 ;
--(BOOL)addToRefCountWithError:(id*)arg1 ;
--(BOOL)handleRefCount;
 -(id)initWithRegEntryID:(unsigned long long)arg1 ;
 -(BOOL)waitForDeviceWithError:(id*)arg1 ;
 @end
