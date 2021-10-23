@@ -151,7 +151,7 @@ class iPSWManager {
     func unzipiPSW(iPSWFilePath: String, destinationPath: String) {
         let unzipTask = NSTask() /* Yes i know.. calling CLI just to unzip files is bad practice..but its better than waiting like 20 minutes with libzip.. */
         unzipTask.setLaunchPath("/usr/bin/unzip")
-        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath])
+        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"])
         unzipTask.launch()
         unzipTask.waitUntilExit()
         
