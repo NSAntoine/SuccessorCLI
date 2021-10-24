@@ -81,9 +81,9 @@ guard getuid() == 0 else {
 }
 
 print("Welcome to SuccessorCLI! Build: \(SCLIInfo.shared.ver)")
-print("Device iOS Version: \(deviceInfo.deviceiOSVersion)")
-print("Device Machine Name: \(deviceInfo.machineName)")
-print("Device iOS BuildID: \(deviceInfo.buildID)")
+printIfDebug("Device iOS Version: \(deviceInfo.deviceiOSVersion)")
+printIfDebug("Device Machine Name: \(deviceInfo.machineName)")
+printIfDebug("Device iOS BuildID: \(deviceInfo.buildID)")
 
 if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
     print("\(SCLIInfo.shared.SuccessorCLIPath) does NOT exist! Will try to make it..")
@@ -95,9 +95,9 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
     }
 }
 
-print("URL of iPSW to download: \(iPSWManager.onlineiPSWURLStr)")
-print("Size of iPSW to download in bytes: \(iPSWManager.onlineiPSWSizeUnformatted)")
-print("Size of iPSW to download, formatted: \(iPSWManager.onlineiPSWSizeformatted)")
+printIfDebug("URL of iPSW to download: \(iPSWManager.onlineiPSWURLStr)")
+printIfDebug("Size of iPSW to download in bytes: \(iPSWManager.onlineiPSWSizeUnformatted)")
+printIfDebug("Size of iPSW to download, formatted: \(iPSWManager.onlineiPSWSizeformatted)")
 
 switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
     case false where fm.fileExists(atPath: iPSWManager.extractedOnboardiPSWPath):

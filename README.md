@@ -1,19 +1,5 @@
 # SuccessorCLI
 A CLI tool to restore iOS devices on the version they're already on, inspired by the original Succession GUI Application, rewritten from the ground up in Swift.
-```
-Welcome to SuccessorCLI! Build: 1.0.1 PROBABLY-WORKING-BETA
-Device iOS Version: 14.5
-Device Machine Name: iPhone10,4
-Device iOS BuildID: 18E199
-URL of iPSW to download: http://updates-http.cdn-apple.com/2021SpringFCS/fullrestores/071-17716/B8F4C604-0526-4A46-83B3-B956078C574D/iPhone_4.7_P3_14.5_18E199_Restore.ipsw
-Size of iPSW to download in bytes: 5060151546
-Size of iPSW to download, formatted: 5.06 GB
-Found RFS.dmg, proceeding to use it.
-Disk name to mount: /dev/disk23s1s1
-Proceeding to (try) to mount..
-Verifying if mount was successful..
-Verified that Mount Point /var/mnt/successor/ is mounted, Will continue.
-```
 # Building
 You must have Theos for this, and if you're not on macOS, you must've installed the swift toolchain for theos before aswell.
 To generate a deb, run the following:
