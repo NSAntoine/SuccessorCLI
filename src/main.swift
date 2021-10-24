@@ -202,36 +202,20 @@ if CMDLineArgs.contains("--no-attach") {
 }
 
 var diskNameToMount = ""
-
 if SCLIInfo.shared.isMountPointMounted() {
-    print("\(SCLIInfo.shared.mountPoint) is already mounted, skipping right ahead to the restore.")
+    print("\(SCLIInfo.shared.mountPoint) Already mounted, skipping right ahead to the restore")
 } else {
-    if CMDLineArgs.contains("--attach-nstask") {
-    DMGManager.attachDMGNSTask(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { exitCode, output in
-    guard exitCode == 0,
-          let output = output else {
-        print("Failed to attach DMG.")
-        print("If you need the following details in order to debug:")
-        print("Command that was ran: /usr/sbin/hdik -nomount \(DMGManager.shared.rfsDMGToUseFullPath)")
-        print("Task exited with Exit Code (Supposed to be 0): \(exitCode)")
-        exit(1)
-    }
-    diskNameToMount = DMGManager.shared.parseDiskName(output)
-    }
-} else {
-    DMGManager.attachDMGNative(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, error in
+    DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, error in
         guard error == nil else {
-            print("Error encountered while attaching \(DMGManager.shared.rfsDMGToUseFullPath): \(error!). Exiting..")
-            exit(1)
-            }
-        guard let bsdName = bsdName else {
-            print("Couldn't get name of Attached Disk, exiting.")
+            print("Error encountered while attaching DMG \(DMGManager.shared.rfsDMGToUseFullPath): \(error!). Exiting..")
             exit(1)
         }
-        let modifiedBSDName = "/dev/\(bsdName)s1s1"
-        diskNameToMount = modifiedBSDName
+        guard let bsdName = bsdName else {
+            print("Couldn't get name of where DMG was attached to..Exiting.")
+            exit(1)
+        }
+        diskNameToMount = "\(bsdName)s1s1"
     }
-}
 
 if diskNameToMount.isEmpty {
     print("Couldnt get disk name to mount, exiting..")

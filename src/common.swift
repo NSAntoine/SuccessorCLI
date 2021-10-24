@@ -42,7 +42,6 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --no-attach        Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then exit.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts
                  --mnt-status       Prints whether or not /var/mnt/successor is mounted
-                 --attach-nstask    Uses NSTask() in order to spawn hdik to attach the rootfs-DMG instead of doing it natively, only use this option if normally attaching the RootfsDMG Fails for you
             """)
     }
     
@@ -198,40 +197,8 @@ class DMGManager {
     }
     var rfsDMGToUseName = "rfs.dmg" // By default this is rfs.dmg but can later on be changed if renaming fails.
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
-    class func attachDMGNSTask(dmgPath: String, completionHandler: (_ exitCode: Int32, _ output: String?) -> Void) {
-        print("Proceeding to (try) to use hdik in order to attach \(dmgPath), using NSTask")
-        let pipe = Pipe()
-        let task = NSTask()
-        task.setLaunchPath("/usr/sbin/hdik")
-        task.setArguments(["-nomount",  dmgPath])
-        task.setStandardOutput(pipe)
-        task.setStandardError(pipe)
-        task.launch()
-        task.waitUntilExit()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)
-//        print(output)
-        completionHandler(task.terminationStatus, output ?? nil)
-    }
     
-    /// Parses the name of the disk to mount.
-    let parseDiskName = { (_ input:String) -> String in
-        var components = input.components(separatedBy: .newlines)
-        var diskToMountName = ""
-         for number in 0...60 { // Honestly, i didnt know what number to put here, so i just put 60.
-            for objects in components {
-                if objects.contains("/dev/disk\(number)s1s1") {
-                    guard let firstObject = objects.components(separatedBy: " ").first else {
-                        fatalError("Couldnt get disk to mount. exiting.")
-                    }
-                    diskToMountName = firstObject
-                }
-            }
-        }
-        return diskToMountName
-    }
-    
-    class func attachDMGNative(dmgPath:String, completionHandler: (String?, AnyObject?) -> Void ) {
+    class func attachDMG(dmgPath:String, completionHandler: (String?, AnyObject?) -> Void ) {
         let url = URL(fileURLWithPath: dmgPath)
         var attachParamsErr:AnyObject?
         var attachErr:NSError?
