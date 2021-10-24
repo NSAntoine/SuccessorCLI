@@ -46,7 +46,6 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             exit(0)
         case "--ipsw-path":
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path") else {
-                print("ERROR: User did not specify iPSW Path, Exiting.")
                 exit(1)
             }
             let iPSWPath = CMDLineArgs[index + 1]
@@ -59,7 +58,6 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
         case "--dmg-path":
             guard let index = CMDLineArgs.firstIndex(of: "--dmg-path") else {
-                print("ERROR: User did not specify dmg path, Exiting.")
                 exit(1)
             }
             let dmgSpecified = CMDLineArgs[index + 1]

@@ -204,7 +204,7 @@ class DMGManager {
         var attachParamsErr:AnyObject?
         var attachErr:NSError?
         var handler: DIDeviceHandle?
-        var attachParams = DIAttachParams(url: url, error: &attachParamsErr)
+        let attachParams = DIAttachParams(url: url, error: &attachParamsErr)
         guard attachParamsErr == nil else {
             return completionHandler(nil, attachParamsErr)
         }
