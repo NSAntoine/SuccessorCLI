@@ -35,15 +35,16 @@ to run in terminal, run `sudo successorcli` in a terminal on an iOS Device, if n
 # Options  
 The follwing options can be used with SuccessorCLI:
 ```SuccessorCLI - A CLI Utility to restore iOS devices, based off Succession
-Usage: successorcli <option>
-     -h, --help     Prints this help message
-     -v, --version  Prints current SuccessorCLI Version
-     -u, --unmount  If /var/mnt/successor is mounted, then this will unmount it.
-     -i, --ipsw-path /PATH/TO/IPSW          Manually specify path of iPSW to use.
-    --no-restore    Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
-    --no-attach    Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then exit.
-    --no-wait      Removes the 15 seconds given for the user to cancel the restore before it starts
-    --mnt-status   Prints whether or not /var/mnt/successor is mounted
+            Usage: successorcli <option>
+                 -h, --help         Prints this help message
+                 -v, --version      Prints current SuccessorCLI Version
+                 -u, --unmount      If /var/mnt/successor is mounted, then this will unmount it.
+                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.
+                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
+                 --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
+                 --no-attach        Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then exit.
+                 --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts
+                 --mnt-status       Prints whether or not /var/mnt/successor is mounted
 ```
 
 # Project Status
