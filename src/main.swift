@@ -233,12 +233,12 @@ DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shar
 
     print("Verifying if mount was successful..")
     if SCLIInfo.shared.isMountPointMounted() {
-        print("Verified that Mount Point \(SCLIInfo.shared.mountPoint) is mounted, Will continue.")
+        print("Verified that Mount Point \(SCLIInfo.shared.mountPoint) was successfully mounted, Will continue.")
     } else {
         print("Wasn't able to mount successfully. Exiting..")
         exit(1)
+        }
     }
- }
 }
 if CMDLineArgs.contains("--no-restore") {
     print("Successfully downloaded, archived, attached and mounted iPSW, exiting now.")

@@ -228,8 +228,8 @@ class DMGManager {
         }
         let pipe = Pipe()
         let mountTask = NSTask()
-        mountTask.setLaunchPath("/sbin/mount")
-        mountTask.setArguments(["-t", "apfs", "-o", "ro", devDiskName, mountPointPath])
+        mountTask.setLaunchPath("/sbin/mount_apfs")
+        mountTask.setArguments(["-o", "ro", devDiskName, mountPointPath])
         mountTask.setStandardOutput(pipe)
         mountTask.setStandardError(pipe)
         mountTask.launch()
