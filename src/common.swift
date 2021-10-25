@@ -157,14 +157,14 @@ class iPSWManager {
         
         guard unzipTask.terminationStatus == 0 else {
             print("Error: Couldn't successfully unzip the iPSW...exiting..")
-            exit(1)
+            exit(EXIT_FAILURE)
         }
         
         do {
             try fm.moveItem(atPath: "\(destinationPath)/\(DMGManager.shared.locateRFSDMG)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
         } catch {
             print("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..")
-            exit(1)
+            exit(EXIT_FAILURE)
         }
         
          /* if CMDLineArgs.contains("--dont-move-to-tmp") {
@@ -223,7 +223,7 @@ class DMGManager {
                 print("Successfully created Mount Point \(mountPointPath), will continue.")
             } catch {
                 print("Couldn't create Mount Point \(mountPointPath)\nError: \(error.localizedDescription)\nPlease create the folder yourself and run SuccessorCLI again.")
-                exit(1)
+                exit(EXIT_FAILURE)
             }
         }
         let pipe = Pipe()

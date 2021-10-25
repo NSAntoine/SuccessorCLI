@@ -6,7 +6,7 @@ let CMDLineArgs = CommandLine.arguments.filter() { $0 != CommandLine.arguments[0
 
 if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
     print("ERROR: Cannot use --ipsw-path and --dmg-path together, please use only one. Exiting..")
-    exit(1)
+    exit(EXIT_FAILURE)
 }
     for arguments in CMDLineArgs {
         switch arguments {
@@ -20,7 +20,7 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             let path = strdup(SCLIInfo.shared.mountPoint)
             guard SCLIInfo.shared.isMountPointMounted() else {
                 print("ERROR: Can't unmount \(SCLIInfo.shared.mountPoint) if its not even mounted!\nExiting..")
-                exit(1)
+                exit(EXIT_FAILURE)
             }
             guard unmount(path, 0) == 0 else {
                 switch errno {
@@ -33,7 +33,7 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
                 }
                 print("Error code encountered while unmounting: \(errno)")
                 print("Exiting..")
-                exit(1)
+                exit(EXIT_FAILURE)
             }
             print("Unmounted \(SCLIInfo.shared.mountPoint)")
             exit(0)
@@ -52,7 +52,7 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             print("User manually specified iPSW Path as \(iPSWPath)")
             guard fm.fileExists(atPath: iPSWPath), NSString(string: iPSWPath).pathExtension == "ipsw" else {
                 print("Path \"\(iPSWPath)\" either doesn't exist or is not an iPSW. Exiting..")
-                exit(1)
+                exit(EXIT_FAILURE)
             }
             iPSWManager.onboardiPSWPath = iPSWPath
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
@@ -63,7 +63,7 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             let dmgSpecified = CMDLineArgs[index + 1]
             guard fm.fileExists(atPath: dmgSpecified), NSString(string: dmgSpecified).pathExtension == "dmg" else {
                 print("Path \"\(dmgSpecified)\" either doesn't exist or isnt a DMG file. Exiting..")
-                exit(1)
+                exit(EXIT_FAILURE)
             }
             DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
         default:
@@ -110,7 +110,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
                     try fm.moveItem(atPath: iPSWManager.extractedOnboardiPSWPath + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath), toPath: DMGManager.shared.rfsDMGToUseFullPath)
                 } catch {
                     print("Couldn't move \(iPSWManager.extractedOnboardiPSWPath + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath)) to \(DMGManager.shared.rfsDMGToUseFullPath)\nError: \(error.localizedDescription)\nExiting..")
-                    exit(1)
+                    exit(EXIT_FAILURE)
                 }
             case "2", "N", "n":
                 print("Would you like to remove \(iPSWManager.extractedOnboardiPSWPath) then?")
@@ -125,18 +125,18 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
                             exit(0)
                         } catch {
                             print("Couldn't remove path \(iPSWManager.extractedOnboardiPSWPath), error: \(error.localizedDescription)\nExiting..")
-                            exit(1)
+                            exit(EXIT_FAILURE)
                         }
                     case "2", "N", "n":
                         print("Figure out what you want to do then run SuccessorCLI again\nExiting..")
-                        exit(1)
+                        exit(0)
                     default:
                         break
                     }
                 }
             default:
                 print("Input \"\(choice)\" Not understood, exiting.")
-                exit(1)
+                exit(EXIT_FAILURE)
             }
         }
         break
@@ -153,7 +153,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
                 exit(0)
             default:
                 print("Input \"\(choice)\" Not understood, exiting.")
-                exit(1)
+                exit(EXIT_FAILURE)
             }
         }
     case false where !iPSWManager.iPSWSInSCLIPathArray.isEmpty:
@@ -186,7 +186,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
             exit(0)
         default:
             print("Input \"\(choice)\" not understood, Exiting..")
-            exit(1)
+            exit(EXIT_FAILURE)
         }
     }
     default:
@@ -206,18 +206,18 @@ if SCLIInfo.shared.isMountPointMounted() {
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, error in
         guard error == nil else {
             print("Error encountered while attaching DMG \(DMGManager.shared.rfsDMGToUseFullPath): \(error!). Exiting..")
-            exit(1)
+            exit(EXIT_FAILURE)
         }
         guard let bsdName = bsdName else {
             print("Couldn't get name of where DMG was attached to..Exiting.")
-            exit(1)
+            exit(EXIT_FAILURE)
         }
         diskNameToMount = "\(bsdName)s1s1"
     }
 
 if diskNameToMount.isEmpty {
     print("Couldnt get disk name to mount, exiting..")
-    exit(1)
+    exit(EXIT_FAILURE)
 }
 print("Disk name to mount: \(diskNameToMount)")
 print("Proceeding to (try) to mount..")
@@ -228,7 +228,7 @@ DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shar
         print("Command that was run: /sbin/mount -t apfs -o ro \(diskNameToMount) \(SCLIInfo.shared.mountPoint)")
         print("Output: \(output ??  "Unknown")")
         print("Task exited with Exit Code (Supposed to be 0): \(exitCode)")
-        exit(1)
+        exit(EXIT_FAILURE)
     }
 
     print("Verifying if mount was successful..")
@@ -236,7 +236,7 @@ DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shar
         print("Verified that Mount Point \(SCLIInfo.shared.mountPoint) was successfully mounted, Will continue.")
     } else {
         print("Wasn't able to mount successfully. Exiting..")
-        exit(1)
+        exit(EXIT_FAILURE)
         }
     }
 }
@@ -255,7 +255,7 @@ print("Proceeding to launch rsync..")
 deviceRestoreManager.launchRsync() { exitCode in
     guard exitCode == 0 else {
         print("Wasn't able to use rsync to execute restore..\nExiting..")
-        exit(1)
+        exit(EXIT_FAILURE)
     }
     
         print("Successfully executed restore! now time to reset..")
