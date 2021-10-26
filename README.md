@@ -8,6 +8,7 @@ git clone https://github.com/dabezt31/SuccessorCLI
 cd SuccessorCLI
 make package
 ```
+If you're on macOS, you'll need to run `make package SYSROOT=$THEOS/sdks/iPhoneOS14.4.sdk` instead of just `make package`
 
 # Usage
 Simply run `sudo successorcli` in terminal. See below for options that can be used with successorcli, although arent neccessary
