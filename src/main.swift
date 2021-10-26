@@ -23,19 +23,15 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
                 exit(EXIT_FAILURE)
             }
             guard unmount(path, 0) == 0 else {
-                switch errno {
-                case 16:
-                    print("ERROR: Coulnd't unmount because the device is resource busy right now, try rebooting, rejailbreaking then running --unmount again")
-                case 1:
-                    print("ERROR: Couldn't unmount because of an error to do with permissions, are you running SuccessorCLI with sudo?")
-                default:
-                    print("Error while unmounting, cause: Unknown")
+                if errno != 0 {
+                    print("Error encountered while unmounting \(SCLIInfo.shared.SuccessorCLIPath): \(String(cString: strerror(errno)))")
+                    exit(errno)
+                } else {
+                    print("Encountered unkown error while unmounting \(SCLIInfo.shared.SuccessorCLIPath).")
+                    exit(EXIT_FAILURE)
                 }
-                print("Error code encountered while unmounting: \(errno)")
-                print("Exiting..")
-                exit(EXIT_FAILURE)
             }
-            print("Unmounted \(SCLIInfo.shared.mountPoint)")
+            print("Unmounted \(SCLIInfo.shared.mountPoint) successfully")
             exit(0)
         case "--mnt-status":
             if SCLIInfo.shared.isMountPointMounted() {
