@@ -103,7 +103,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
             case "1", "y", "Y":
                 print("Proceeding to use \(iPSWManager.extractedOnboardiPSWPath)")
                 do {
-                    try fm.moveItem(atPath: iPSWManager.extractedOnboardiPSWPath + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath), toPath: DMGManager.shared.rfsDMGToUseFullPath)
+                    try fm.moveItem(atPath: iPSWManager.extractedOnboardiPSWPath + "/" + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath), toPath: DMGManager.shared.rfsDMGToUseFullPath)
                 } catch {
                     print("Couldn't move \(iPSWManager.extractedOnboardiPSWPath + fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath)) to \(DMGManager.shared.rfsDMGToUseFullPath)\nError: \(error.localizedDescription)\nExiting..")
                     exit(EXIT_FAILURE)
@@ -209,6 +209,10 @@ if SCLIInfo.shared.isMountPointMounted() {
             exit(EXIT_FAILURE)
         }
         diskNameToMount = "\(bsdName)s1s1"
+        guard fm.fileExists(atPath: "/dev/\(diskNameToMount)") else {
+            print("DMG Was not attached successfully. Exiting.")
+            exit(EXIT_FAILURE)
+        }
     }
 
 if diskNameToMount.isEmpty {
@@ -218,7 +222,7 @@ if diskNameToMount.isEmpty {
 print("Disk name to mount: \(diskNameToMount)")
 print("Proceeding to (try) to mount..")
 
-DMGManager.mountDisk(devDiskName: diskNameToMount, mountPointPath: SCLIInfo.shared.mountPoint) { exitCode, output in
+DMGManager.mountDisk(devDiskName: "/dev/\(diskNameToMount)", mountPointPath: SCLIInfo.shared.mountPoint) { exitCode, output in
     guard exitCode == 0, output != nil else {
         print("Wasn't able to mount disk, the following info may be useful to you:")
         print("Command that was run: /sbin/mount -t apfs -o ro \(diskNameToMount) \(SCLIInfo.shared.mountPoint)")
