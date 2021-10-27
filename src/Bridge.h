@@ -14,7 +14,6 @@ struct hfs_mount_args {
     int        journal_flags;          /* flags to pass to journal_open/create */
     int        journal_disable;        /* don't use journaling (potentially dangerous) */
 };
-#define DKIOCEJECT                            _IO('d', 21)
 @interface NSTask : NSObject
 
 - (instancetype __nonnull)init;
@@ -31,7 +30,6 @@ struct hfs_mount_args {
 
 extern mach_port_t SBSSpringBoardServerPort(void);
 extern int SBDataReset(mach_port_t, int);
-NSUInteger IOEJECT = DKIOCEJECT;
 
 @interface DIBaseParams : NSObject <NSSecureCoding, NSCoding>
 -(id)initWithCoder:(id)arg1 ;
