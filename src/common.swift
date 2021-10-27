@@ -285,7 +285,7 @@ class deviceRestoreManager {
         "--exclude=/ramdisk",
         "/private/\(SCLIInfo.shared.mountPoint)",
         "/"])
-         //These args are the exact same that succession uses  (https://githu b.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/Successi onRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
+         //These args are the exact same that succession uses  (https://github.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/Successi onRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
          task.setStandardOutput(pipe)
          task.setStandardError(pipe)
          let outHandle = pipe.fileHandleForReading
