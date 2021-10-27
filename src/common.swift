@@ -260,6 +260,7 @@ class deviceRestoreManager {
         task.setArguments(["-vaxcH",
         "--delete",
         "--progress",
+        "--ignore-errors",
         "--force",
         "--exclude=/Developer",
         "--exclude=/System/Library/Caches/com.apple.kernelcaches/kernelcache",
@@ -267,12 +268,13 @@ class deviceRestoreManager {
         "--exclude=/System/Library/Caches/com.apple.factorydata/",
         "--exclude=/usr/standalone/firmware/sep-firmware.img4",
         "--exclude=/usr/local/standalone/firmware/Baseband",
-        "--exclude=/private/var/mnt/successor/",
+        "--exclude=/private/\(SCLIInfo.shared.mountPoint)",
+        "--exclude=/private/etc/fstab",
+        "--exclude=/etc/fstab",
         "--exclude=/usr/standalone/firmware/FUD/",
         "--exclude=/usr/standalone/firmware/Savage/",
         "--exclude=/System/Library/Pearl",
         "--exclude=/usr/standalone/firmware/Yonkers/",
-        "--exclude=/private/etc/fstab",
         "--exclude=/private/var/containers/",
         "--exclude=/var/containers/",
         "--exclude=/private/var/keybags/",
@@ -281,22 +283,21 @@ class deviceRestoreManager {
         "--exclude=/devicetree",
         "--exclude=/kernelcache",
         "--exclude=/ramdisk",
-        "/var/mnt/successor/",
-        "/"
-        ])
-        //These args are the exact same that succession uses (https://github.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/SuccessionRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
-        task.setStandardOutput(pipe)
-        task.setStandardError(pipe)
-        let outHandle = pipe.fileHandleForReading
-        outHandle.readabilityHandler = { pipe in
-            guard let line = String(data: pipe.availableData, encoding: .utf8) else {
-                print("Error decoding data: \(pipe.availableData)")
-                return
-            }
-            print(line)
-        }
-        task.launch()
-        task.waitUntilExit()
+        "/private/\(SCLIInfo.shared.mountPoint)",
+        "/"])
+         //These args are the exact same that succession uses  (https://githu b.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/Successi onRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
+         task.setStandardOutput(pipe)
+         task.setStandardError(pipe)
+         let outHandle = pipe.fileHandleForReading
+         outHandle.readabilityHandler = { pipe in
+             guard let line = String(data: pipe.availableData, encoding: .utf8) else {
+                 print("Error decoding data: \(pipe.availableData)")
+                 return
+             }
+             print(line)
+         }
+         task.launch()
+         task.waitUntilExit()
         completionHandler(task.terminationStatus)
     }
 }
