@@ -4,7 +4,6 @@ import UIKit
 
 /// Includes info such as the device iOS version, machine name, and the build ID
 class deviceInfo {
-    static let shared = deviceInfo()
     static let deviceiOSVersion = UIDevice.current.systemVersion
     static func sysctl(name: String) -> String {
             var size = 0
@@ -15,7 +14,6 @@ class deviceInfo {
         }
     static let machineName = sysctl(name: "hw.machine")
     static let buildID = sysctl(name: "kern.osversion")
-
 }
 
 /// Provides information about SuccessorCLI App, such as its path in /var/mobile and the mount point.
@@ -129,7 +127,6 @@ class iPSWManager {
         return ret
     }
     
-    ///
     static let onlineiPSWURL = URL(string: iPSWManager.onlineiPSWURLStr)!
     /// Returns the iPSWs that are in SCLIInfo.shared.SuccessorCLIPath, this is used mainly for iPSW detection
     static var iPSWSInSCLIPathArray:[String] {
@@ -167,17 +164,6 @@ class iPSWManager {
             exit(EXIT_FAILURE)
         }
         
-         /* if CMDLineArgs.contains("--dont-move-to-tmp") {
-            print("User specified that the iPSW Should not be moved to \(NSTemporaryDirectory()) After extraction")
-        } else {
-        // Moves the now unneeded ipsw to /var/tmp
-        do {
-            try fm.moveItem(atPath: iPSWFilePath, toPath: "\(NSTemporaryDirectory())/ipsw.ipsw")
-            print("Successfully moved old, unneeded ipsw to /var/tmp")
-        } catch {
-            print("Couldn't move \(iPSWFilePath) to \(NSTemporaryDirectory())/ipsw.ipsw\nError: \(error.localizedDescription), still continiuing")
-        }
-    } */
 }
     
     class func downloadAndExtractiPSW(iPSWURL: URL) {
@@ -226,6 +212,7 @@ class DMGManager {
                 exit(EXIT_FAILURE)
             }
         }
+    //https://github.com/Odyssey-Team/Taurine/blob/0ee53dde05da8ce5a9b7192e4164ffdae7397f94/Taurine/post-exploit/utils/remount.swift#L169
         let fspec = strdup(devDiskName)
 
         var mntargs = hfs_mount_args()
@@ -233,6 +220,7 @@ class DMGManager {
         mntargs.hfs_mask = 1
         gettimeofday(nil, &mntargs.hfs_timezone)
         
+        // For the longest time, I had tried to mount natively instead of using NSTask with the mount_apfs command, however doing it natively literally never worked, becuase the way I did it was the same as the line below however instead of MNT_WAIT there was a 0, so for weeks I kept constantly trying to get it to work until one day i was trying all the MNT_ args, and suddenly MNT_WAIT worked. Otherwise I would somehow get a "Permission Denied" error
         let mnt = mount("apfs", mountPointPath, MNT_WAIT, &mntargs)
         guard mnt == 0 else {
             print("Couldn't mount \(devDiskName) to \(mountPointPath)")
