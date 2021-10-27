@@ -25,7 +25,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
 
     var mountPoint = "/var/mnt/successor/"
     
-    var ver = "1.0.2 PROBABLY-WORKING-BETA"
+    var ver = "1.5.0 PROBABLY-WORKING-BETA"
     
     /// Prints help message
     func printHelp() {
@@ -100,7 +100,7 @@ extension FileManager {
         fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
     }
     let sortedFiles = fileDict.sorted(by: { $0.value > $1.value })
-    let biggestFile = sortedFiles.first?.key ?? "Unknown"
+    let biggestFile = sortedFiles.first!.key
     print("Biggest file: \(biggestFile)")
     return biggestFile
     }
