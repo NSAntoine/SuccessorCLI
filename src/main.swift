@@ -215,29 +215,20 @@ if SCLIInfo.shared.isMountPointMounted() {
         }
     }
 
-if diskNameToMount.isEmpty {
-    print("Couldnt get disk name to mount, exiting..")
-    exit(EXIT_FAILURE)
-}
-print("Disk name to mount: \(diskNameToMount)")
-print("Proceeding to (try) to mount..")
-
-DMGManager.mountDisk(devDiskName: "/dev/\(diskNameToMount)", mountPointPath: SCLIInfo.shared.mountPoint) { exitCode, output in
-    guard exitCode == 0, output != nil else {
-        print("Wasn't able to mount disk, the following info may be useful to you:")
-        print("Command that was run: /sbin/mount -t apfs -o ro \(diskNameToMount) \(SCLIInfo.shared.mountPoint)")
-        print("Output: \(output ??  "Unknown")")
-        print("Task exited with Exit Code (Supposed to be 0): \(exitCode)")
+    if diskNameToMount.isEmpty {
+        print("Couldnt get disk name to mount, exiting..")
         exit(EXIT_FAILURE)
     }
-
-    print("Verifying if mount was successful..")
+    print("Disk name to mount: \(diskNameToMount)")
+    print("Proceeding to (try) to mount..")
+    DMGManager.mountNative(devDiskName: "/dev/\(diskNameToMount)", mountPointPath: SCLIInfo.shared.mountPoint)
+    
+    print("Verifiying if mount was successful..")
     if SCLIInfo.shared.isMountPointMounted() {
-        print("Verified that Mount Point \(SCLIInfo.shared.mountPoint) was successfully mounted, Will continue.")
+        print("Successfully mounted \(SCLIInfo.shared.mountPoint)")
     } else {
-        print("Wasn't able to mount successfully. Exiting..")
+        print("Wasn't able to successfuly mount \(SCLIInfo.shared.mountPoint).. Exiting..")
         exit(EXIT_FAILURE)
-        }
     }
 }
 if CMDLineArgs.contains("--no-restore") {

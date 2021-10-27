@@ -215,28 +215,37 @@ class DMGManager {
         }
         completionHandler(handler?.bsdName(), nil)
     }
-    class func mountDisk(devDiskName: String, mountPointPath: String, completionHandler: (_ exitCode: Int32, _ output:String?) -> Void ) {
+    class func mountNative(devDiskName:String, mountPointPath:String) {
         if !fm.fileExists(atPath: mountPointPath) {
-            print("Mount point at \(mountPointPath) does not exist, will try to make it..")
+            print("Mount Point \(mountPointPath) doesn't exist.. will try to make it..")
             do {
                 try fm.createDirectory(atPath: mountPointPath, withIntermediateDirectories: true, attributes: nil)
-                print("Successfully created Mount Point \(mountPointPath), will continue.")
+                print("Successfully create \(mountPointPath), Continuing..")
             } catch {
-                print("Couldn't create Mount Point \(mountPointPath)\nError: \(error.localizedDescription)\nPlease create the folder yourself and run SuccessorCLI again.")
+                print("Error encountered while creating directory \(mountPointPath): \(error.localizedDescription)\nPlease create the \(mountPointPath) directory again and run SuccessorCLI Again\nExiting..")
                 exit(EXIT_FAILURE)
             }
         }
-        let pipe = Pipe()
-        let mountTask = NSTask()
-        mountTask.setLaunchPath("/sbin/mount_apfs")
-        mountTask.setArguments(["-o", "ro", devDiskName, mountPointPath])
-        mountTask.setStandardOutput(pipe)
-        mountTask.setStandardError(pipe)
-        mountTask.launch()
-        mountTask.waitUntilExit()
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)
-        completionHandler(mountTask.terminationStatus, output ?? nil)
+        let fspec = strdup(devDiskName)
+
+        var mntargs = hfs_mount_args()
+        mntargs.fspec = fspec
+        mntargs.hfs_mask = 1
+        gettimeofday(nil, &mntargs.hfs_timezone)
+        
+        let mnt = mount("apfs", mountPointPath, MNT_WAIT, &mntargs)
+        guard mnt == 0 else {
+            print("Couldn't mount \(devDiskName) to \(mountPointPath)")
+            if errno != 0 {
+                print("Errno: \(errno)")
+                print("Strerr: \(String(cString: strerror(errno)))")
+            } else {
+                print("Error: Unkown..")
+            }
+            print("Exiting..")
+            exit(EXIT_FAILURE)
+        }
+        print("Successfully mounted \(devDiskName) to \(mountPointPath), Continuing..")
     }
 }
 
