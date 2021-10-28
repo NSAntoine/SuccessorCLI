@@ -41,27 +41,30 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             }
             exit(0)
         case "--ipsw-path":
-            guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path") else {
-                exit(1)
+            guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
+                print("Wasn't able to get the iPSW Path specified..are you sure you specified one? Exiting..")
+                exit(EXIT_FAILURE)
             }
             let iPSWPath = CMDLineArgs[index + 1]
-            print("User manually specified iPSW Path as \(iPSWPath)")
             guard fm.fileExists(atPath: iPSWPath), NSString(string: iPSWPath).pathExtension == "ipsw" else {
                 print("Path \"\(iPSWPath)\" either doesn't exist or is not an iPSW. Exiting..")
                 exit(EXIT_FAILURE)
             }
+            print("User manually specified iPSW Path as \"\(iPSWPath)\"")
             iPSWManager.onboardiPSWPath = iPSWPath
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
         case "--dmg-path":
-            guard let index = CMDLineArgs.firstIndex(of: "--dmg-path") else {
-                exit(1)
-            }
-            let dmgSpecified = CMDLineArgs[index + 1]
-            guard fm.fileExists(atPath: dmgSpecified), NSString(string: dmgSpecified).pathExtension == "dmg" else {
-                print("Path \"\(dmgSpecified)\" either doesn't exist or isnt a DMG file. Exiting..")
+            guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), CMDLineArgs.indices.contains(index + 1) else {
+                print("Wasn't able to get the DMG Path specified..are you sure you specified one? Exiting..")
                 exit(EXIT_FAILURE)
             }
-            DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
+            let dmgPath = CMDLineArgs[index + 1]
+            guard fm.fileExists(atPath: dmgPath), NSString(string: dmgPath).pathExtension == "dmg" else {
+                print("Path to file \"\(dmgPath)\" either doesn't exist or isn't a DMG File. Exiting..")
+                exit(EXIT_FAILURE)
+            }
+            print("User manually specified DMG Path as \"\(dmgPath)\"")
+            DMGManager.shared.rfsDMGToUseFullPath = dmgPath
         default:
             break
         }

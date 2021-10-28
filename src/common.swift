@@ -4,7 +4,6 @@ import UIKit
 
 /// Includes info such as the device iOS version, machine name, and the build ID
 class deviceInfo {
-    static let deviceiOSVersion = UIDevice.current.systemVersion
     static func sysctl(name: String) -> String {
             var size = 0
             sysctlbyname(name, nil, &size, nil, 0)
@@ -14,6 +13,7 @@ class deviceInfo {
         }
     static let machineName = sysctl(name: "hw.machine")
     static let buildID = sysctl(name: "kern.osversion")
+    static let deviceiOSVersion = UIDevice.current.systemVersion
 }
 
 /// Provides information about SuccessorCLI App, such as its path in /var/mobile and the mount point.
@@ -154,7 +154,7 @@ class iPSWManager {
         
         guard unzipTask.terminationStatus == 0 else {
             print("Error: Couldn't successfully unzip the iPSW...exiting..")
-            exit(EXIT_FAILURE)
+            exit(unzipTask.terminationStatus)
         }
         
         do {
