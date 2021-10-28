@@ -33,14 +33,8 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             }
             print("Unmounted \(SCLIInfo.shared.mountPoint) successfully")
             exit(0)
-        case "--mnt-status":
-            if SCLIInfo.shared.isMountPointMounted() {
-                print("\(SCLIInfo.shared.mountPoint) is mounted")
-            } else {
-                print("\(SCLIInfo.shared.mountPoint) is not mounted.")
-            }
-            exit(0)
         case "--ipsw-path":
+            // CMDLineArgs.indices.contains(index + 1) here is to make sure that a path after --ipsw-path is provided
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
                 print("Wasn't able to get the iPSW Path specified..are you sure you specified one? Exiting..")
                 exit(EXIT_FAILURE)
@@ -54,6 +48,7 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             iPSWManager.onboardiPSWPath = iPSWPath
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
         case "--dmg-path":
+            // CMDLineArgs.indices.contains(index + 1) here is to make sure that a path after --dmg-path is provided
             guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), CMDLineArgs.indices.contains(index + 1) else {
                 print("Wasn't able to get the DMG Path specified..are you sure you specified one? Exiting..")
                 exit(EXIT_FAILURE)
