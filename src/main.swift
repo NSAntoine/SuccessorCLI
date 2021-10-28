@@ -16,23 +16,6 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
         case "-v", "--version":
             print("SuccessorCLI version: \(SCLIInfo.shared.ver)")
             exit(0)
-        case "--unmount", "-u":
-            let path = strdup(SCLIInfo.shared.mountPoint)
-            guard SCLIInfo.shared.isMountPointMounted() else {
-                print("ERROR: Can't unmount \(SCLIInfo.shared.mountPoint) if its not even mounted!\nExiting..")
-                exit(EXIT_FAILURE)
-            }
-            guard unmount(path, 0) == 0 else {
-                if errno != 0 {
-                    print("Error encountered while unmounting \(SCLIInfo.shared.SuccessorCLIPath): \(String(cString: strerror(errno)))")
-                    exit(errno)
-                } else {
-                    print("Encountered unkown error while unmounting \(SCLIInfo.shared.SuccessorCLIPath).")
-                    exit(EXIT_FAILURE)
-                }
-            }
-            print("Unmounted \(SCLIInfo.shared.mountPoint) successfully")
-            exit(0)
         case "--ipsw-path":
             // CMDLineArgs.indices.contains(index + 1) here is to make sure that a path after --ipsw-path is provided
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
@@ -143,7 +126,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
                 case "1", "y", "Y":
                     iPSWManager.downloadAndExtractiPSW(iPSWURL: iPSWManager.onlineiPSWURL)
             case "2", "n", "N":
-                print("Please provide your own iPSW then place it in \(SCLIInfo.shared.SuccessorCLIPath)\nExiting..")
+                print("Please either provide your own iPSW and place it in \(SCLIInfo.shared.SuccessorCLIPath) or manually specify your own ipsw/rootfsDMG with --ipsw-path/--dmg-path. Exiting..")
                 exit(0)
             default:
                 print("Input \"\(choice)\" Not understood, exiting.")
@@ -223,7 +206,7 @@ if SCLIInfo.shared.isMountPointMounted() {
     
     print("Verifiying if mount was successful..")
     if SCLIInfo.shared.isMountPointMounted() {
-        print("Successfully mounted \(SCLIInfo.shared.mountPoint)")
+        print("Successfully verified \(SCLIInfo.shared.mountPoint) was mounted correctly")
     } else {
         print("Wasn't able to successfuly mount \(SCLIInfo.shared.mountPoint).. Exiting..")
         exit(EXIT_FAILURE)

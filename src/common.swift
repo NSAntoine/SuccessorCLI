@@ -28,19 +28,17 @@ class SCLIInfo { // SCLI = SuccessorCLI
     /// Prints help message
     func printHelp() {
         print("""
-            SuccessorCLI - A CLI Utility to restore iOS devices, based off Succession
+            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja
             Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
-                 -h, --help         Prints this help message
-                 -v, --version      Prints current SuccessorCLI Version
-                 -u, --unmount      If /var/mnt/successor is mounted, then this will unmount it.
+                 -h, --help         Prints this help message.
+                 -v, --version      Prints current SuccessorCLI Version.
                  -d, --debug        Prints extra information which may be useful.
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use. NOTE: This is optional.
                  --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use. NOTE: This is optional.
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
                  --no-attach        Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then exit.
-                 --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts
-                 --mnt-status       Prints whether or not /var/mnt/successor is mounted, then exit.
+                 --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
             """)
     }
     
@@ -254,7 +252,7 @@ class deviceRestoreManager {
         let pipe = Pipe()
         let task = NSTask()
         task.setLaunchPath("/usr/bin/rsync")
-        task.setArguments(["-vaxcH",
+        var rsyncArgs = ["-vaxcH",
         "--delete",
         "--progress",
         "--ignore-errors",
@@ -281,8 +279,16 @@ class deviceRestoreManager {
         "--exclude=/kernelcache",
         "--exclude=/ramdisk",
         "/private/\(SCLIInfo.shared.mountPoint)",
-        "/"])
-         //These args are the exact same that succession uses  (https://github.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/Successi onRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
+        "/"]
+        if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
+            rsyncArgs.append("--exclude=/Library/Caches/")
+            rsyncArgs.append("--exclude=/usr/libexec/xpcproxy")
+            rsyncArgs.append("--exclude=/tmp/xpcproxy")
+            rsyncArgs.append("--exclude=/var/tmp/xpcproxy")
+            rsyncArgs.append("--exclude=/usr/lib/substitute-inserter.dylib")
+        }
+        task.setArguments(rsyncArgs)
+         //These args are the exact same that succession uses  (https://github.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/SuccessionRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
          task.setStandardOutput(pipe)
          task.setStandardError(pipe)
          let outHandle = pipe.fileHandleForReading
