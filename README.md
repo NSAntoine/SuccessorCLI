@@ -22,6 +22,9 @@ The follwing options can be used with SuccessorCLI:
 - `--no-restore` Downloads and extracts iPSW, gets the RootfsDMG, attach and mount RootfsDMG, then exit right before the restore is supposed to start
 - `--no-wait` Removes the 15 seconds given to the user before the restore begins and instead begins the restore immediately
 
+Specifying an iPSW With `--ipsw-path` will unzip the given iPSW to /var/mobile/Media/SuccessorCLI/extracted, then get the largest DMG From there, then attach and mount said DMG.
+
+Specifying a Rootfs DMG With `--dmg-path` Will attach and mount given the DMG, then start the restore.
 # Project Status
 The program does work right now, I've tested it multiple times on an iPhone 8 running iOS 14.5, Im just polishing up the project right now.
 

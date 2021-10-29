@@ -150,7 +150,7 @@ class iPSWManager {
         unzipTask.waitUntilExit()
         
         guard unzipTask.terminationStatus == 0 else {
-            print("Error: Couldn't successfully unzip the iPSW...exiting..")
+            print("Error: Couldn't successfully unzip the iPSW. Exiting.")
             exit(unzipTask.terminationStatus)
         }
         

@@ -18,6 +18,10 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             exit(0)
         case "--ipsw-path":
             // CMDLineArgs.indices.contains(index + 1) here is to make sure that a path after --ipsw-path is provided
+            guard !fm.fileExists(atPath: iPSWManager.extractedOnboardiPSWPath) else {
+                print("ERROR: Extracted iPSW Directory already exists at \(iPSWManager.extractedOnboardiPSWPath), Please delete it first then run SuccessorCLI With --ipsw-path again, exiting..")
+                exit(EXIT_FAILURE)
+            }
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
                 print("Wasn't able to get the iPSW Path specified..are you sure you specified one? Exiting..")
                 exit(EXIT_FAILURE)
@@ -172,6 +176,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
 
 
 var diskNameToMount = ""
+
 if SCLIInfo.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) Already mounted, skipping right ahead to the restore")
 } else {
@@ -207,8 +212,9 @@ if SCLIInfo.shared.isMountPointMounted() {
         exit(EXIT_FAILURE)
     }
 }
+
 if CMDLineArgs.contains("--no-restore") {
-    print("Successfully downloaded, archived, attached and mounted iPSW, exiting now.")
+    print("Successfully downloaded and extracted iPSW, then mounted iPSW RootfsDMG. Exiting now caus the user used --no-restore.")
     exit(0)
 }
 
