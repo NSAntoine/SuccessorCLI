@@ -171,11 +171,6 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
 }
 
 
-if CMDLineArgs.contains("--no-attach") {
-    print("User chose to exit before attaching the rfs DMG.")
-    exit(0)
-}
-
 var diskNameToMount = ""
 if SCLIInfo.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) Already mounted, skipping right ahead to the restore")
