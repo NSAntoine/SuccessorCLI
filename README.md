@@ -25,5 +25,6 @@ The follwing options can be used with SuccessorCLI:
 # Project Status
 The program does work right now, I've tested it multiple times on an iPhone 8 running iOS 14.5, Im just polishing up the project right now.
 
+*Note*: this project is in beta, im not responsibile for whatever happens to you, your phone, and your cat. Use at your own discretion blah blah you know the bullshit
 # Objectives
 Although the project can unzip the iPSW successfully right now, the way it does it is by calling the `unzip` command from the command line, which does work but it would be much better practice if I used another way of unzipping the iPSW, the project used to use libzip however that turned out to be unbelievably slow (20 minutes unzipping time!) So i switched to calling the unzip command which honestly was much better, TL;DR A better way to unzip would be nice
