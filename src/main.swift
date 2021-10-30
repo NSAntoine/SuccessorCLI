@@ -214,14 +214,14 @@ if SCLIInfo.shared.isMountPointMounted() {
 }
 
 if CMDLineArgs.contains("--no-restore") {
-    print("Successfully downloaded and extracted iPSW, then mounted iPSW RootfsDMG. Exiting now caus the user used --no-restore.")
+    print("Attached and mounted RootfsDMG, exiting now due to the user using --no-restore.")
     exit(0)
 }
 
 if CMDLineArgs.contains("--no-wait") {
-    print("Starting restore now.")
+    print("Beginning restore now.")
 } else {
-    print("You have 15 seconds to cancel the restore before it starts, to cancel, simply press ctrl c.")
+    print("You have 15 seconds to cancel the restore before it begins if you'd like to. To cancel, press CTRL C. Remember if you do proceed, your data WILL be gone.")
     sleep(15)
 }
 print("Proceeding to launch rsync..")

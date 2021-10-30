@@ -14,7 +14,7 @@ class NetworkUtilities:NSObject {
             let response = response as? HTTPURLResponse, response.statusCode == 200,
             let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             else {
-                fatalError("There seems to have been an error connecting to ipsw.me API.\n\nError:\(error?.localizedDescription)\nExiting..")
+                fatalError("There seems to have been an error connecting to ipsw.me API.\nError: \(error?.localizedDescription ?? "Unknown Error")\nExiting..")
             }
             completion(json)
             group.leave()
@@ -40,7 +40,6 @@ extension NetworkUtilities: URLSessionDownloadDelegate {
             print("Successfuly moved \(didFinishDownloadingTo) to \(self.downloadItemDestination)")
             } catch {
             fatalError("Error moving file from \(didFinishDownloadingTo) to \(self.downloadItemDestination), error:\n\(error)\nExiting..")
-
         }
         sema.signal()
     }

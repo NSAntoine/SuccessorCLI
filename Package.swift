@@ -5,10 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SuccessorCLI",
-    platforms: [.iOS(.v14)],
-    products: [
-        .library(name: "SuccessorCLI", type: .none, targets: ["SuccessorCLI"])
-    ],
+    platforms: [.iOS(.v14), .macOS(.v11)],
     targets: [
         .target(
            name: "SuccessorCLI",
