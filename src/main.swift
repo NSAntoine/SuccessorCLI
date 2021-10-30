@@ -221,7 +221,7 @@ if CMDLineArgs.contains("--no-restore") {
 if CMDLineArgs.contains("--no-wait") {
     print("Beginning restore now.")
 } else {
-    print("You have 15 seconds to cancel the restore before it begins if you'd like to. To cancel, press CTRL C. Remember if you do proceed, your data WILL be gone.")
+    print("You have 15 seconds to cancel the restore before it begins if you'd like to. To cancel, press CTRL+C. Remember if you do proceed, your data WILL be gone.")
     sleep(15)
 }
 print("Proceeding to launch rsync..")
