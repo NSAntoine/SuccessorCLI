@@ -247,7 +247,7 @@ class deviceRestoreManager {
     }
     
      /// Function which launches rsync.
-    class func launchRsync(completionHandler: @escaping (Int32) -> Void) {
+    class func launchRsync() {
         let pipe = Pipe()
         let task = NSTask()
         task.setLaunchPath("/usr/bin/rsync")
@@ -300,7 +300,6 @@ class deviceRestoreManager {
          }
          task.launch()
          task.waitUntilExit()
-        completionHandler(task.terminationStatus)
     }
 }
 

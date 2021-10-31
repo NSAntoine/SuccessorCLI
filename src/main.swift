@@ -225,13 +225,7 @@ if CMDLineArgs.contains("--no-wait") {
     sleep(15)
 }
 print("Proceeding to launch rsync..")
-deviceRestoreManager.launchRsync() { exitCode in
-    guard exitCode == 0 else {
-        print("Wasn't able to use rsync to execute restore..\nExiting..")
-        exit(EXIT_FAILURE)
-    }
-    
-        print("Successfully executed restore! now time to reset..")
-        deviceRestoreManager.callMobileObliterator()
-}
+deviceRestoreManager.launchRsync()
+print("now time to reset..")
+deviceRestoreManager.callMobileObliterator()
 exit(0)
