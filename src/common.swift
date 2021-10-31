@@ -23,7 +23,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
 
     var mountPoint = "/var/mnt/successor/"
     
-    var ver = "1.6.0 PROBABLY-WORKING-BETA"
+    var ver = "1.7.0 PROBABLY-WORKING-BETA"
     
     /// Prints help message
     func printHelp() {
