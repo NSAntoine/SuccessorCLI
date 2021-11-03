@@ -17,11 +17,11 @@ if CMDLineArgs.contains("--ipsw-path") && CMDLineArgs.contains("--dmg-path") {
             print("SuccessorCLI version: \(SCLIInfo.shared.ver)")
             exit(0)
         case "--ipsw-path":
-            // CMDLineArgs.indices.contains(index + 1) here is to make sure that a path after --ipsw-path is provided
             guard !fm.fileExists(atPath: iPSWManager.extractedOnboardiPSWPath) else {
                 print("ERROR: Extracted iPSW Directory already exists at \(iPSWManager.extractedOnboardiPSWPath), Please delete it first then run SuccessorCLI With --ipsw-path again, exiting..")
                 exit(EXIT_FAILURE)
             }
+            // CMDLineArgs.indices.contains(index + 1) here is to make sure that a path after --ipsw-path is provided
             guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
                 print("Wasn't able to get the iPSW Path specified..are you sure you specified one? Exiting..")
                 exit(EXIT_FAILURE)
@@ -177,7 +177,7 @@ switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
 
 var diskNameToMount = ""
 
-if SCLIInfo.shared.isMountPointMounted() {
+if MntManager.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) Already mounted, skipping right ahead to the restore")
 } else {
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, error in
@@ -202,10 +202,10 @@ if SCLIInfo.shared.isMountPointMounted() {
     }
     print("Disk name to mount: \(diskNameToMount)")
     print("Proceeding to (try) to mount..")
-    DMGManager.mountNative(devDiskName: "/dev/\(diskNameToMount)", mountPointPath: SCLIInfo.shared.mountPoint)
+    MntManager.mountNative(devDiskName: "/dev/\(diskNameToMount)", mountPointPath: SCLIInfo.shared.mountPoint)
     
     print("Verifiying if mount was successful..")
-    if SCLIInfo.shared.isMountPointMounted() {
+    if MntManager.shared.isMountPointMounted() {
         print("Successfully verified \(SCLIInfo.shared.mountPoint) was mounted correctly")
     } else {
         print("Wasn't able to successfuly mount \(SCLIInfo.shared.mountPoint).. Exiting..")
