@@ -28,7 +28,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     /// Prints help message
     func printHelp() {
         print("""
-            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja
+            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by dabezt31
             Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
                  -h, --help         Prints this help message.
