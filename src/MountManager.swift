@@ -11,7 +11,7 @@ class MntManager {
                 try fm.createDirectory(atPath: mountPointPath, withIntermediateDirectories: true, attributes: nil)
                 print("Successfully create \(mountPointPath), Continuing..")
             } catch {
-                print("Error encountered while creating directory \(mountPointPath): \(error.localizedDescription)\nPlease create the \(mountPointPath) directory again and run SuccessorCLI Again\nExiting..")
+                errPrint("Error encountered while creating directory \(mountPointPath): \(error.localizedDescription)\nPlease create the \(mountPointPath) directory again and run SuccessorCLI Again\nExiting..", line: #line, file: #file)
                 exit(EXIT_FAILURE)
             }
         }

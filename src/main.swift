@@ -8,10 +8,11 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
         try fm.createDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath, withIntermediateDirectories: true, attributes: nil)
         printIfDebug("Successfully created directory. Continuing.")
     } catch {
-        print("ERROR: Error encountered while creating directory \(SCLIInfo.shared.SuccessorCLIPath): \(error.localizedDescription)\nNote: Please create the directory yourself and run SuccessorCLI again. Exiting")
+        errPrint("Error encountered while creating directory \(SCLIInfo.shared.SuccessorCLIPath): \(error.localizedDescription)\nNote: Please create the directory yourself and run SuccessorCLI again. Exiting", line: #line, file: #file)
         exit(EXIT_FAILURE)
     }
 }
+
 // We first need to filter out the program name, which always happens to be the first argument with CommandLine.arguments
 let CMDLineArgs = CommandLine.arguments.filter() { $0 != CommandLine.arguments[0] }
 
@@ -28,7 +29,7 @@ for args in CMDLineArgs {
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
     case _ where CommandLine.arguments.contains("--dmg-path") && CommandLine.arguments.contains("--ipsw-path"):
-        print("ERROR: Can't use both --dmg-path AND --ipsw-path together..exiting..")
+        errPrint("Can't use both --dmg-path AND --ipsw-path together..exiting..", line: #line, file: #file)
         exit(EXIT_FAILURE)
     case "--ipsw-path":
         guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
@@ -38,7 +39,7 @@ for args in CMDLineArgs {
         let iPSWSpecified = CMDLineArgs[index + 1]
         printIfDebug("User manually specified iPSW Path to \(iPSWSpecified)")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
-            print("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW file.")
+            errPrint("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW file.", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         iPSWManager.onboardiPSWPath = iPSWSpecified
@@ -51,7 +52,7 @@ for args in CMDLineArgs {
         let dmgSpecified = CMDLineArgs[index + 1]
         printIfDebug("User manually specified DMG Path to \(dmgSpecified)")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
-            print("ERROR: file \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
+            errPrint("ERROR: file \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
@@ -62,7 +63,7 @@ for args in CMDLineArgs {
 
 // detecting for root
 guard getuid() == 0 else {
-    print("ERROR: SuccessorCLI Must be run as root, eg `sudo \(CommandLine.arguments.joined(separator: " "))`")
+    errPrint("ERROR: SuccessorCLI Must be run as root, eg `sudo \(CommandLine.arguments.joined(separator: " "))`", line: #line, file: #file)
     exit(EXIT_FAILURE)
 }
 
@@ -84,7 +85,7 @@ case true:
             exit(EXIT_FAILURE)
         }
     }
-    
+
 case false where !iPSWManager.iPSWSInSCLIPathArray.isEmpty:
     print("Found following iPSWs at \(SCLIInfo.shared.SuccessorCLIPath), What would you like to do?")
     for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
@@ -105,7 +106,7 @@ case false where !iPSWManager.iPSWSInSCLIPathArray.isEmpty:
                         do {
                             try fm.removeItem(atPath: conflictingPath)
                         } catch {
-                            print("Error while removing conflicting path: \(error.localizedDescription). Exiting.")
+                            errPrint("Error while removing conflicting path: \(error.localizedDescription). Exiting.", line: #line, file: #file)
                             exit(EXIT_FAILURE)
                         }
                     case "2", "n", "N":
@@ -123,7 +124,7 @@ case false where !iPSWManager.iPSWSInSCLIPathArray.isEmpty:
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
         }
     }
-    
+
 case false where iPSWManager.iPSWSInSCLIPathArray.isEmpty:
     print("No iPSW Found at \(SCLIInfo.shared.SuccessorCLIPath), Would you like for SuccessorCLI to download one for you?")
     print("[1] Yes")
@@ -148,10 +149,10 @@ if MntManager.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) Already mounted, skipping right ahead to the restore.")
 } else {
     var diskNameToMnt = ""
-    
+
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, err in
         guard err == nil else {
-            print("Error encountered while attaching DMG \(DMGManager.shared.rfsDMGToUseFullPath): \(err!)")
+            errPrint("Error encountered while attaching DMG \(DMGManager.shared.rfsDMGToUseFullPath): \(err!)", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         guard let bsdName = bsdName else {
@@ -161,10 +162,10 @@ if MntManager.shared.isMountPointMounted() {
         printIfDebug("Got attached disk name at \(bsdName)")
         diskNameToMnt = "/dev/\(bsdName)s1s1"
     }
-    
+
     MntManager.mountNative(devDiskName: diskNameToMnt, mountPointPath: SCLIInfo.shared.mountPoint) { mntStatus in
         guard mntStatus == 0 else {
-            print("ERROR: Wasn't able to mount successfully..error: \(String(cString: strerror(errno))). Exiting..")
+            errPrint("Wasn't able to mount successfully..error: \(String(cString: strerror(errno))). Exiting..", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         print("Mounted \(diskNameToMnt) to \(SCLIInfo.shared.mountPoint) Successfully. Continiung!")

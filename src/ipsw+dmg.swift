@@ -50,14 +50,14 @@ class iPSWManager {
         unzipTask.waitUntilExit()
         
         guard unzipTask.terminationStatus == 0 else {
-            print("Error: Couldn't successfully unzip the iPSW. Exiting.")
+            errPrint("Error: Couldn't successfully unzip the iPSW. Exiting.", line: #line, file: #file)
             exit(unzipTask.terminationStatus)
         }
         
         do {
             try fm.moveItem(atPath: "\(destinationPath)/\(DMGManager.shared.locateRFSDMG)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
         } catch {
-            print("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..")
+            errPrint("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         

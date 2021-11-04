@@ -59,7 +59,7 @@ class deviceRestoreManager {
          let outHandle = pipe.fileHandleForReading
          outHandle.readabilityHandler = { pipe in
              guard let line = String(data: pipe.availableData, encoding: .utf8) else {
-                 print("Error decoding data: \(pipe.availableData)")
+                 errPrint("Error decoding data: \(pipe.availableData)", line: #line, file: #file)
                  return
              }
              print(line)

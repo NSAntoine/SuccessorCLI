@@ -19,7 +19,7 @@ class deviceInfo {
 /// Provides information about SuccessorCLI App, such as its path in /var/mobile and the mount point.
 class SCLIInfo { // SCLI = SuccessorCLI
     static let shared = SCLIInfo()
-    var SuccessorCLIPath = "/var/mobile/Media/SuccessorCLI"
+    var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
 
     var mountPoint = "/var/mnt/successor/"
     
@@ -67,8 +67,12 @@ extension FileManager {
     }
 }
 
-func printIfDebug(_ message:String) {
+func printIfDebug(_ message:Any) {
     if CMDLineArgs.contains("--debug") || CMDLineArgs.contains("-d") {
         print("[DEBUG]: \(message)")
     }
+}
+
+func errPrint(_ message:Any, line: Int, file:String) {
+    print("[ERROR] \(message), file \(file) at line \(line)")
 }

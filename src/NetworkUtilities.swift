@@ -48,7 +48,7 @@ extension NetworkUtilities: URLSessionDownloadDelegate {
         let totalBytesWrittenFormatted = formatBytes(totalBytesWritten)
         let totalBytesExpectedToWriteFormatted = formatBytes(totalBytesExpectedToWrite)
 
-        print("Downloaded \(totalBytesWrittenFormatted) out of \(totalBytesExpectedToWriteFormatted)", terminator: "\r") 
+        print("Downloaded \(totalBytesWrittenFormatted) out of \(totalBytesExpectedToWriteFormatted)", terminator: "\r")
         fflush(stdout)
     }
 }
