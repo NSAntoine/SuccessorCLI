@@ -1,7 +1,7 @@
 // Manages stuff to do with iPSW And RootfsDMG
 import Foundation
 
-// MARK: Online iPSW Stuff
+// MARK: Onboard iPSW Stuff
 
 /// Class which manages onboard iPSW Stuff, see below
 class iPSWManager {
@@ -60,7 +60,7 @@ struct onlineiPSWInfoProperties: Codable {
 }
 var iPSWMEJSONDataResponse:String {
     var ret = ""
-    NetworkUtilities.shared.anotherRetJSONFunc(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { strResponse in
+    NetworkUtilities.shared.retJSONFromURL(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { strResponse in
         ret = strResponse
     }
     return ret
@@ -68,8 +68,6 @@ var iPSWMEJSONDataResponse:String {
 
 let iPSWJSONRespData = iPSWMEJSONDataResponse.data(using: .utf8)!
 let iPSWJSONDataDecoded = try! JSONDecoder().decode(onlineiPSWInfoProperties.self, from: iPSWJSONRespData)
-//let formattediPSWFilesize = formatBytes(onlineiPSWInfo.filesize)
-//let onlineiPSWURLStr = onlineiPSWInfo.url.absoluteString
 
 struct onlineiPSWInfo {
     static let iPSWURL = iPSWJSONDataDecoded.url

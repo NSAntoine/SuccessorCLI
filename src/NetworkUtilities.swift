@@ -7,7 +7,7 @@ class NetworkUtilities:NSObject {
     static let shared = NetworkUtilities()
     
     /// Returns info from ipsw.me's v4 API, which can be returned in other JSON or XML, docs: https://ipswdownloads.docs.apiary.io/
-    func anotherRetJSONFunc(url:String, completion: @escaping (String) -> Void) {
+    func retJSONFromURL(url:String, completion: @escaping (String) -> Void) {
         group.enter()
         let task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error ) in
             guard let data = data, error == nil,
