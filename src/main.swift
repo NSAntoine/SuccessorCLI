@@ -67,6 +67,9 @@ guard getuid() == 0 else {
     exit(EXIT_FAILURE)
 }
 
+if isNT2() {
+    print("[WARNING] NewTerm 2 Detected, it is much more advisable to SSH Instead, as NewTerm 2 may crash mid rsync restore due to the huge output.")
+}
 printIfDebug("iPSW Online URL: \(iPSWManager.onlineiPSWURL)\niPSW online Size (unformatted): \(iPSWManager.onlineiPSWSizeUnformatted)\niPSW Online Size: \(iPSWManager.onlineiPSWSizeformatted)")
 switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
 case true:

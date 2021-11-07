@@ -76,3 +76,10 @@ func printIfDebug(_ message:Any) {
 func errPrint(_ message:Any, line: Int, file:String) {
     print("[ERROR] \(message), file \(file) at line \(line)")
 }
+
+func isNT2() -> Bool {
+    guard let lcTerm = ProcessInfo.processInfo.environment["LC_TERMINAL"] else {
+        return false
+    }
+    return lcTerm == "NewTerm"
+}
