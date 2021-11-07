@@ -67,10 +67,10 @@ guard getuid() == 0 else {
     exit(EXIT_FAILURE)
 }
 
+printIfDebug("Online iPSW URL: \(onlineiPSWInfo.iPSWURL)\nOnline iPSW Filesize (unformatted): \(onlineiPSWInfo.iPSWFileSize)\nOnline iPSW Filesize (formatted): \(onlineiPSWInfo.iPSWFileSizeForamtted)")
 if isNT2() {
-    print("[WARNING] NewTerm 2 Detected, it is much more advisable to SSH Instead, as NewTerm 2 may crash mid rsync restore due to the huge output.")
+    print("[WARNING] NewTerm 2 Detected, I advise you to SSH Instead, as the huge output by rsync may crash NewTerm 2 mid restore.")
 }
-printIfDebug("iPSW Online URL: \(iPSWManager.onlineiPSWURL)\niPSW online Size (unformatted): \(iPSWManager.onlineiPSWSizeUnformatted)\niPSW Online Size: \(iPSWManager.onlineiPSWSizeformatted)")
 switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
 case true:
     print("Found rootfsDMG at \(DMGManager.shared.rfsDMGToUseFullPath), Would you like to use it?")
@@ -121,7 +121,7 @@ case false where !iPSWManager.iPSWSInSCLIPathArray.isEmpty:
                     }
                 }
             }
-            iPSWManager.downloadAndExtractiPSW(iPSWURL: iPSWManager.onlineiPSWURL)
+            iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
         } else {
             iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWManager.iPSWSInSCLIPathArray[intChoice])"
             iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
@@ -135,7 +135,7 @@ case false where iPSWManager.iPSWSInSCLIPathArray.isEmpty:
     if let choice = readLine() {
         switch choice {
         case "1", "Y", "y":
-            iPSWManager.downloadAndExtractiPSW(iPSWURL: iPSWManager.onlineiPSWURL)
+            iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
         case "2", "N", "n":
             print("Please figure out what you want to do then run SuccessorCLI Again, note that you can manually specify an iPSW file path with --ipsw-path or manually specify a DMG File path with --dmg-path")
             exit(0)

@@ -1,4 +1,4 @@
-// Includes stuff such as device, successorcli, and info of online iPSW
+// Includes general information about device, the successorcli program, and general functions.
 
 import UIKit
 
@@ -79,7 +79,7 @@ func errPrint(_ message:Any, line: Int, file:String) {
 
 func isNT2() -> Bool {
     guard let lcTerm = ProcessInfo.processInfo.environment["LC_TERMINAL"] else {
-        return false
+        return false // NewTerm 2 sets the LC_TERMINAL enviroment variable
     }
     return lcTerm == "NewTerm"
 }

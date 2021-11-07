@@ -1,30 +1,11 @@
 // Manages stuff to do with iPSW And RootfsDMG
 import Foundation
 
+// MARK: Online iPSW Stuff
 
-/// Class which manages iPSW stuff, like getting the online URL and size of the iPSW, declaring the paths at which the iPSW should be downloaded to, etc
+/// Class which manages onboard iPSW Stuff, see below
 class iPSWManager {
     static let shared = iPSWManager()
-
-    static var onlineiPSWSizeUnformatted:Int {
-        var ret = 0
-        NetworkUtilities.shared.returnInfoOfOnlineIPSW(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { jsonResponse in
-            ret = jsonResponse["filesize"] as! Int
-        }
-        return ret
-    }
-    static var onlineiPSWSizeformatted:String {
-        return formatBytes(Int64(onlineiPSWSizeUnformatted))
-    }
-    static var onlineiPSWURLStr:String {
-        var ret = ""
-        NetworkUtilities.shared.returnInfoOfOnlineIPSW(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { jsonResponse in
-            ret = jsonResponse["url"] as! String
-        }
-        return ret
-    }
-    
-    static let onlineiPSWURL = URL(string: iPSWManager.onlineiPSWURLStr)!
     /// Returns the iPSWs that are in SCLIInfo.shared.SuccessorCLIPath, this is used mainly for iPSW detection
     static var iPSWSInSCLIPathArray:[String] {
         var ret = [String]()
@@ -72,6 +53,29 @@ class iPSWManager {
     }
 }
 
+// MARK: Online iPSW Stuff
+struct onlineiPSWInfoProperties: Codable {
+    let url:URL
+    let filesize:Int64
+}
+var iPSWMEJSONDataResponse:String {
+    var ret = ""
+    NetworkUtilities.shared.anotherRetJSONFunc(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { strResponse in
+        ret = strResponse
+    }
+    return ret
+}
+
+let iPSWJSONRespData = iPSWMEJSONDataResponse.data(using: .utf8)!
+let iPSWJSONDataDecoded = try! JSONDecoder().decode(onlineiPSWInfoProperties.self, from: iPSWJSONRespData)
+//let formattediPSWFilesize = formatBytes(onlineiPSWInfo.filesize)
+//let onlineiPSWURLStr = onlineiPSWInfo.url.absoluteString
+
+struct onlineiPSWInfo {
+    static let iPSWURL = iPSWJSONDataDecoded.url
+    static let iPSWFileSize = iPSWJSONDataDecoded.filesize
+    static let iPSWFileSizeForamtted = formatBytes(iPSWJSONDataDecoded.filesize)
+}
 /// Manages the several operations for DMG, such attaching and mounting
 class DMGManager {
     static let shared = DMGManager()

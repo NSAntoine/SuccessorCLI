@@ -7,20 +7,23 @@ class NetworkUtilities:NSObject {
     static let shared = NetworkUtilities()
     
     /// Returns info from ipsw.me's v4 API, which can be returned in other JSON or XML, docs: https://ipswdownloads.docs.apiary.io/
-    func returnInfoOfOnlineIPSW(url:String, completion: @escaping ([String:Any]) -> Void) {
+    func anotherRetJSONFunc(url:String, completion: @escaping (String) -> Void) {
         group.enter()
-        let task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
-            guard let data = data, error == nil, 
-            let response = response as? HTTPURLResponse, response.statusCode == 200,
-            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            else {
-                fatalError("There seems to have been an error connecting to ipsw.me API.\nError: \(error?.localizedDescription ?? "Unknown Error")\nExiting..")
+        let task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error ) in
+            guard let data = data, error == nil,
+                  let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                      print("Error while getting online iPSW Info: \(error?.localizedDescription ?? "Unknown error")")
+                      exit(EXIT_FAILURE)
+                  }
+            guard let strResponse = String(data: data, encoding: .utf8) else {
+                print("Error encountered while converting JSON Response from ipsw.me to string..exiting..")
+                exit(EXIT_FAILURE)
             }
-            completion(json)
+            completion(strResponse)
             group.leave()
-    }
-    task.resume()
-    group.wait()
+        }
+        task.resume()
+        group.wait()
     }
     var downloadItemDestination = ""
     func downloadItem(url: URL, destinationURL: URL) {
