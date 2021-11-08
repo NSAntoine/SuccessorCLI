@@ -18,6 +18,9 @@ class iPSWManager {
     }
         return ret
 }
+    var largestFileInsideExtractedDir:String {
+        return fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath)
+    }
     /// Path for which iPSW is downloaded to/located, by defualt its /var/Media/SuccessorCLI/ipsw.ipsw
     static var onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/ipsw.ipsw"
     static var extractedOnboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/extracted"
@@ -36,7 +39,7 @@ class iPSWManager {
         }
         
         do {
-            try fm.moveItem(atPath: "\(destinationPath)/\(DMGManager.shared.locateRFSDMG)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
+            try fm.moveItem(atPath: "\(destinationPath)/\(iPSWManager.shared.largestFileInsideExtractedDir)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
         } catch {
             errPrint("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..", line: #line, file: #file)
             exit(EXIT_FAILURE)
@@ -77,11 +80,7 @@ struct onlineiPSWInfo {
 /// Manages the several operations for DMG, such attaching and mounting
 class DMGManager {
     static let shared = DMGManager()
-
-    var locateRFSDMG:String {
-        return fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath)
-    }
-    var rfsDMGToUseName = "rfs.dmg" // By default this is rfs.dmg but can later on be changed if renaming fails.
+    
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
     
     class func attachDMG(dmgPath:String, completionHandler: (String?, AnyObject?) -> Void ) {
