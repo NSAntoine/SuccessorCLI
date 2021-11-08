@@ -38,6 +38,16 @@ class NetworkUtilities:NSObject {
 extension NetworkUtilities: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo: URL) {
         print("finished downloading item to \(didFinishDownloadingTo)")
+        if fm.fileExists(atPath: self.downloadItemDestination) {
+            print("\(self.downloadItemDestination) Already exists.. will try to remove it and put the newly downloaded file..")
+            do {
+                try fm.removeItem(atPath: self.downloadItemDestination)
+                print("Removed \(self.downloadItemDestination), now placing \(didFinishDownloadingTo) there..")
+            } catch {
+                errPrint("Error encountered while removing \(self.downloadItemDestination): \(error). Exiting..", line: #line, file: #file)
+                exit(EXIT_FAILURE)
+            }
+        }
         do {
             try fm.moveItem(at: didFinishDownloadingTo, to: URL(fileURLWithPath: self.downloadItemDestination))
             print("Successfuly moved \(didFinishDownloadingTo) to \(self.downloadItemDestination)")
