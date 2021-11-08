@@ -89,80 +89,29 @@ case true:
         }
     }
 
-//case false where !iPSWManager.iPSWSInSCLIPathArray.isEmpty:
-//    print("Found following iPSWs at \(SCLIInfo.shared.SuccessorCLIPath), What would you like to do?")
-//    for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
-//        print("[\(i)] Use iPSW \"\(iPSWManager.iPSWSInSCLIPathArray[i])\"")
-//    }
-//    print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] Make SuccessorCLI Download an iPSW for you")
-//    if let choice = readLine(), let intChoice = Int(choice) {
-//        if intChoice == iPSWManager.iPSWSInSCLIPathArray.count {
-//            let conflictingPaths = [iPSWManager.extractedOnboardiPSWPath, iPSWManager.onboardiPSWPath]
-//            for conflictingPath in conflictingPaths {
-//                if fm.fileExists(atPath: conflictingPath) {
-//                    print("User specified to download iPSW however conflicting path \(conflictingPath) Already exists, would you like to remove the conflicting path first?")
-//                    print("[1] Yes")
-//                    print("[2] No")
-//                    if let choice = readLine() {
-//                    switch choice {
-//                    case "1", "Y", "y":
-//                        do {
-//                            try fm.removeItem(atPath: conflictingPath)
-//                        } catch {
-//                            errPrint("Error while removing conflicting path: \(error.localizedDescription). Exiting.", line: #line, file: #file)
-//                            exit(EXIT_FAILURE)
-//                        }
-//                    case "2", "n", "N":
-//                        print("Exiting.")
-//                        exit(EXIT_FAILURE)
-//                    default:
-//                        print("Unkown input \(choice), exiting.")
-//                    }
-//                    }
-//                }
-//            }
-//            iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
-//        } else {
-//            iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWManager.iPSWSInSCLIPathArray[intChoice])"
-//            iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
-//        }
-//    }
 case false:
-    print("What would you like to do?")
+    print("No RootfsDMG Detected, what'd you like to do?")
     if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
     for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
         print("[\(i)] Use iPSW \(iPSWManager.iPSWSInSCLIPathArray[i])")
         }
     }
     print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically")
-    if let input = readLine(), let intInput = Int(input) {
-        if intInput == iPSWManager.iPSWSInSCLIPathArray.count {
-            iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
-        } else {
-            let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[intInput]
-            iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
-            iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
-        }
-    } else {
-        print("Incorrect input.")
+    guard let input = readLine(), let intInput = Int(input) else {
+        errPrint("Inproper Input.", line: #line, file: #file)
         exit(EXIT_FAILURE)
     }
-//case false where iPSWManager.iPSWSInSCLIPathArray.isEmpty:
-//    print("No iPSW Found at \(SCLIInfo.shared.SuccessorCLIPath), Would you like for SuccessorCLI to download one for you?")
-//    print("[1] Yes")
-//    print("[2] No")
-//    if let choice = readLine() {
-//        switch choice {
-//        case "1", "Y", "y":
-//            iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
-//        case "2", "N", "n":
-//            print("Please figure out what you want to do then run SuccessorCLI Again, note that you can manually specify an iPSW file path with --ipsw-path or manually specify a DMG File path with --dmg-path")
-//            exit(0)
-//        default:
-//            print("Unkown Input \(choice), Exiting.")
-//            exit(EXIT_FAILURE)
-//        }
-//    }
+    if intInput == iPSWManager.iPSWSInSCLIPathArray.count {
+        iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
+    } else {
+        guard iPSWManager.iPSWSInSCLIPathArray.indices.contains(intInput) else {
+            errPrint("Inproper Input.", line: #line, file: #file)
+            exit(EXIT_FAILURE)
+        }
+        let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[intInput]
+        iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
+        iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
+    }
 default:
     break
 }
