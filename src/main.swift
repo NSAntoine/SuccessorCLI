@@ -71,6 +71,7 @@ printIfDebug("Online iPSW URL: \(onlineiPSWInfo.iPSWURL)\nOnline iPSW Filesize (
 if isNT2() {
     print("[WARNING] NewTerm 2 Detected, I advise you to SSH Instead, as the huge output by rsync may crash NewTerm 2 mid restore.")
 }
+print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ver).")
 switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
 case true:
     print("Found rootfsDMG at \(DMGManager.shared.rfsDMGToUseFullPath), Would you like to use it?")
