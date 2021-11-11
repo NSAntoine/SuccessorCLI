@@ -173,8 +173,6 @@ case _ where !CMDLineArgs.contains("--no-wait"):
         sleep(UInt32(time))
         print("Starting restore in \(15 - time) Seconds.")
     }
-    print("early exit.")
-    exit(0)
 default:
     break
 }
