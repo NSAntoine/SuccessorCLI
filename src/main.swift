@@ -169,7 +169,12 @@ case _ where CMDLineArgs.contains("--no-restore"):
     exit(0)
 case _ where !CMDLineArgs.contains("--no-wait"):
     print("You have 15 seconds to cancel the restore before it starts, to cancel, Press CTRL+C.")
-    sleep(15)
+    for time in 0...15 {
+        sleep(UInt32(time))
+        print("Starting restore in \(15 - time) Seconds.")
+    }
+    print("early exit.")
+    exit(0)
 default:
     break
 }

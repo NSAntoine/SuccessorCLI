@@ -76,7 +76,7 @@ class DMGManager {
     static let shared = DMGManager()
     
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
-    // The reason I didn't use fm.filesByFileExtenstion is because that performs a deep search into all subdirectories, all I want is the stuff inside
+    // The reason I didn't use fm.filesByFileExtenstion is because that performs a deep search into all subdirectories, all I want is the stuff inside the SuccessorCLIPath
     static var DMGSinSCLIPathArray: [String] {
         var ret = [String]()
         if let contents = try? fm.contentsOfDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath) {
