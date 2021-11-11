@@ -76,6 +76,18 @@ class DMGManager {
     static let shared = DMGManager()
     
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
+    // The reason I didn't use fm.filesByFileExtenstion is because that performs a deep search into all subdirectories, all I want is the stuff inside
+    static var DMGSinSCLIPathArray: [String] {
+        var ret = [String]()
+        if let contents = try? fm.contentsOfDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath) {
+            for file in contents {
+                if NSString(string: file).pathExtension == "dmg" {
+                    ret.append(file)
+                }
+            }
+        }
+        return ret
+    }
     
     class func attachDMG(dmgPath:String, completionHandler: (String?, AnyObject?) -> Void ) {
         let url = URL(fileURLWithPath: dmgPath)

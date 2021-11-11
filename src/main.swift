@@ -90,6 +90,27 @@ case true:
         }
     }
 
+        // If there's already a DMG in SuccessorCLI Path, inform the user and ask if they want to use it
+case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
+    print("Found Following DMGs in \(SCLIInfo.shared.SuccessorCLIPath), Which would you like to use?")
+    for i in 0...(DMGManager.DMGSinSCLIPathArray.count - 1) {
+        print("[\(i)] Use DMG \(DMGManager.DMGSinSCLIPathArray[i])")
+    }
+    print("[\(DMGManager.DMGSinSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically then extract the RootfsDMG from said iPSW.")
+    if let choice = readLine(), let choiceInt = Int(choice) {
+        if choiceInt == DMGManager.DMGSinSCLIPathArray.count {
+            iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
+        } else {
+            guard DMGManager.DMGSinSCLIPathArray.indices.contains(choiceInt) else {
+                errPrint("Inproper Input.", line: #line, file: #file)
+                exit(EXIT_FAILURE)
+            }
+            let dmgSpecified = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGManager.DMGSinSCLIPathArray[choiceInt])"
+            DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
+        }
+    }
+    
+    // If the below is triggered, its because theres no rfs.dmg or any type of DMG in /var/mobile/Library/SuccessorCLI, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path
 case false:
     print("No RootfsDMG Detected, what'd you like to do?")
     if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
