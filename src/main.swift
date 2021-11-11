@@ -113,8 +113,6 @@ case false:
         iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
         iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
     }
-default:
-    break
 }
 
 if MntManager.shared.isMountPointMounted() {

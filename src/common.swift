@@ -1,4 +1,4 @@
-// Includes general information about device, the successorcli program, and general functions.
+// Includes general information about device, the SuccessorCLI program, and general functions.
 
 import UIKit
 
@@ -16,7 +16,7 @@ class deviceInfo {
     static let deviceiOSVersion = UIDevice.current.systemVersion
 }
 
-/// Provides information about SuccessorCLI App, such as its path in /var/mobile and the mount point.
+/// Provides information about SuccessorCLI App, such as its path in /var/mobile/Library and the mount point.
 class SCLIInfo { // SCLI = SuccessorCLI
     static let shared = SCLIInfo()
     var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
@@ -63,6 +63,19 @@ extension FileManager {
         let sortedFiles = fileDict.sorted(by: { $0.value > $1.value } )
         printIfDebug("Biggest file at directory \"\(directoryToSearch.path)\": \(sortedFiles.first?.key ?? "Unknown")")
         return sortedFiles.first?.key
+    }
+    
+    func filesByFileExtenstion(atPath path:String, extenstion:String) -> [String] {
+        var ret = [String]()
+        if let enumerator = fm.enumerator(atPath: path) {
+            while let file = enumerator.nextObject() as? String {
+                if NSString(string: file).pathExtension == extenstion {
+                    ret.append(file)
+                }
+            }
+        }
+        printIfDebug("fm.filesByFileExtenstion: files in \(path) with extenstion \"\(extenstion)\": \(ret.joined(separator: " "))")
+        return ret
     }
 }
 

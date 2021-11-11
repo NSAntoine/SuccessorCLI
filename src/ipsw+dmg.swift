@@ -7,17 +7,8 @@ import Foundation
 class iPSWManager {
     static let shared = iPSWManager()
     /// Returns the iPSWs that are in SCLIInfo.shared.SuccessorCLIPath, this is used mainly for iPSW detection
-    static var iPSWSInSCLIPathArray:[String] {
-        var ret = [String]()
-        if let enumerator = fm.enumerator(atPath: SCLIInfo.shared.SuccessorCLIPath) {
-            while let element = enumerator.nextObject() as? String {
-                if element.hasSuffix("ipsw") {
-                    ret.append(element)
-                }
-        }
-    }
-        return ret
-}
+    static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "ipsw")
+    
     var largestFileInsideExtractedDir:String {
         guard let ret = fm.getLargestFile(at: URL(fileURLWithPath: iPSWManager.extractedOnboardiPSWPath)) else {
             print("Tried to access largest file inside the extracted dir and failed... Exiting..")
@@ -48,7 +39,6 @@ class iPSWManager {
             errPrint("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
-        
 }
     
     class func downloadAndExtractiPSW(iPSWURL: URL) {
