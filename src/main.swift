@@ -94,7 +94,7 @@ case false:
     print("No RootfsDMG Detected, what'd you like to do?")
     if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
     for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
-        print("[\(i)] Use iPSW \(iPSWManager.iPSWSInSCLIPathArray[i])")
+        print("[\(i)] Extract and use iPSW \"\(iPSWManager.iPSWSInSCLIPathArray[i])\"")
         }
     }
     print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically")

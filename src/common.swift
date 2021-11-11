@@ -53,17 +53,16 @@ func formatBytes(_ bytes: Int64) -> String {
 }
 
 extension FileManager {
-    func getLargestFile(_ directoryPath: String) -> String {
-    var fileDict = [String: Int64]()
-    let enumerator = fm.enumerator(atPath: directoryPath)
-    while let file = enumerator?.nextObject() as? String {
-        let attributes = try? fm.attributesOfItem(atPath: directoryPath + "/" + file)
-        fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
-    }
-    let sortedFiles = fileDict.sorted(by: { $0.value > $1.value })
-    let biggestFile = sortedFiles.first!.key
-    printIfDebug("Biggest file at directory \(directoryPath): \(biggestFile)")
-    return biggestFile
+    func getLargestFile(at directoryToSearch:URL) -> String? {
+        var fileDict = [String:Int64]()
+        let enumerator = fm.enumerator(at: directoryToSearch, includingPropertiesForKeys: [.isRegularFileKey])
+        while let file = enumerator?.nextObject() as? String {
+            let attributes = try? fm.attributesOfItem(atPath: "\(directoryToSearch.path)/\(file)")
+            fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
+        }
+        let sortedFiles = fileDict.sorted(by: { $0.value > $1.value } )
+        printIfDebug("Biggest file at directory \"\(directoryToSearch.path)\": \(sortedFiles.first?.key ?? "Unknown")")
+        return sortedFiles.first?.key
     }
 }
 

@@ -19,9 +19,13 @@ class iPSWManager {
         return ret
 }
     var largestFileInsideExtractedDir:String {
-        return fm.getLargestFile(iPSWManager.extractedOnboardiPSWPath)
+        guard let ret = fm.getLargestFile(at: URL(fileURLWithPath: iPSWManager.extractedOnboardiPSWPath)) else {
+            print("Tried to access largest file inside the extracted dir and failed... Exiting..")
+            exit(EXIT_FAILURE)
+        }
+        return ret
     }
-    /// Path for which iPSW is downloaded to/located, by defualt its /var/Media/SuccessorCLI/ipsw.ipsw
+    /// Path for which iPSW is downloaded to/located, by defualt its /var/mobile/Library/SuccessorCLI/ipsw.ipsw
     static var onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/ipsw.ipsw"
     static var extractedOnboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/extracted"
 
@@ -57,7 +61,7 @@ class iPSWManager {
 }
 
 // MARK: Online iPSW Stuff
-struct onlineiPSWInfoProperties: Codable {
+struct onlineiPSWInfoProperties: Codable { // stuff thats in the JSON Response
     let url:URL
     let filesize:Int64
 }
