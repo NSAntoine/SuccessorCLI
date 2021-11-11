@@ -177,7 +177,7 @@ default:
     break
 }
 
-print("proceeding to launch rsync..")
+print("Proceeding to launch rsync..")
 
 deviceRestoreManager.launchRsync()
 print("Rsync done, now time to reset device.")
