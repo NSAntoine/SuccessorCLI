@@ -23,7 +23,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
 
     var mountPoint = "/var/mnt/successor/"
     
-    var ver = "1.9.5 PROBABLY-WORKING-BETA"
+    var ver = "1.9.6 PROBABLY-WORKING-BETA"
     
     /// Prints help message
     func printHelp() {
@@ -34,10 +34,11 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  -h, --help         Prints this help message.
                  -v, --version      Prints current SuccessorCLI Version.
                  -d, --debug        Prints extra information which may be useful.
-                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use. NOTE: This is optional.
-                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use. NOTE: This is optional.
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
+                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use. NOTE: This is optional.
+                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use. NOTE: This is optional.
+                 --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with. NOTE: This is optional
             """)
     }
 }
