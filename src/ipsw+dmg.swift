@@ -72,12 +72,17 @@ struct onlineiPSWInfo {
     static let iPSWFileSizeForamtted = formatBytes(iPSWJSONDataDecoded.filesize)
 }
     
+
+// MARK: DMG Stuff
 /// Manages the several operations for DMG, such attaching and mounting
 class DMGManager {
     static let shared = DMGManager()
     
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
+    
+    
     // The reason I didn't use fm.filesByFileExtenstion is because that performs a deep search into all subdirectories, all I want is the stuff inside the SuccessorCLIPath
+    // This is because the extracted directory usually has 2 or 3 more DMGs (that aren't the RootfsDMG..) and usually are like 20mb, so this is a way to exclude the extracted directory i guess
     static var DMGSinSCLIPathArray: [String] {
         var ret = [String]()
         if let contents = try? fm.contentsOfDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath) {
@@ -90,7 +95,9 @@ class DMGManager {
         return ret
     }
     
-    class func attachDMG(dmgPath:String, completionHandler: (String?, AnyObject?) -> Void ) {
+    // The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted
+    // If an error was encountered with either Attach Parameters or the Attaching process itself, err returns that error in the completionHandler (see function parameters below
+    class func attachDMG(dmgPath:String, completionHandler: (_ bsdName: String?, _ err:AnyObject?) -> Void) {
         let url = URL(fileURLWithPath: dmgPath)
         var attachParamsErr:AnyObject?
         var attachErr:NSError?

@@ -3,6 +3,7 @@ import Foundation
 /// Class which manages rsync and SBDataReset
 class deviceRestoreManager {
     
+    static var rsyncBinPath = "/usr/bin/rsync"
      /// Calls on to SBDataReset to reset the device like the reset in settings button does.
     /// This is executed after the rsync function is complete
     class func callMobileObliterator() {
@@ -16,7 +17,7 @@ class deviceRestoreManager {
     class func launchRsync() {
         let pipe = Pipe()
         let task = NSTask()
-        task.setLaunchPath("/usr/bin/rsync")
+        task.setLaunchPath(rsyncBinPath)
         var rsyncArgs = ["-vaxcH",
         "--delete",
         "--progress",
@@ -54,17 +55,17 @@ class deviceRestoreManager {
         }
         task.setArguments(rsyncArgs)
          //These args are the exact same that succession uses  (https://github.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/SuccessionRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
-         task.setStandardOutput(pipe)
-         task.setStandardError(pipe)
-         let outHandle = pipe.fileHandleForReading
-         outHandle.readabilityHandler = { pipe in
+        task.setStandardOutput(pipe)
+        task.setStandardError(pipe)
+        let outHandle = pipe.fileHandleForReading
+        outHandle.readabilityHandler = { pipe in
              guard let line = String(data: pipe.availableData, encoding: .utf8) else {
                  errPrint("Error decoding data: \(pipe.availableData)", line: #line, file: #file)
                  return
              }
              print(line)
          }
-         task.launch()
-         task.waitUntilExit()
+        task.launch()
+        task.waitUntilExit()
     }
 }

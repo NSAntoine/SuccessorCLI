@@ -31,6 +31,9 @@ for args in CMDLineArgs {
     case _ where CommandLine.arguments.contains("--dmg-path") && CommandLine.arguments.contains("--ipsw-path"):
         errPrint("Can't use both --dmg-path AND --ipsw-path together..exiting..", line: #line, file: #file)
         exit(EXIT_FAILURE)
+        
+        // Support for manually specifying iPSW:
+        // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
         guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
             print("User used --ipsw-path, however the program couldn't get the iPSW Path specified, are you sure you specified one?")
@@ -44,6 +47,8 @@ for args in CMDLineArgs {
         }
         iPSWManager.onboardiPSWPath = iPSWSpecified
         iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWSpecified, destinationPath: iPSWManager.extractedOnboardiPSWPath)
+        
+        // Support for manually specifying rootfsDMG:
     case "--dmg-path":
         guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), CMDLineArgs.indices.contains(index + 1) else {
             print("User used --dmg-path, however the program couldn't get DMG Path specified, are you sure you specified one?")
@@ -52,16 +57,31 @@ for args in CMDLineArgs {
         let dmgSpecified = CMDLineArgs[index + 1]
         printIfDebug("User manually specified DMG Path to \(dmgSpecified)")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
-            errPrint("ERROR: file \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.", line: #line, file: #file)
+            errPrint("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
+        
+        // Support for manually specifying rsync binary:
+    case "--rsync-bin-path":
+        guard let index = CMDLineArgs.firstIndex(of: "--rsync-bin-path"), CMDLineArgs.indices.contains(index + 1) else {
+            errPrint("User used --rsync-bin-path, however the program couldn't get Rsync executable Path specified, are you sure you specified one?", line: #line, file: #file)
+            exit(EXIT_FAILURE)
+        }
+        let rsyncBinSpecified = CMDLineArgs[index + 1]
+        guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
+            errPrint("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.", line: #line, file: #file)
+            exit(EXIT_FAILURE)
+        }
+        printIfDebug("User manually specified rsync executable path as \(rsyncBinSpecified)")
+        deviceRestoreManager.rsyncBinPath = rsyncBinSpecified
     default:
         break
     }
 }
 
 // detecting for root
+// root is needed to execute rsync with enough permissions to replace all files necessary
 guard getuid() == 0 else {
     errPrint("ERROR: SuccessorCLI Must be run as root, eg `sudo \(CommandLine.arguments.joined(separator: " "))`", line: #line, file: #file)
     exit(EXIT_FAILURE)
@@ -97,6 +117,7 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
         print("[\(i)] Use DMG \(DMGManager.DMGSinSCLIPathArray[i])")
     }
     print("[\(DMGManager.DMGSinSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically then extract the RootfsDMG from said iPSW.")
+    // Input needs to be Int
     if let choice = readLine(), let choiceInt = Int(choice) {
         if choiceInt == DMGManager.DMGSinSCLIPathArray.count {
             iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
@@ -111,7 +132,7 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
     }
     break
     
-    // If the below is triggered, its because theres no rfs.dmg or any type of DMG in /var/mobile/Library/SuccessorCLI, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path
+    // If the below is triggered, its because theres no rfs.dmg or any type of DMG in /var/mobile/Library/SuccessorCLI, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path, explanation to why is at DMGManager.DMGSinSCLIPathArray's declaration
 case false:
     print("No RootfsDMG Detected, what'd you like to do?")
     if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
@@ -144,12 +165,9 @@ if MntManager.shared.isMountPointMounted() {
 
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, err in
         printIfDebug("Proceeding to (try) to attach DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
-        guard err == nil else {
-            errPrint("Error encountered while attaching DMG \(DMGManager.shared.rfsDMGToUseFullPath): \(err!)", line: #line, file: #file)
-            exit(EXIT_FAILURE)
-        }
-        guard let bsdName = bsdName else {
-            errPrint("Attached Rfs DMG However wasn't able to get name..exiting.", line: #line, file: #file)
+        // If the "else" statement is executed here, then that means the program either encountered an error while attaching (see attachDMG function declariation) or it couldn't get the name of the attached disk
+        guard err == nil, let bsdName = bsdName else {
+            errPrint("Error encountered while attaching DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\": \(err as? String ?? "Unknown Error")", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         printIfDebug("Successfully attached DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
