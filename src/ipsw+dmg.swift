@@ -24,20 +24,18 @@ class iPSWManager {
     func unzipiPSW(iPSWFilePath: String, destinationPath: String) {
         let unzipTask = NSTask() /* Yes i know.. calling CLI just to unzip files is bad practice..but its better than waiting like 20 minutes with libzip.. */
         unzipTask.setLaunchPath("/usr/bin/unzip")
-        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"]) // Doing *.dmg here only extract the DMGs
+        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"]) // Doing *.dmg here only extracts the DMGs
         unzipTask.launch()
         unzipTask.waitUntilExit()
         
         guard unzipTask.terminationStatus == 0 else {
-            errPrint("Error: Couldn't successfully unzip the iPSW. Exiting.", line: #line, file: #file)
-            exit(unzipTask.terminationStatus)
+            fatalError("Error: Couldn't successfully unzip the iPSW. Exiting.")
         }
         
         do {
             try fm.moveItem(atPath: "\(destinationPath)/\(iPSWManager.shared.largestFileInsideExtractedDir)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
         } catch {
-            errPrint("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..")
         }
 }
     
@@ -74,7 +72,7 @@ struct onlineiPSWInfo {
     
 
 // MARK: DMG Stuff
-/// Manages the several operations for DMG, such attaching and mounting
+/// Manages the several operations for the RootfsDMG
 class DMGManager {
     static let shared = DMGManager()
     
@@ -85,8 +83,9 @@ class DMGManager {
     // enumerate is set to `false` here in order to stop the function to stop from searching subpaths, the reason we want it to stop from searching subpaths is that the extracted directory usually contains 2-3 DMGs, only one of which being the RootfsDMG, and we don't want to detect the useless ones
     static let DMGSinSCLIPathArray =  fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "dmg", enumerate: false)
     
-    // The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted
-    // If an error was encountered with either Attach Parameters or the Attaching process itself, err returns that error in the completionHandler (see function parameters below
+    // The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted.
+    // So for example you could have disk7, disk7s1, disk7s1s1, but disk7s1s1 is the only one we care about because thats the one that's supposed to be mounted.
+    // If an error was encountered with either Attach Parameters or the Attaching process itself, err returns that error in the completionHandler (see function parameters below).
     class func attachDMG(dmgPath:String, completionHandler: (_ bsdName: String?, _ err:AnyObject?) -> Void) {
         let url = URL(fileURLWithPath: dmgPath)
         var attachParamsErr:AnyObject?

@@ -8,8 +8,7 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
         try fm.createDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath, withIntermediateDirectories: true, attributes: nil)
         printIfDebug("Successfully created directory. Continuing.")
     } catch {
-        errPrint("Error encountered while creating directory \(SCLIInfo.shared.SuccessorCLIPath): \(error.localizedDescription)\nNote: Please create the directory yourself and run SuccessorCLI again. Exiting", line: #line, file: #file)
-        exit(EXIT_FAILURE)
+        fatalError("Error encountered while creating directory \(SCLIInfo.shared.SuccessorCLIPath): \(error.localizedDescription)\nNote: Please create the directory yourself and run SuccessorCLI again. Exiting")
     }
 }
 
@@ -29,8 +28,7 @@ for args in CMDLineArgs {
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
     case _ where CommandLine.arguments.contains("--dmg-path") && CommandLine.arguments.contains("--ipsw-path"):
-        errPrint("Can't use both --dmg-path AND --ipsw-path together..exiting..", line: #line, file: #file)
-        exit(EXIT_FAILURE)
+        fatalError("Can't use both --dmg-path AND --ipsw-path together..exiting..")
         
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
@@ -42,8 +40,7 @@ for args in CMDLineArgs {
         let iPSWSpecified = CMDLineArgs[index + 1]
         printIfDebug("User manually specified iPSW Path to \(iPSWSpecified)")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
-            errPrint("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW file.", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW")
         }
         iPSWManager.onboardiPSWPath = iPSWSpecified
         iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWSpecified, destinationPath: iPSWManager.extractedOnboardiPSWPath)
@@ -57,21 +54,18 @@ for args in CMDLineArgs {
         let dmgSpecified = CMDLineArgs[index + 1]
         printIfDebug("User manually specified DMG Path to \(dmgSpecified)")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
-            errPrint("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
         }
         DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
         
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
         guard let index = CMDLineArgs.firstIndex(of: "--rsync-bin-path"), CMDLineArgs.indices.contains(index + 1) else {
-            errPrint("User used --rsync-bin-path, however the program couldn't get Rsync executable Path specified, are you sure you specified one?", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("User used --rsync-bin-path, however the program couldn't get Rsync executable Path specified, are you sure you specified one?")
         }
         let rsyncBinSpecified = CMDLineArgs[index + 1]
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
-            errPrint("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }
         printIfDebug("User manually specified rsync executable path as \(rsyncBinSpecified)")
         deviceRestoreManager.rsyncBinPath = rsyncBinSpecified
@@ -83,8 +77,7 @@ for args in CMDLineArgs {
 // detecting for root
 // root is needed to execute rsync with enough permissions to replace all files necessary
 guard getuid() == 0 else {
-    errPrint("ERROR: SuccessorCLI Must be run as root, eg `sudo \(CommandLine.arguments.joined(separator: " "))`", line: #line, file: #file)
-    exit(EXIT_FAILURE)
+    fatalError("ERROR: SuccessorCLI Must be run as root, eg `sudo \(CommandLine.arguments.joined(separator: " "))`")
 }
 
 printIfDebug("Online iPSW URL: \(onlineiPSWInfo.iPSWURL)\nOnline iPSW Filesize (unformatted): \(onlineiPSWInfo.iPSWFileSize)\nOnline iPSW Filesize (formatted): \(onlineiPSWInfo.iPSWFileSizeForamtted)")
@@ -123,8 +116,7 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
             iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
         } else {
             guard DMGManager.DMGSinSCLIPathArray.indices.contains(choiceInt) else {
-                errPrint("Inproper Input.", line: #line, file: #file)
-                exit(EXIT_FAILURE)
+                fatalError("Inproper Input.")
             }
             let dmgSpecified = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGManager.DMGSinSCLIPathArray[choiceInt])"
             DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
@@ -132,7 +124,7 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
     }
     break
     
-    // If the below is triggered, its because theres no rfs.dmg or any type of DMG in /var/mobile/Library/SuccessorCLI, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path, explanation to why is at DMGManager.DMGSinSCLIPathArray's declaration
+    // If the case below is triggered, its because theres no rfs.dmg or any type of DMG in /var/mobile/Library/SuccessorCLI, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path, explanation to why is at DMGManager.DMGSinSCLIPathArray's declaration
 case false:
     print("No RootfsDMG Detected, what'd you like to do?")
     if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
@@ -142,15 +134,13 @@ case false:
     }
     print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically")
     guard let input = readLine(), let intInput = Int(input) else {
-        errPrint("Inproper Input.", line: #line, file: #file)
-        exit(EXIT_FAILURE)
+        fatalError("Inproper Input.")
     }
     if intInput == iPSWManager.iPSWSInSCLIPathArray.count {
         iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
     } else {
         guard iPSWManager.iPSWSInSCLIPathArray.indices.contains(intInput) else {
-            errPrint("Inproper Input.", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("Inproper Input.")
         }
         let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[intInput]
         iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
@@ -162,13 +152,11 @@ if MntManager.shared.isMountPointMounted() {
     print("\(SCLIInfo.shared.mountPoint) Already mounted, skipping right ahead to the restore.")
 } else {
     var diskNameToMnt = ""
-
+    printIfDebug("Proceeding to (try) to attach DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, err in
-        printIfDebug("Proceeding to (try) to attach DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
         // If the "else" statement is executed here, then that means the program either encountered an error while attaching (see attachDMG function declariation) or it couldn't get the name of the attached disk
         guard err == nil, let bsdName = bsdName else {
-            errPrint("Error encountered while attaching DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\": \(err as? String ?? "Unknown Error")", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("Error encountered while attaching DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\": \(err as? String ?? "Unknown Error")")
         }
         printIfDebug("Successfully attached DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
         printIfDebug("Got attached disk name at \(bsdName)")
@@ -177,8 +165,7 @@ if MntManager.shared.isMountPointMounted() {
 
     MntManager.mountNative(devDiskName: diskNameToMnt, mountPointPath: SCLIInfo.shared.mountPoint) { mntStatus in
         guard mntStatus == 0 else {
-            errPrint("Wasn't able to mount successfully..error: \(String(cString: strerror(errno))). Exiting..", line: #line, file: #file)
-            exit(EXIT_FAILURE)
+            fatalError("Wasn't able to mount successfully..error: \(String(cString: strerror(errno))). Exiting..")
         }
         print("Mounted \(diskNameToMnt) to \(SCLIInfo.shared.mountPoint) Successfully. Continiung!")
     }

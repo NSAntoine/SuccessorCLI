@@ -23,12 +23,12 @@ class SCLIInfo { // SCLI = SuccessorCLI
 
     var mountPoint = "/var/mnt/successor/"
     
-    var ver = "1.9.6 PROBABLY-WORKING-BETA"
+    var ver = "1.9.7 PROBABLY-WORKING-BETA"
     
     /// Prints help message
     func printHelp() {
         print("""
-            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by dabezt31
+            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Dabezt31.
             Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
                  -h, --help         Prints this help message.
@@ -66,7 +66,9 @@ extension FileManager {
         return sortedFiles.first?.key
     }
     
-        func filesByFileExtenstion(atPath path:String, extenstion:String, enumerate:Bool) -> [String] {
+    // Setting enumerate here to false will not search the subpaths of the path given, and the opposite if it's set to true
+    /// Returns an array of all files in a specific path with a given extenstion
+    func filesByFileExtenstion(atPath path:String, extenstion:String, enumerate:Bool) -> [String] {
         var ret = [String]() // Array with the files that have the extenstion only
         var arr = [String]() // Array with all files
         if enumerate {
@@ -92,10 +94,6 @@ func printIfDebug(_ message:Any) {
     if CMDLineArgs.contains("--debug") || CMDLineArgs.contains("-d") {
         print("[DEBUG]: \(message)")
     }
-}
-
-func errPrint(_ message:Any, line: Int, file:String) {
-    print("[ERROR] \(message), file \(file) at line \(line)")
 }
 
 func isNT2() -> Bool {

@@ -11,8 +11,7 @@ class MntManager {
                 try fm.createDirectory(atPath: mountPointPath, withIntermediateDirectories: true, attributes: nil)
                 print("Successfully create \(mountPointPath), Continuing..")
             } catch {
-                errPrint("Error encountered while creating directory \(mountPointPath): \(error.localizedDescription)\nPlease create the \(mountPointPath) directory again and run SuccessorCLI Again\nExiting..", line: #line, file: #file)
-                exit(EXIT_FAILURE)
+                fatalError("Error encountered while creating directory \(mountPointPath): \(error.localizedDescription)\nPlease create the \(mountPointPath) directory again and run SuccessorCLI Again\nExiting..")
             }
         }
     //https://github.com/Odyssey-Team/Taurine/blob/0ee53dde05da8ce5a9b7192e4164ffdae7397f94/Taurine/post-exploit/utils/remount.swift#L169
