@@ -19,6 +19,7 @@ The follwing options can be used with SuccessorCLI:
 - `-d, --debug` Prints extra debug information which may be helpful
 - `--no-restore` Downloads and extracts iPSW, gets the RootfsDMG, attach and mount RootfsDMG, then exit right before the restore is supposed to start
 - `--no-wait` Removes the 15 seconds given to the user before the restore begins and instead begins the restore immediately
+- `--online-ipsw-info` Prints Information about the online iPSW obtained from ipsw.me API, see more [Here](https://ipswdownloads.docs.apiary.io/)
 - `--ipsw-path /PATH/TO/IPSW` Specify iPSW Which'll be used
 - `--dmg-path /PATH/TO/ROOTFSDMG` Specify the rootfsDMG to use
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with

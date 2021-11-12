@@ -26,6 +26,12 @@ for args in CMDLineArgs {
         exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
+    case "--online-ipsw-info":
+        print("Presenting information for iPSW for device \(deviceInfo.machineName) running iOS \(deviceInfo.deviceiOSVersion) (BuildID: \(deviceInfo.buildID)):")
+        print("[ONLINE IPSW INFO] Online iPSW URL: \(onlineiPSWInfo.iPSWURL)")
+        print("[ONLINE IPSW INFO] Online iPSW Size (Unformatted): \(onlineiPSWInfo.iPSWFileSize)")
+        print("[ONLINE IPSW INFO] Online iPSW Size (formatted): \(onlineiPSWInfo.iPSWFileSizeForamtted)")
+        exit(0)
     case _ where CommandLine.arguments.contains("--dmg-path") && CommandLine.arguments.contains("--ipsw-path"):
         fatalError("Can't use both --dmg-path AND --ipsw-path together..exiting..")
         
@@ -76,7 +82,6 @@ guard getuid() == 0 else {
     fatalError("ERROR: SuccessorCLI Must be run as root, eg `sudo \(CommandLine.arguments.joined(separator: " "))`")
 }
 
-printIfDebug("Online iPSW URL: \(onlineiPSWInfo.iPSWURL)\nOnline iPSW Filesize (unformatted): \(onlineiPSWInfo.iPSWFileSize)\nOnline iPSW Filesize (formatted): \(onlineiPSWInfo.iPSWFileSizeForamtted)")
 if isNT2() {
     print("[WARNING] NewTerm 2 Detected, I advise you to SSH Instead, as the huge output by rsync may crash NewTerm 2 mid restore.")
 }
