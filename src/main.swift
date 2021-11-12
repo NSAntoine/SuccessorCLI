@@ -12,9 +12,8 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
     }
 }
 
-// We first need to filter out the program name, which always happens to be the first argument with CommandLine.arguments
-let CMDLineArgs = CommandLine.arguments.filter() { $0 != CommandLine.arguments[0] }
-
+// Due to the first argument from CommandLine.arguments being the program name, we need to drop that.
+let CMDLineArgs = Array(CommandLine.arguments.dropFirst())
 printIfDebug("Args used: \(CMDLineArgs)")
 
 for args in CMDLineArgs {
@@ -33,11 +32,10 @@ for args in CMDLineArgs {
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
-        guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), CMDLineArgs.indices.contains(index + 1) else {
+        guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), let iPSWSpecified = CMDLineArgs[safe: index + 1] else {
             print("User used --ipsw-path, however the program couldn't get the iPSW Path specified, are you sure you specified one?")
             exit(EXIT_FAILURE)
         }
-        let iPSWSpecified = CMDLineArgs[index + 1]
         printIfDebug("User manually specified iPSW Path to \(iPSWSpecified)")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
             fatalError("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW")
@@ -47,11 +45,10 @@ for args in CMDLineArgs {
         
         // Support for manually specifying rootfsDMG:
     case "--dmg-path":
-        guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), CMDLineArgs.indices.contains(index + 1) else {
+        guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), let dmgSpecified = CMDLineArgs[safe: index + 1] else {
             print("User used --dmg-path, however the program couldn't get DMG Path specified, are you sure you specified one?")
             exit(EXIT_FAILURE)
         }
-        let dmgSpecified = CMDLineArgs[index + 1]
         printIfDebug("User manually specified DMG Path to \(dmgSpecified)")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
             fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
@@ -60,10 +57,9 @@ for args in CMDLineArgs {
         
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
-        guard let index = CMDLineArgs.firstIndex(of: "--rsync-bin-path"), CMDLineArgs.indices.contains(index + 1) else {
+        guard let index = CMDLineArgs.firstIndex(of: "--rsync-bin-path"), let rsyncBinSpecified = CMDLineArgs[safe: index + 1] else {
             fatalError("User used --rsync-bin-path, however the program couldn't get Rsync executable Path specified, are you sure you specified one?")
         }
-        let rsyncBinSpecified = CMDLineArgs[index + 1]
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }

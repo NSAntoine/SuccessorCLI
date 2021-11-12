@@ -3,8 +3,10 @@ import Foundation
 /// Class which manages rsync and SBDataReset
 class deviceRestoreManager {
     
+    /// Path for the where rsync executable is located, though this is `/usr/bin/rsync` by defualt, it can manually be changed (see --rsync-bin-path in SuccessorCLI Options)
     static var rsyncBinPath = "/usr/bin/rsync"
-     /// Calls on to SBDataReset to reset the device like the reset in settings button does.
+    
+    /// Calls on to SBDataReset to reset the device like the reset in settings button does.
     /// This is executed after the rsync function is complete
     class func callMobileObliterator() {
         let serverPort = SBSSpringBoardServerPort()
@@ -13,7 +15,7 @@ class deviceRestoreManager {
         SBDataReset(serverPort, 5)
     }
     
-     /// Function which launches rsync.
+    /// Function which launches rsync.
     class func launchRsync() {
         let pipe = Pipe()
         let task = NSTask()

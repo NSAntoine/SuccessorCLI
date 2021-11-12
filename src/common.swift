@@ -72,15 +72,7 @@ extension FileManager {
     func filesByFileExtenstion(atPath path:String, extenstion:String, enumerate:Bool) -> [String] {
         var ret = [String]() // Array with the files that have the extenstion only
         var arr = [String]() // Array with all files
-        if enumerate {
-            if let enumerator = fm.enumerator(atPath: path) {
-                arr = enumerator.allObjects as! [String]
-            }
-        } else {
-            if let contentsOfPath = try? fm.contentsOfDirectory(atPath: path) {
-                arr = contentsOfPath
-            }
-        }
+        arr = enumerate ? fm.enumerator(atPath: path)!.allObjects as! [String] : try! fm.contentsOfDirectory(atPath: path)
         for file in arr {
             if NSString(string: file).pathExtension == extenstion {
                 ret.append(file)
@@ -91,9 +83,15 @@ extension FileManager {
     }
 }
 
+extension Collection {
+    /// Returns the element at the specified index if it is within bounds, otherwise nil.
+    subscript (safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
 func printIfDebug(_ message:Any, file:String = #file, line:Int = #line) {
     if CMDLineArgs.contains("--debug") || CMDLineArgs.contains("-d") {
-        print("[DEBUG]: \(file):\(line) \(message)")
+        print("[DEBUG]: \(file):\(line): \(message)")
     }
 }
 
