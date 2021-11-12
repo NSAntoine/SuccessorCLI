@@ -44,7 +44,7 @@ extension NetworkUtilities: URLSessionDownloadDelegate {
                 try fm.removeItem(atPath: self.downloadItemDestination)
                 print("Removed \(self.downloadItemDestination), now placing \(didFinishDownloadingTo) there..")
             } catch {
-                fatalError("Error encountered while removing \(self.downloadItemDestination): \(error). Exiting..")
+                fatalError("Error encountered while removing \(self.downloadItemDestination): \(error.localizedDescription). Exiting..")
             }
         }
         do {

@@ -54,15 +54,16 @@ func formatBytes(_ bytes: Int64) -> String {
 }
 
 extension FileManager {
-    func getLargestFile(at directoryToSearch:URL) -> String? {
+    func getLargestFile(atPath directoryToSearch:String) -> String? {
         var fileDict = [String:Int64]()
-        let enumerator = fm.enumerator(at: directoryToSearch, includingPropertiesForKeys: [.isRegularFileKey])
+        let enumerator = fm.enumerator(atPath: directoryToSearch)
         while let file = enumerator?.nextObject() as? String {
-            let attributes = try? fm.attributesOfItem(atPath: "\(directoryToSearch.path)/\(file)")
+            let attributes = try? fm.attributesOfItem(atPath: "\(directoryToSearch)/\(file)")
             fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
         }
         let sortedFiles = fileDict.sorted(by: { $0.value > $1.value } )
-        printIfDebug("Biggest file at directory \"\(directoryToSearch.path)\": \(sortedFiles.first?.key ?? "Unknown")")
+        printIfDebug("getLargestFile: sortedFiles: \(sortedFiles)")
+        printIfDebug("getLargestFile: Biggest file at directory \"\(directoryToSearch)\": \(sortedFiles.first?.key ?? "Unknown")")
         return sortedFiles.first?.key
     }
     
@@ -90,9 +91,9 @@ extension FileManager {
     }
 }
 
-func printIfDebug(_ message:Any) {
+func printIfDebug(_ message:Any, file:String = #file, line:Int = #line) {
     if CMDLineArgs.contains("--debug") || CMDLineArgs.contains("-d") {
-        print("[DEBUG]: \(message)")
+        print("[DEBUG]: \(file):\(line) \(message)")
     }
 }
 

@@ -10,7 +10,7 @@ class iPSWManager {
     static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "ipsw", enumerate: true)
     
     var largestFileInsideExtractedDir:String {
-        guard let ret = fm.getLargestFile(at: URL(fileURLWithPath: iPSWManager.extractedOnboardiPSWPath)) else {
+        guard let ret = fm.getLargestFile(atPath: iPSWManager.extractedOnboardiPSWPath) else {
             print("Tried to access largest file inside the extracted dir and failed... Exiting..")
             exit(EXIT_FAILURE)
         }
