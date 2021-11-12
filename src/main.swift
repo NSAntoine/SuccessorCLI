@@ -111,11 +111,10 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
         if choiceInt == DMGManager.DMGSinSCLIPathArray.count {
             iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
         } else {
-            guard DMGManager.DMGSinSCLIPathArray.indices.contains(choiceInt) else {
+            guard let dmgSpecified = DMGManager.DMGSinSCLIPathArray[safe: choiceInt] else {
                 fatalError("Inproper Input.")
             }
-            let dmgSpecified = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGManager.DMGSinSCLIPathArray[choiceInt])"
-            DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
+            DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(dmgSpecified)"
         }
     }
     break
@@ -135,10 +134,9 @@ case false:
     if intInput == iPSWManager.iPSWSInSCLIPathArray.count {
         iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
     } else {
-        guard iPSWManager.iPSWSInSCLIPathArray.indices.contains(intInput) else {
+        guard let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[safe: intInput] else {
             fatalError("Inproper Input.")
         }
-        let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[intInput]
         iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
         iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
     }
@@ -154,8 +152,7 @@ if MntManager.shared.isMountPointMounted() {
         guard err == nil, let bsdName = bsdName else {
             fatalError("Error encountered while attaching DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\": \(err as? String ?? "Unknown Error")")
         }
-        printIfDebug("Successfully attached DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
-        printIfDebug("Got attached disk name at \(bsdName)")
+        printIfDebug("Successfully attached DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\" to disk \"\(bsdName)\"")
         diskNameToMnt = "/dev/\(bsdName)s1s1"
     }
 
