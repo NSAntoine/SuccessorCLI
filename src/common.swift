@@ -36,9 +36,9 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  -d, --debug        Prints extra information which may be useful.
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
-                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use. NOTE: This is optional.
-                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use. NOTE: This is optional.
-                 --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with. NOTE: This is optional
+                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.                      NOTE: This is optional.
+                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.                    NOTE: This is optional.
+                 --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with. NOTE: This is optional.
             """)
     }
 }
@@ -66,16 +66,24 @@ extension FileManager {
         return sortedFiles.first?.key
     }
     
-    func filesByFileExtenstion(atPath path:String, extenstion:String) -> [String] {
-        var ret = [String]()
-        if let enumerator = fm.enumerator(atPath: path) {
-            while let file = enumerator.nextObject() as? String {
-                if NSString(string: file).pathExtension == extenstion {
-                    ret.append(file)
-                }
+        func filesByFileExtenstion(atPath path:String, extenstion:String, enumerate:Bool) -> [String] {
+        var ret = [String]() // Array with the files that have the extenstion only
+        var arr = [String]() // Array with all files
+        if enumerate {
+            if let enumerator = fm.enumerator(atPath: path) {
+                arr = enumerator.allObjects as! [String]
+            }
+        } else {
+            if let contentsOfPath = try? fm.contentsOfDirectory(atPath: path) {
+                arr = contentsOfPath
             }
         }
-        printIfDebug("fm.filesByFileExtenstion: files in \(path) with extenstion \"\(extenstion)\": \(ret.joined(separator: " "))")
+        for file in arr {
+            if NSString(string: file).pathExtension == extenstion {
+                ret.append(file)
+            }
+        }
+        printIfDebug("filesByFileExtenstion: files in directory \"\(path)\" with extenstion \(extenstion): \(ret)")
         return ret
     }
 }

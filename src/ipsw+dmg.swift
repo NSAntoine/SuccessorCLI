@@ -7,7 +7,7 @@ import Foundation
 class iPSWManager {
     static let shared = iPSWManager()
     /// Returns the iPSWs that are in SCLIInfo.shared.SuccessorCLIPath, this is used mainly for iPSW detection
-    static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "ipsw")
+    static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "ipsw", enumerate: true)
     
     var largestFileInsideExtractedDir:String {
         guard let ret = fm.getLargestFile(at: URL(fileURLWithPath: iPSWManager.extractedOnboardiPSWPath)) else {
@@ -81,19 +81,9 @@ class DMGManager {
     var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
     
     
-    // The reason I didn't use fm.filesByFileExtenstion is because that performs a deep search into all subdirectories, all I want is the stuff inside the SuccessorCLIPath
-    // This is because the extracted directory usually has 2 or 3 more DMGs (that aren't the RootfsDMG..) and usually are like 20mb, so this is a way to exclude the extracted directory i guess
-    static var DMGSinSCLIPathArray: [String] {
-        var ret = [String]()
-        if let contents = try? fm.contentsOfDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath) {
-            for file in contents {
-                if NSString(string: file).pathExtension == "dmg" {
-                    ret.append(file)
-                }
-            }
-        }
-        return ret
-    }
+    // Returns the DMGs that are in SCLIInfo.shared.SuccessorCLIPath
+    // enumerate is set to `false` here in order to stop the function to stop from searching subpaths, the reason we want it to stop from searching subpaths is that the extracted directory usually contains 2-3 DMGs, only one of which being the RootfsDMG, and we don't want to detect the useless ones
+    static let DMGSinSCLIPathArray =  fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "dmg", enumerate: false)
     
     // The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted
     // If an error was encountered with either Attach Parameters or the Attaching process itself, err returns that error in the completionHandler (see function parameters below
