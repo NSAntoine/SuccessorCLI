@@ -5,10 +5,11 @@ import PackageDescription
 
 let package = Package(
     name: "SuccessorCLI",
-    platforms: [.iOS(.v14), .macOS(.v11)],
+    platforms: [.iOS(.v14)],
     targets: [
         .target(
            name: "SuccessorCLI",
-           path: "src"),
+           path: "src",
+           publicHeadersPath: "src/Bridge.h"),
     ]
 )

@@ -24,7 +24,7 @@ class iPSWManager {
     func unzipiPSW(iPSWFilePath: String, destinationPath: String) {
         let unzipTask = NSTask() /* Yes i know.. calling CLI just to unzip files is bad practice..but its better than waiting like 20 minutes with libzip.. */
         unzipTask.setLaunchPath("/usr/bin/unzip")
-        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"])
+        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"]) // Doing *.dmg here only extract the DMGs
         unzipTask.launch()
         unzipTask.waitUntilExit()
         
@@ -71,6 +71,7 @@ struct onlineiPSWInfo {
     static let iPSWFileSize = iPSWJSONDataDecoded.filesize
     static let iPSWFileSizeForamtted = formatBytes(iPSWJSONDataDecoded.filesize)
 }
+    
 /// Manages the several operations for DMG, such attaching and mounting
 class DMGManager {
     static let shared = DMGManager()

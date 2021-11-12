@@ -109,6 +109,7 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
             DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
         }
     }
+    break
     
     // If the below is triggered, its because theres no rfs.dmg or any type of DMG in /var/mobile/Library/SuccessorCLI, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path
 case false:
@@ -142,14 +143,16 @@ if MntManager.shared.isMountPointMounted() {
     var diskNameToMnt = ""
 
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, err in
+        printIfDebug("Proceeding to (try) to attach DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
         guard err == nil else {
             errPrint("Error encountered while attaching DMG \(DMGManager.shared.rfsDMGToUseFullPath): \(err!)", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
         guard let bsdName = bsdName else {
-            print("Attached Rfs DMG However wasn't able to get name..exiting.")
+            errPrint("Attached Rfs DMG However wasn't able to get name..exiting.", line: #line, file: #file)
             exit(EXIT_FAILURE)
         }
+        printIfDebug("Successfully attached DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
         printIfDebug("Got attached disk name at \(bsdName)")
         diskNameToMnt = "/dev/\(bsdName)s1s1"
     }
