@@ -86,6 +86,13 @@ if isNT2() {
     print("[WARNING] NewTerm 2 Detected, I advise you to SSH Instead, as the huge output by rsync may crash NewTerm 2 mid restore.")
 }
 print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ver).")
+
+// MARK: RootfsDMG and iPSW Detection
+/* The switch case below detects if a RootfsDMG is present in the SuccessorCLI directory.
+ If there isn't one, it also checks if there are other DMGs the SuccessorCLI directory, if there are any it'll ask the user if they want to use one.
+ If there are also no other DMGs in the SuccessorCLI directory, it will also try to find existing iPSWs in the SuccssorCLI Directory
+ If there are existing iPSWs, then they are listed, however whether or not there are existing iPSWs in the SuccessorCLI directory, it'll ask the user if they want SuccessorCLI to download an iPSW for them.
+ */
 switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
 case true:
     print("Found rootfsDMG at \(DMGManager.shared.rfsDMGToUseFullPath), Would you like to use it?")
@@ -96,11 +103,29 @@ case true:
         case "1", "Y", "y":
             print("Proceeding to use \(DMGManager.shared.rfsDMGToUseFullPath)")
         case "2", "N", "n":
-            print("User specified not to use RootfsDMG at \(DMGManager.shared.rfsDMGToUseFullPath). Exiting.")
-            exit(0)
+            if !DMGManager.DMGSinSCLIPathArray.isEmpty {
+                print("Found other DMGs in \(SCLIInfo.shared.SuccessorCLIPath), What would you like to do?")
+                for i in 0...(DMGManager.DMGSinSCLIPathArray.count - 1) {
+                    print("[\(i)] Use DMG \(DMGManager.DMGSinSCLIPathArray[i])")
+                }
+                print("[\(DMGManager.DMGSinSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically then extract the RootfsDMG from said iPSW.")
+                print("[\(DMGManager.DMGSinSCLIPathArray.count + 1)] Do nothing and exit.")
+                if let input = readLine(), let intInput = Int(input) {
+                    if intInput == DMGManager.DMGSinSCLIPathArray.count {
+                        iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
+                    } else if intInput == (DMGManager.DMGSinSCLIPathArray.count + 1) {
+                        print("Exiting cause the user specified to do so.")
+                        exit(0)
+                    } else {
+                        guard let DMGSpecified = DMGManager.DMGSinSCLIPathArray[safe: intInput] else {
+                            fatalError("Inproper input.")
+                        }
+                        DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGSpecified)"
+                    }
+                }
+            }
         default:
-            print("Unkown input \"\(choice)\". Exiting.")
-            exit(EXIT_FAILURE)
+            fatalError("Inproper input.")
         }
     }
 

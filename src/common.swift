@@ -40,6 +40,9 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.                      NOTE: This is optional.
                  --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.                    NOTE: This is optional.
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with. NOTE: This is optional.
+            
+            Notes:
+            You can't use both --dmg-path and --ipsw-path together at the same time.
             """)
     }
 }
