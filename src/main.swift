@@ -39,8 +39,7 @@ for args in CMDLineArgs {
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
         guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), let iPSWSpecified = CMDLineArgs[safe: index + 1] else {
-            print("User used --ipsw-path, however the program couldn't get the iPSW Path specified, are you sure you specified one?")
-            exit(EXIT_FAILURE)
+            fatalError("User used --ipsw-path, however the program couldn't get the iPSW Path specified, are you sure you specified one?")
         }
         printIfDebug("User manually specified iPSW Path to \(iPSWSpecified)")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
@@ -52,8 +51,7 @@ for args in CMDLineArgs {
         // Support for manually specifying rootfsDMG:
     case "--dmg-path":
         guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), let dmgSpecified = CMDLineArgs[safe: index + 1] else {
-            print("User used --dmg-path, however the program couldn't get DMG Path specified, are you sure you specified one?")
-            exit(EXIT_FAILURE)
+            fatalError("User used --dmg-path, however the program couldn't get DMG Path specified, are you sure you specified one?")
         }
         printIfDebug("User manually specified DMG Path to \(dmgSpecified)")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {

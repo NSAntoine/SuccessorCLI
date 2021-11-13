@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SuccessorCLI",
-    platforms: [.iOS(.v14)],
+    platforms: [.iOS(.v14)], // Just for the code autocomplete tbh
     targets: [
         .target(
            name: "SuccessorCLI",

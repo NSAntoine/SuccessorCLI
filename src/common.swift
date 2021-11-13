@@ -29,6 +29,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     func printHelp() {
         print("""
             SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Dabezt31.
+            Report issues to https://github.com/dabezt31/SuccessorCLI/issues
             Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
                  -h, --help         Prints this help message.
@@ -75,8 +76,7 @@ extension FileManager {
     /// Returns an array of all files in a specific path with a given extenstion
     func filesByFileExtenstion(atPath path:String, extenstion:String, enumerate:Bool) -> [String] {
         var ret = [String]() // Array with the files that have the extenstion only
-        var arr = [String]() // Array with all files
-        arr = enumerate ? fm.enumerator(atPath: path)!.allObjects as! [String] : try! fm.contentsOfDirectory(atPath: path)
+        let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? []
         for file in arr {
             if NSString(string: file).pathExtension == extenstion {
                 ret.append(file)
