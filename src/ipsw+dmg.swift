@@ -83,22 +83,23 @@ class DMGManager {
     // enumerate is set to `false` here in order to stop the function to stop from searching subpaths, the reason we want it to stop from searching subpaths is that the extracted directory usually contains 2-3 DMGs, only one of which being the RootfsDMG, and we don't want to detect the useless ones
     static let DMGSinSCLIPathArray =  fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "dmg", enumerate: false)
     
-    // The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted.
-    // So for example you could have disk7, disk7s1, disk7s1s1, but disk7s1s1 is the only one we care about because thats the one that's supposed to be mounted.
-    // If an error was encountered with either Attach Parameters or the Attaching process itself, err returns that error in the completionHandler (see function parameters below).
-    class func attachDMG(dmgPath:String, completionHandler: (_ bsdName: String?, _ err:AnyObject?) -> Void) {
+    /* The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted.
+    So for example you could have disk7, disk7s1, disk7s1s1, but disk7s1s1 is the only one we care about because thats the one that's supposed to be mounted.
+    If an error was encountered with either Attach Parameters or the Attaching process itself, err returns that error in the completionHandler (see function parameters below). */
+    class func attachDMG(dmgPath:String, completionHandler: (_ bsdName: String?, _ err:String?) -> Void) {
         let url = URL(fileURLWithPath: dmgPath)
         var attachParamsErr:AnyObject?
         var attachErr:NSError?
         var handler: DIDeviceHandle?
         let attachParams = DIAttachParams(url: url, error: &attachParamsErr)
         guard attachParamsErr == nil else {
-            return completionHandler(nil, attachParamsErr)
+            return completionHandler(nil, attachParamsErr as? String)
         }
         attachParams?.autoMount = false
         DiskImages2.attach(with: attachParams, handle: &handler, error: &attachErr)
         guard attachErr == nil else {
-            return completionHandler(nil, attachErr)
+            let errThing = attachErr?.localizedFailureReason ?? attachErr?.localizedDescription
+            return completionHandler(nil, errThing)
         }
         completionHandler(handler?.bsdName(), nil)
     }

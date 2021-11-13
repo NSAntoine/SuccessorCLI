@@ -178,7 +178,7 @@ if MntManager.shared.isMountPointMounted() {
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, err in
         // If the "else" statement is executed here, then that means the program either encountered an error while attaching (see attachDMG function declariation) or it couldn't get the name of the attached disk
         guard err == nil, let bsdName = bsdName else {
-            fatalError("Error encountered while attaching DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\": \(err as? String ?? "Unknown Error")")
+            fatalError("Error encountered while attaching DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\": \(err ?? "Unknown Error")")
         }
         printIfDebug("Successfully attached DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\" to disk \"\(bsdName)\"")
         diskNameToMnt = "/dev/\(bsdName)s1s1"
