@@ -101,6 +101,12 @@ case true:
         case "1", "Y", "y":
             print("Proceeding to use \(DMGManager.shared.rfsDMGToUseFullPath)")
         case "2", "N", "n":
+            /*
+             If this case gets triggered, the following happens:
+             if there are other DMGs in the SuccessorCLIPath, it will list all of them and ask the user if they want to use them. Note this doesn't include subdirectories of the SuccessorCLIPath
+             the second to last option will always be asking the user if they want to download the iPSW for their device and version
+             the last option will be SuccessorCLI asking the user if they want to do nothing and exit the program
+            */
             if !DMGManager.DMGSinSCLIPathArray.isEmpty {
                 print("Found other DMGs in \(SCLIInfo.shared.SuccessorCLIPath), What would you like to do?")
                 for i in 0...(DMGManager.DMGSinSCLIPathArray.count - 1) {
@@ -109,14 +115,15 @@ case true:
                 print("[\(DMGManager.DMGSinSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically then extract the RootfsDMG from said iPSW.")
                 print("[\(DMGManager.DMGSinSCLIPathArray.count + 1)] Do nothing and exit.")
                 if let input = readLine(), let intInput = Int(input) {
-                    if intInput == DMGManager.DMGSinSCLIPathArray.count {
+                    switch intInput {
+                    case DMGManager.DMGSinSCLIPathArray.count:
                         iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
-                    } else if intInput == (DMGManager.DMGSinSCLIPathArray.count + 1) {
-                        print("Exiting cause the user specified to do so.")
+                    case (DMGManager.DMGSinSCLIPathArray.count + 1):
+                        print("Exiting because user specified to do so.")
                         exit(0)
-                    } else {
+                    default:
                         guard let DMGSpecified = DMGManager.DMGSinSCLIPathArray[safe: intInput] else {
-                            fatalError("Inproper input.")
+                            fatalError("Inrpoper input.")
                         }
                         DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGSpecified)"
                     }
