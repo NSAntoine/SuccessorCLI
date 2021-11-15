@@ -74,16 +74,11 @@ extension FileManager {
     
     // Setting enumerate here to false will not search the subpaths of the path given, and the opposite if it's set to true
     /// Returns an array of all files in a specific path with a given extenstion
-    func filesByFileExtenstion(atPath path:String, extenstion:String, enumerate:Bool) -> [String] {
-        var ret = [String]() // Array with the files that have the extenstion only
-        let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? []
-        for file in arr {
-            if NSString(string: file).pathExtension == extenstion {
-                ret.append(file)
-            }
-        }
-        printIfDebug("filesByFileExtenstion: files in directory \"\(path)\" with extenstion \(extenstion): \(ret)")
-        return ret
+    func filesByFileExtenstion(atPath path: String, extenstion: String, enumerate: Bool) -> [String] {
+        let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? [] // Has all files rather than the ones with the file extenstion only
+        let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion } // Filters all items from the array to only include the ones with the extenstion specified
+        printIfDebug("filesByFileExtenstion: files in directory \"\(path)\" with extenstion \(extenstion): \(filteredArr)")
+        return filteredArr
     }
 }
 
