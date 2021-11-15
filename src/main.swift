@@ -184,11 +184,15 @@ if MntManager.shared.isMountPointMounted() {
     printIfDebug("Proceeding to (try) to attach DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
     DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, err in
         // If the "else" statement is executed here, then that means the program either encountered an error while attaching (see attachDMG function declariation) or it couldn't get the name of the attached disk
-        guard err == nil, let bsdName = bsdName else {
-            fatalError("Error encountered while attaching DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\": \(err ?? "Unknown Error")")
+        guard let bsdName = bsdName, err == nil else {
+            fatalError("Error encountered while attaching: \(err ?? "Unknown Error"). Exiting.")
         }
-        printIfDebug("Successfully attached DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\" to disk \"\(bsdName)\"")
+        printIfDebug("attachDMG: BSD Name of DMG: \(bsdName)")
+        guard fm.fileExists(atPath: "/dev/\(bsdName)s1s1") else {
+            fatalError("Inproper DMG was attached.")
+        }
         diskNameToMnt = "/dev/\(bsdName)s1s1"
+        print("Successfully attached \(DMGManager.shared.rfsDMGToUseFullPath) to \(diskNameToMnt)")
     }
 
     MntManager.mountNative(devDiskName: diskNameToMnt, mountPointPath: SCLIInfo.shared.mountPoint) { mntStatus in
