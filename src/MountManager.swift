@@ -1,4 +1,5 @@
 import Foundation
+import SuccessorCLIBridged
 
 /// Manages stuff such as mount status and mounting function, etc
 class MntManager {

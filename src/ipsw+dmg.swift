@@ -1,6 +1,6 @@
 // Manages stuff to do with iPSW And RootfsDMG
 import Foundation
-
+import SuccessorCLIBridged
 // MARK: Onboard iPSW Stuff
 
 /// Class which manages onboard iPSW Stuff, see below

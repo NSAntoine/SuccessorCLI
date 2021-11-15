@@ -1,7 +1,6 @@
 // Includes general information about device, the SuccessorCLI program, and general functions.
 
 import UIKit
-
 /// Includes info such as the device iOS version, machine name, and the build ID
 class deviceInfo {
     static func sysctl(name: String) -> String {

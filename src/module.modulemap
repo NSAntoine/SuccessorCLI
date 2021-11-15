@@ -1,0 +1,3 @@
+module SuccessorCLIBridged {
+    header "Bridge.h"
+}

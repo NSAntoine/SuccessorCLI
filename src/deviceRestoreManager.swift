@@ -1,4 +1,5 @@
 import Foundation
+import SuccessorCLIBridged
 
 /// Class which manages rsync and SBDataReset
 class deviceRestoreManager {
