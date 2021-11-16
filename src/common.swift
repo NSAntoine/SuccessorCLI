@@ -40,7 +40,6 @@ class SCLIInfo { // SCLI = SuccessorCLI
             
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
-                 --online-ipsw-info Prints information about online iPSW.
             
                  --mnt-point-path   /PATH/TO/MOUNT          Manually specify path to mount the attached RootfsDMG to.  NOTE: This is optional
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.                      NOTE: This is optional

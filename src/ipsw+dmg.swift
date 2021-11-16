@@ -58,7 +58,6 @@ class iPSWManager {
 // MARK: Online iPSW Stuff
 struct onlineiPSWInfoProperties: Codable { // stuff thats in the JSON Response
     let url:URL
-    let filesize:Int64
 }
 var iPSWMEJSONDataResponse:String {
     var ret = ""
@@ -73,8 +72,6 @@ let iPSWJSONDataDecoded = try! JSONDecoder().decode(onlineiPSWInfoProperties.sel
 
 struct onlineiPSWInfo {
     static let iPSWURL = iPSWJSONDataDecoded.url
-    static let iPSWFileSize = iPSWJSONDataDecoded.filesize
-    static let iPSWFileSizeForamtted = formatBytes(iPSWJSONDataDecoded.filesize)
 }
     
 

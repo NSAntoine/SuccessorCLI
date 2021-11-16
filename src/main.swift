@@ -26,12 +26,6 @@ for args in CMDLineArgs {
         exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
-    case "--online-ipsw-info":
-        print("Presenting information for iPSW for device \(deviceInfo.machineName) running iOS \(deviceInfo.deviceiOSVersion) (BuildID: \(deviceInfo.buildID)):")
-        print("[ONLINE IPSW INFO] Online iPSW URL: \(onlineiPSWInfo.iPSWURL)")
-        print("[ONLINE IPSW INFO] Online iPSW Size (Unformatted): \(onlineiPSWInfo.iPSWFileSize)")
-        print("[ONLINE IPSW INFO] Online iPSW Size (formatted): \(onlineiPSWInfo.iPSWFileSizeForamtted)")
-        exit(0)
     case _ where CommandLine.arguments.contains("--dmg-path") && CommandLine.arguments.contains("--ipsw-path"):
         fatalError("Can't use both --dmg-path AND --ipsw-path together..exiting..")
         

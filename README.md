@@ -20,7 +20,6 @@ The follwing options can be used with SuccessorCLI:
 
 - `--no-restore` Downloads and extracts iPSW, gets the RootfsDMG, attach and mount RootfsDMG, then exit right before the restore is supposed to start
 - `--no-wait` Removes the 15 seconds given to the user before the restore begins and instead begins the restore immediately
-- `--online-ipsw-info` Prints Information about the online iPSW obtained from ipsw.me API, see more [Here](https://ipswdownloads.docs.apiary.io/)
 
 - `--mnt-point-path   /PATH/TO/MOUNT` Specify the directory to where the attached RootfsDMG will be mounted to
 - `--ipsw-path /PATH/TO/IPSW` Specify iPSW Which'll be used
