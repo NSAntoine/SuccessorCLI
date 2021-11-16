@@ -97,7 +97,7 @@ class DMGManager {
      */
     class func attachDMG(dmgPath:String, completionHandler: (_ bsdName: String?, _ err:String?) -> Void) {
         let url = URL(fileURLWithPath: dmgPath)
-        let err:NSError? = NSError()// if an error is encountered with Attach Parameters or Attaching itself, it will be set to this
+        var err:NSError? // if an error is encountered with Attach Parameters or Attaching itself, it will be set to this
         var handler: DIDeviceHandle?
         let attachParams = DIAttachParams(url: url, error: err)
         guard err == nil else {

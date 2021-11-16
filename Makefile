@@ -8,5 +8,5 @@ successorcli_FILES = $(wildcard src/*.swift)
 successorcli_PRIVATE_FRAMEWORKS = DiskImages2 SpringBoardServices
 successorcli_CODESIGN_FLAGS = -Sentitlements.plist
 successorcli_INSTALL_PATH = /usr/sbin
-successorcli_SWIFTFLAGS = -Iinclude # look for the module in include
+successorcli_SWIFTFLAGS = -suppress-warnings -Iinclude # look for the module in the include directory
 include $(THEOS_MAKE_PATH)/tool.mk

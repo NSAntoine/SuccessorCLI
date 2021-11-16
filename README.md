@@ -17,16 +17,21 @@ The follwing options can be used with SuccessorCLI:
 - `-h, --help` Prints the help message then exits
 - `-v, --version` Prints the Current SuccessorCLI Version then exit
 - `-d, --debug` Prints extra debug information which may be helpful
+
 - `--no-restore` Downloads and extracts iPSW, gets the RootfsDMG, attach and mount RootfsDMG, then exit right before the restore is supposed to start
 - `--no-wait` Removes the 15 seconds given to the user before the restore begins and instead begins the restore immediately
 - `--online-ipsw-info` Prints Information about the online iPSW obtained from ipsw.me API, see more [Here](https://ipswdownloads.docs.apiary.io/)
+
+- `--mnt-point-path   /PATH/TO/MOUNT` Specify the directory to where the attached RootfsDMG will be mounted to
 - `--ipsw-path /PATH/TO/IPSW` Specify iPSW Which'll be used
 - `--dmg-path /PATH/TO/ROOTFSDMG` Specify the rootfsDMG to use
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with
 
 *Notes*: 
 - You can't use both `--dmg-path` and `--ipsw-path` together at the same time.
-- `--rsync-bin-path`, `--ipsw-path`, and `--dmg-path` are all optional
+- `--mnt-point-path`, `--rsync-bin-path`, `--ipsw-path`, and `--dmg-path` are all optional
+- If -`-mnt-point-path` is not used, then the default Mount Point is set to `/var/mnt/successor/`.
+
 
 # Project Status
 The program does work right now, I've tested it multiple times on an iPhone 8 running iOS 14.5, Im just polishing up the project right now.

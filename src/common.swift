@@ -24,7 +24,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
 
     var mountPoint = "/var/mnt/successor/"
     
-    var ver = "1.9.8 PROBABLY-WORKING-BETA"
+    var ver = "1.9.9 PROBABLY-WORKING-BETA"
     
     /// Prints help message
     func printHelp() {
@@ -33,18 +33,24 @@ class SCLIInfo { // SCLI = SuccessorCLI
             Report issues to https://github.com/dabezt31/SuccessorCLI/issues
             Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
+            
                  -h, --help         Prints this help message.
                  -v, --version      Prints current SuccessorCLI Version.
                  -d, --debug        Prints extra information which may be useful.
+            
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
                  --online-ipsw-info Prints information about online iPSW.
-                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.                      NOTE: This is optional.
-                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.                    NOTE: This is optional.
-                 --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with. NOTE: This is optional.
+            
+                 --mnt-point-path   /PATH/TO/MOUNT          Manually specify path to mount the attached RootfsDMG to.  NOTE: This is optional
+                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.                      NOTE: This is optional
+                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.                    NOTE: This is optional
+                 --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with. NOTE: This is optional
             
             Notes:
             You can't use both --dmg-path and --ipsw-path together at the same time.
+            If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
+            Manually specifying an iPSW or DMG is not required. SuccessorCLI will offer to download an iPSW, extract it then get the RootfsDMG from it.
             """)
     }
 }

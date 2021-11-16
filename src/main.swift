@@ -69,6 +69,15 @@ for args in CMDLineArgs {
         }
         print("User manually specified rsync executable path as \(rsyncBinSpecified)")
         deviceRestoreManager.rsyncBinPath = rsyncBinSpecified
+    case "--mnt-point-path":
+        guard let index = CMDLineArgs.firstIndex(of: "--mnt-point-path"), let mntPointSpecified = CMDLineArgs[safe: index + 1] else {
+            fatalError("User used --mnt-point-path, however the program couldn't get the Mount Point specified, are you sure you specified one?")
+        }
+        guard fm.fileExists(atPath: mntPointSpecified) else {
+            fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
+        }
+        print("User manually specified MountPoint as \(mntPointSpecified)")
+        SCLIInfo.shared.mountPoint = mntPointSpecified
     default:
         break
     }
@@ -86,7 +95,8 @@ if isNT2() {
 print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ver).")
 
 // MARK: RootfsDMG and iPSW Detection
-/* The switch case below detects if a RootfsDMG is present in the SuccessorCLI directory.
+/*
+ The switch case below detects if a RootfsDMG is present in the SuccessorCLI directory.
  If there isn't one, it also checks if there are other DMGs the SuccessorCLI directory, if there are any it'll ask the user if they want to use one.
  If there are also no other DMGs in the SuccessorCLI directory, it will also try to find existing iPSWs in the SuccssorCLI Directory
  If there are existing iPSWs, then they are listed, however whether or not there are existing iPSWs in the SuccessorCLI directory, it'll ask the user if they want SuccessorCLI to download an iPSW for them.
