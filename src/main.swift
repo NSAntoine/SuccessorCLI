@@ -41,7 +41,7 @@ for args in CMDLineArgs {
         guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), let iPSWSpecified = CMDLineArgs[safe: index + 1] else {
             fatalError("User used --ipsw-path, however the program couldn't get the iPSW Path specified, are you sure you specified one?")
         }
-        printIfDebug("User manually specified iPSW Path to \(iPSWSpecified)")
+        print("User manually specified iPSW Path to \(iPSWSpecified)")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
             fatalError("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW")
         }
@@ -53,7 +53,7 @@ for args in CMDLineArgs {
         guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), let dmgSpecified = CMDLineArgs[safe: index + 1] else {
             fatalError("User used --dmg-path, however the program couldn't get DMG Path specified, are you sure you specified one?")
         }
-        printIfDebug("User manually specified DMG Path to \(dmgSpecified)")
+        print("User manually specified DMG Path to \(dmgSpecified)")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
             fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
         }
@@ -67,7 +67,7 @@ for args in CMDLineArgs {
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }
-        printIfDebug("User manually specified rsync executable path as \(rsyncBinSpecified)")
+        print("User manually specified rsync executable path as \(rsyncBinSpecified)")
         deviceRestoreManager.rsyncBinPath = rsyncBinSpecified
     default:
         break

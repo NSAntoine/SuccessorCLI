@@ -1,8 +1,10 @@
 // Includes general information about device, the SuccessorCLI program, and general functions.
 
 import UIKit
+import Foundation
+
 /// Includes info such as the device iOS version, machine name, and the build ID
-class deviceInfo {
+struct deviceInfo {
     static func sysctl(name: String) -> String {
             var size = 0
             sysctlbyname(name, nil, &size, nil, 0)
@@ -66,8 +68,8 @@ extension FileManager {
             fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
         }
         let sortedFiles = fileDict.sorted(by: { $0.value > $1.value } )
-        printIfDebug("getLargestFile: sortedFiles: \(sortedFiles)")
-        printIfDebug("getLargestFile: Biggest file at directory \"\(directoryToSearch)\": \(sortedFiles.first?.key ?? "Unknown")")
+        printIfDebug("\(#function): sortedFiles: \(sortedFiles)")
+        printIfDebug("\(#function): Biggest file at directory \"\(directoryToSearch)\": \(sortedFiles.first?.key ?? "Unknown")")
         return sortedFiles.first?.key
     }
     
@@ -76,7 +78,7 @@ extension FileManager {
     func filesByFileExtenstion(atPath path: String, extenstion: String, enumerate: Bool) -> [String] {
         let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? [] // Has all files rather than the ones with the file extenstion only
         let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion } // Filters all items from the array to only include the ones with the extenstion specified
-        printIfDebug("filesByFileExtenstion: files in directory \"\(path)\" with extenstion \(extenstion): \(filteredArr)")
+        printIfDebug("\(#function): files in directory \"\(path)\" with extenstion \(extenstion): \(filteredArr)")
         return filteredArr
     }
 }
@@ -87,12 +89,15 @@ extension Collection {
         return indices.contains(index) ? self[index] : nil
     }
 }
+
 func printIfDebug(_ message:Any, file:String = #file, line:Int = #line) {
     if CMDLineArgs.contains("--debug") || CMDLineArgs.contains("-d") {
-        print("[DEBUG]: \(file):\(line): \(message)")
+        print("[SCLI Debug]: \(file):\(line): \(message)")
     }
 }
 
+
+/// Returns true or false based on whether or not the current user terminal is NewTerm.
 func isNT2() -> Bool {
     guard let lcTerm = ProcessInfo.processInfo.environment["LC_TERMINAL"] else {
         return false // NewTerm 2 sets the LC_TERMINAL enviroment variable

@@ -17,7 +17,10 @@ class MntManager {
         }
     //https://github.com/Odyssey-Team/Taurine/blob/0ee53dde05da8ce5a9b7192e4164ffdae7397f94/Taurine/post-exploit/utils/remount.swift#L169
         let fspec = strdup(devDiskName)
-
+        defer {
+            free(fspec!)
+        }
+        
         var mntargs = hfs_mount_args()
         mntargs.fspec = fspec
         mntargs.hfs_mask = 1

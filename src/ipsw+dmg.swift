@@ -1,6 +1,7 @@
 // Manages stuff to do with iPSW And RootfsDMG
 import Foundation
 import SuccessorCLIBridged
+
 // MARK: Onboard iPSW Stuff
 
 /// Class which manages onboard iPSW Stuff, see below
@@ -11,8 +12,7 @@ class iPSWManager {
     
     var largestFileInsideExtractedDir:String {
         guard let ret = fm.getLargestFile(atPath: iPSWManager.extractedOnboardiPSWPath) else {
-            print("Tried to access largest file inside the extracted dir and failed... Exiting..")
-            exit(EXIT_FAILURE)
+            fatalError("Tried to access largest file inside the extracted dir and failed... Exiting..")
         }
         return ret
     }
@@ -31,11 +31,18 @@ class iPSWManager {
         guard unzipTask.terminationStatus == 0 else {
             fatalError("Error: Couldn't successfully unzip the iPSW. Exiting.")
         }
+        print("Will now try to move largest file inside \(destinationPath) (should be a DMG) to \(SCLIInfo.shared.SuccessorCLIPath) With the name \"rfs.dmg\"")
+        let fileToMove = "\(destinationPath)/\(iPSWManager.shared.largestFileInsideExtractedDir)"
+        
+        // Make sure the file is a DMG
+        guard NSString(string:  fileToMove).pathExtension == "dmg" else {
+            fatalError("Largest file inside \"\(destinationPath)\" isn't a DMG. Exiting.")
+        }
         
         do {
-            try fm.moveItem(atPath: "\(destinationPath)/\(iPSWManager.shared.largestFileInsideExtractedDir)", toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
+            try fm.moveItem(atPath: fileToMove, toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
         } catch {
-            fatalError("Couldnt rename and move iPSW...error: \(error.localizedDescription)\nExiting..")
+            fatalError("Error encountered while trying to move to \(fileToMove) to \(DMGManager.shared.rfsDMGToUseFullPath): \(error.localizedDescription). Exiting")
         }
 }
     
