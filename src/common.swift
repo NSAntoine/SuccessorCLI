@@ -41,15 +41,17 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
             
-                 --mnt-point-path   /PATH/TO/MOUNT          Manually specify path to mount the attached RootfsDMG to.  NOTE: This is optional
-                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.                      NOTE: This is optional
-                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.                    NOTE: This is optional
-                 --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with. NOTE: This is optional
+                 --mnt-point-path   /PATH/TO/MOUNT          Manually specify path to mount the attached RootfsDMG to.
+                 --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.
+                 --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
+                 --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
+                 --exclude          /PATH/TO/EXCLUDE        Manually specify a path to exclude from rsync restore.
             Notes:
-            You can't use both --dmg-path and --ipsw-path together at the same time.
-            If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
-            Manually specifying an iPSW or DMG is not required. SuccessorCLI will offer to download an iPSW, extract it then get the RootfsDMG from it.
+            - You can't use both --dmg-path and --ipsw-path together at the same time.
+            - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
+            - Manually specifying an iPSW or DMG is not required. SuccessorCLI will offer to download an iPSW, extract it then get the RootfsDMG from it.
+            - All arguments are optional.
             """)
     }
 }

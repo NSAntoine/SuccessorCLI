@@ -6,6 +6,34 @@ class deviceRestoreManager {
     
     /// Path for the where rsync executable is located, though this is `/usr/bin/rsync` by defualt, it can manually be changed (see --rsync-bin-path in SuccessorCLI Options)
     static var rsyncBinPath = "/usr/bin/rsync"
+    static var rsyncArgs = ["-vaxcH",
+                             "--delete",
+                             "--progress",
+                             "--ignore-errors",
+                             "--force",
+                             "--exclude=/Developer",
+                             "--exclude=/System/Library/Caches/com.apple.kernelcaches/kernelcache",
+                             "--exclude=/System/Library/Caches/apticket.der",
+                             "--exclude=/System/Library/Caches/com.apple.factorydata/",
+                             "--exclude=/usr/standalone/firmware/sep-firmware.img4",
+                             "--exclude=/usr/local/standalone/firmware/Baseband",
+                             "--exclude=/private/\(SCLIInfo.shared.mountPoint)",
+                             "--exclude=/private/etc/fstab",
+                             "--exclude=/etc/fstab",
+                             "--exclude=/usr/standalone/firmware/FUD/",
+                             "--exclude=/usr/standalone/firmware/Savage/",
+                             "--exclude=/System/Library/Pearl",
+                             "--exclude=/usr/standalone/firmware/Yonkers/",
+                             "--exclude=/private/var/containers/",
+                             "--exclude=/var/containers/",
+                             "--exclude=/private/var/keybags/",
+                             "--exclude=/var/keybags/",
+                             "--exclude=/applelogo",
+                             "--exclude=/devicetree",
+                             "--exclude=/kernelcache",
+                             "--exclude=/ramdisk",
+                             "/private/\(SCLIInfo.shared.mountPoint)",
+                             "/"]
     
     /// Calls on to SBDataReset to reset the device like the reset in settings button does.
     /// This is executed after the rsync function is complete
@@ -21,34 +49,6 @@ class deviceRestoreManager {
         let pipe = Pipe()
         let task = NSTask()
         task.setLaunchPath(rsyncBinPath)
-        var rsyncArgs = ["-vaxcH",
-        "--delete",
-        "--progress",
-        "--ignore-errors",
-        "--force",
-        "--exclude=/Developer",
-        "--exclude=/System/Library/Caches/com.apple.kernelcaches/kernelcache",
-        "--exclude=/System/Library/Caches/apticket.der",
-        "--exclude=/System/Library/Caches/com.apple.factorydata/",
-        "--exclude=/usr/standalone/firmware/sep-firmware.img4",
-        "--exclude=/usr/local/standalone/firmware/Baseband",
-        "--exclude=/private/\(SCLIInfo.shared.mountPoint)",
-        "--exclude=/private/etc/fstab",
-        "--exclude=/etc/fstab",
-        "--exclude=/usr/standalone/firmware/FUD/",
-        "--exclude=/usr/standalone/firmware/Savage/",
-        "--exclude=/System/Library/Pearl",
-        "--exclude=/usr/standalone/firmware/Yonkers/",
-        "--exclude=/private/var/containers/",
-        "--exclude=/var/containers/",
-        "--exclude=/private/var/keybags/",
-        "--exclude=/var/keybags/",
-        "--exclude=/applelogo",
-        "--exclude=/devicetree",
-        "--exclude=/kernelcache",
-        "--exclude=/ramdisk",
-        "/private/\(SCLIInfo.shared.mountPoint)",
-        "/"]
         if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
             rsyncArgs.append("--exclude=/Library/Caches/")
             rsyncArgs.append("--exclude=/usr/libexec/xpcproxy")

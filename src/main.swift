@@ -63,6 +63,8 @@ for args in CMDLineArgs {
         }
         print("User manually specified rsync executable path as \(rsyncBinSpecified)")
         deviceRestoreManager.rsyncBinPath = rsyncBinSpecified
+        
+        // Support for manually specifying Mount Point:
     case "--mnt-point-path":
         guard let index = CMDLineArgs.firstIndex(of: "--mnt-point-path"), let mntPointSpecified = CMDLineArgs[safe: index + 1] else {
             fatalError("User used --mnt-point-path, however the program couldn't get the Mount Point specified, are you sure you specified one?")
@@ -72,6 +74,14 @@ for args in CMDLineArgs {
         }
         print("User manually specified MountPoint as \(mntPointSpecified)")
         SCLIInfo.shared.mountPoint = mntPointSpecified
+        
+        // Support for argument to manually specify a directory to exclude from rsync restore.
+    case "--exclude":
+        guard let index = CMDLineArgs.firstIndex(of: "--exclude"), let dirToExclude = CMDLineArgs[safe: index + 1] else {
+            fatalError("User used --exclude, however the program couldn't get the directory specified, are you sure you specified one?")
+        }
+        print("User specified to exclude directory \"\(dirToExclude)\" from rsync restore.")
+        deviceRestoreManager.rsyncArgs.append("--exclude=\(dirToExclude)")
     default:
         break
     }

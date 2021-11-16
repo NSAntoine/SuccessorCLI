@@ -26,6 +26,7 @@ The follwing options can be used with SuccessorCLI:
 - `--dmg-path /PATH/TO/ROOTFSDMG` Specify the rootfsDMG to use
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with
 
+- `exclude /PATH/TO/EXCLUDE` Specify a path to exclude from rsync restore
 *Notes*: 
 - You can't use both `--dmg-path` and `--ipsw-path` together at the same time.
 - `--mnt-point-path`, `--rsync-bin-path`, `--ipsw-path`, and `--dmg-path` are all optional
