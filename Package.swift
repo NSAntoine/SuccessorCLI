@@ -9,7 +9,6 @@ let package = Package(
     targets: [
         .target(
            name: "SuccessorCLI",
-           path: "src",
-           publicHeadersPath: "src/Bridge.h"),
+           path: "src"),
     ]
 )
