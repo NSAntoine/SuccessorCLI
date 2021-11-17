@@ -47,7 +47,6 @@ class deviceRestoreManager {
                                       "--exclude=/var/tmp/xpcproxy",
                                       "--exclude=/usr/lib/substitute-inserter.dylib"]
     
-    
     /// Function which launches rsync.
     class func launchRsync() {
         let pipe = Pipe()
@@ -74,7 +73,7 @@ class deviceRestoreManager {
         task.waitUntilExit()
     }
     
-    /// Calls on to SBDataReset to reset the device like the reset in settings button does.
+    /// Calls on to SBDataReset to reset the device.
     /// This is executed after the rsync function is complete
     class func callSBDataReset() {
         guard !doDryRun else {
