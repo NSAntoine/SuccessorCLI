@@ -33,7 +33,7 @@ for args in CMDLineArgs {
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
         guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), let iPSWSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --ipsw-path, however the program couldn't get the iPSW Path specified, are you sure you specified one?")
+            fatalError("User used --ipsw-path, however the program couldn't get the iPSW Path specified, make sure you specified one. See SuccessorCLI --help for more info.")
         }
         print("User manually specified iPSW Path to \(iPSWSpecified)")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
@@ -45,7 +45,7 @@ for args in CMDLineArgs {
         // Support for manually specifying rootfsDMG:
     case "--dmg-path":
         guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), let dmgSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --dmg-path, however the program couldn't get DMG Path specified, are you sure you specified one?")
+            fatalError("User used --dmg-path, however the program couldn't get DMG Path specified, make sure you specified one. See SuccessorCLI --help for more info.")
         }
         print("User manually specified DMG Path to \(dmgSpecified)")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
@@ -56,7 +56,7 @@ for args in CMDLineArgs {
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
         guard let index = CMDLineArgs.firstIndex(of: "--rsync-bin-path"), let rsyncBinSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --rsync-bin-path, however the program couldn't get Rsync executable Path specified, are you sure you specified one?")
+            fatalError("User used --rsync-bin-path, however the program couldn't get Rsync executable Path specified, make sure you specified one. See SuccessorCLI --help for more info.")
         }
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
@@ -67,7 +67,7 @@ for args in CMDLineArgs {
         // Support for manually specifying Mount Point:
     case "--mnt-point-path":
         guard let index = CMDLineArgs.firstIndex(of: "--mnt-point-path"), let mntPointSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --mnt-point-path, however the program couldn't get the Mount Point specified, are you sure you specified one?")
+            fatalError("User used --mnt-point-path, however the program couldn't get the Mount Point specified, make sure you specified one. See SuccessorCLI --help for more info.")
         }
         guard fm.fileExists(atPath: mntPointSpecified) else {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
@@ -75,13 +75,12 @@ for args in CMDLineArgs {
         print("User manually specified MountPoint as \(mntPointSpecified)")
         SCLIInfo.shared.mountPoint = mntPointSpecified
         
-        // Support for argument to manually specify a directory to exclude from rsync restore.
-    case "--exclude":
-        guard let index = CMDLineArgs.firstIndex(of: "--exclude"), let dirToExclude = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --exclude, however the program couldn't get the directory specified, are you sure you specified one?")
+    case "--append-rsync-arg":
+        guard let index = CMDLineArgs.firstIndex(of: "--append-rsync-arg"), let rsyncArgSpecified = CMDLineArgs[safe: index + 1] else {
+            fatalError("User used --append-rsync-arg, however the program couldn't get rsync arg specified, make sure you specified one. See SuccessorCLI --help for more info.")
         }
-        print("User specified to exclude directory \"\(dirToExclude)\" from rsync restore.")
-        deviceRestoreManager.rsyncArgs.append("--exclude=\(dirToExclude)")
+        print("User specified to pass in \"\(rsyncArgSpecified)\" to rsync args.")
+        deviceRestoreManager.rsyncArgs.append(rsyncArgSpecified)
     default:
         break
     }

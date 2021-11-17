@@ -6,6 +6,8 @@ class deviceRestoreManager {
     
     /// Path for the where rsync executable is located, though this is `/usr/bin/rsync` by defualt, it can manually be changed (see --rsync-bin-path in SuccessorCLI Options)
     static var rsyncBinPath = "/usr/bin/rsync"
+    
+    /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
     static var rsyncArgs = ["-vaxcH",
                              "--delete",
                              "--progress",
@@ -17,7 +19,7 @@ class deviceRestoreManager {
                              "--exclude=/System/Library/Caches/com.apple.factorydata/",
                              "--exclude=/usr/standalone/firmware/sep-firmware.img4",
                              "--exclude=/usr/local/standalone/firmware/Baseband",
-                             "--exclude=/private/\(SCLIInfo.shared.mountPoint)",
+                             "--exclude=/private\(SCLIInfo.shared.mountPoint)",
                              "--exclude=/private/etc/fstab",
                              "--exclude=/etc/fstab",
                              "--exclude=/usr/standalone/firmware/FUD/",
@@ -32,8 +34,15 @@ class deviceRestoreManager {
                              "--exclude=/devicetree",
                              "--exclude=/kernelcache",
                              "--exclude=/ramdisk",
-                             "/private/\(SCLIInfo.shared.mountPoint)",
+                             "/private\(SCLIInfo.shared.mountPoint)",
                              "/"]
+    
+    /// Contains directories which will be excluded if xpcproxy exists on the device
+    static let XPCProxyExcludeArgs = ["--exclude=/Library/Caches/",
+                                      "--exclude=/usr/libexec/xpcproxy",
+                                      "--exclude=/tmp/xpcproxy",
+                                      "--exclude=/var/tmp/xpcproxy",
+                                      "--exclude=/usr/lib/substitute-inserter.dylib"]
     
     /// Calls on to SBDataReset to reset the device like the reset in settings button does.
     /// This is executed after the rsync function is complete
@@ -50,11 +59,7 @@ class deviceRestoreManager {
         let task = NSTask()
         task.setLaunchPath(rsyncBinPath)
         if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
-            rsyncArgs.append("--exclude=/Library/Caches/")
-            rsyncArgs.append("--exclude=/usr/libexec/xpcproxy")
-            rsyncArgs.append("--exclude=/tmp/xpcproxy")
-            rsyncArgs.append("--exclude=/var/tmp/xpcproxy")
-            rsyncArgs.append("--exclude=/usr/lib/substitute-inserter.dylib")
+            rsyncArgs += XPCProxyExcludeArgs
         }
         task.setArguments(rsyncArgs)
          //These args are the exact same that succession uses  (https://github.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/SuccessionRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
