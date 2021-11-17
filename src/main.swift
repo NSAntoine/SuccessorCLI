@@ -21,9 +21,6 @@ for args in CMDLineArgs {
     case "--help", "-h":
         SCLIInfo.shared.printHelp()
         exit(0)
-    case "-v", "--version":
-        print("SuccessorCLI Version \(SCLIInfo.shared.ver)")
-        exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
     case _ where CommandLine.arguments.contains("--dmg-path") && CommandLine.arguments.contains("--ipsw-path"):

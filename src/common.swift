@@ -33,9 +33,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
             Report issues to https://github.com/dabezt31/SuccessorCLI/issues
             Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
-            
                  -h, --help         Prints this help message.
-                 -v, --version      Prints current SuccessorCLI Version.
                  -d, --debug        Prints extra information which may be useful.
             
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
@@ -47,6 +45,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
                  --append-rsync-arg RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync.
+            
             Notes:
             - You can't use both --dmg-path and --ipsw-path together at the same time.
             - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.

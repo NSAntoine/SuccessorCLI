@@ -15,7 +15,6 @@ Simply run `sudo successorcli` in terminal through SSH or NewTerm 2. See below f
 # Options  
 The follwing options can be used with SuccessorCLI:
 - `-h, --help` Prints the help message then exits
-- `-v, --version` Prints the Current SuccessorCLI Version then exit
 - `-d, --debug` Prints extra debug information which may be helpful
 
 - `--no-restore` Downloads and extracts iPSW, gets the RootfsDMG, attach and mount RootfsDMG, then exit right before the restore is supposed to start
