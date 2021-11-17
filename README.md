@@ -14,22 +14,26 @@ Simply run `sudo successorcli` in terminal through SSH or NewTerm 2. See below f
 
 # Options  
 The follwing options can be used with SuccessorCLI:
+#### General options:
 - `-h, --help` Prints the help message then exits
 - `-d, --debug` Prints extra debug information which may be helpful
 
 - `--no-restore` Downloads and extracts iPSW, gets the RootfsDMG, attach and mount RootfsDMG, then exit right before the restore is supposed to start
 - `--no-wait` Removes the 15 seconds given to the user before the restore begins and instead begins the restore immediately
 
+#### Options for manually specifying:
 - `--mnt-point-path   /PATH/TO/MOUNT` Specify the directory to where the attached RootfsDMG will be mounted to
 - `--ipsw-path /PATH/TO/IPSW` Specify iPSW Which'll be used
 - `--dmg-path /PATH/TO/ROOTFSDMG` Specify the rootfsDMG to use
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with
 
+#### Options for rsync stuff:
 - `--append-rsync-arg RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg "--exclude=/some/directory` will pass in `--exclude=/some/directory` to rsync 
 - `--rsync-dry-run` Specifies that rsync should run with --dry-run
-*Notes*: 
+
+##### Notes: 
 - You can't use both `--dmg-path` and `--ipsw-path` together at the same time.
-- `--mnt-point-path`, `--rsync-bin-path`, `--ipsw-path`, and `--dmg-path` are all optional
+- All arguments are optional.
 - If -`-mnt-point-path` is not used, then the default Mount Point is set to `/var/mnt/successor/`.
 
 
