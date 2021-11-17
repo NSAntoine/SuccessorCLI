@@ -16,6 +16,9 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
 let CMDLineArgs = Array(CommandLine.arguments.dropFirst())
 printIfDebug("Args used: \(CMDLineArgs)")
 
+if CMDLineArgs.contains("--dmg-path") && CMDLineArgs.contains("--ipsw-path") {
+    fatalError("--dmg-path and --ipsw-path cannot be used together.")
+}
 
 for args in CMDLineArgs {
     switch args {
@@ -24,6 +27,7 @@ for args in CMDLineArgs {
         exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
+        
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
@@ -75,7 +79,7 @@ for args in CMDLineArgs {
         let filteredCMDLineArgs = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
         for arg in filteredCMDLineArgs {
             guard let firstIndex = arg.firstIndex(of: "=") else {
-                fatalError("Improper input when using --append-rsync-arg. SYNTAX: --append-rsync-arg=RSYNCARG, example: `--append-rsync-arg=--exclude=/some/dir`")
+                fatalError("Improper input when using --append-rsync-arg. SYNTAX: --append-rsync-arg=RSYNC-ARG, example: `--append-rsync-arg=--exclude=/some/dir`")
             }
             let index: Int = arg.distance(from: arg.startIndex, to: firstIndex)
             let rsyncArgSpecified = String(arg.dropFirst(index + 1))
