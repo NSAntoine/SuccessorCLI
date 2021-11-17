@@ -29,7 +29,7 @@ The follwing options can be used with SuccessorCLI:
 
 #### Options for rsync stuff:
 - `--append-rsync-arg RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg "--exclude=/some/directory` will pass in `--exclude=/some/directory` to rsync 
-- `--rsync-dry-run` Specifies that rsync should run with --dry-run
+- `--rsync-dry-run` Specifies that rsync should run with `--dry-run`
 
 ##### Notes: 
 - You can't use both `--dmg-path` and `--ipsw-path` together at the same time.
