@@ -61,6 +61,9 @@ class deviceRestoreManager {
         if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
             rsyncArgs += XPCProxyExcludeArgs
         }
+        if CMDLineArgs.contains("--dry") {
+            rsyncArgs.append("--dry-run")
+        }
         task.setArguments(rsyncArgs)
         task.setStandardOutput(pipe)
         task.setStandardError(pipe)

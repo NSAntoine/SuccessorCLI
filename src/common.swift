@@ -24,7 +24,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
 
     var mountPoint = "/var/mnt/successor/"
     
-    var ver = "2.0.1 PROBABLY-WORKING-BETA"
+    var ver = "2.0.2 PROBABLY-WORKING-BETA"
     
     /// Prints help message
     func printHelp() {
@@ -33,19 +33,24 @@ class SCLIInfo { // SCLI = SuccessorCLI
             Report issues to https://github.com/dabezt31/SuccessorCLI/issues
             Version \(SCLIInfo.shared.ver)
             Usage: successorcli <option>
+            
+            General Options:
                  -h, --help         Prints this help message.
                  -d, --debug        Prints extra information which may be useful.
             
                  --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
                  --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
             
+            Options for manually specifying:
                  --mnt-point-path   /PATH/TO/MOUNT          Manually specify path to mount the attached RootfsDMG to.
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.
                  --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
+            Options for rsync:
                  --append-rsync-arg RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync.
-                 --rsync-dry-run                            Specifies that rsync should run with --dry-run.
+                 --dry                                      Specifies that rsync should run with --dry-run.
+            
             Notes:
             - You can't use both --dmg-path and --ipsw-path together at the same time.
             - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
