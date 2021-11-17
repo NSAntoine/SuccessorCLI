@@ -62,7 +62,6 @@ class deviceRestoreManager {
             rsyncArgs += XPCProxyExcludeArgs
         }
         task.setArguments(rsyncArgs)
-         //These args are the exact same that succession uses  (https://github.com/Samgisaninja/SuccessionRestore/blob/bbfbe5e3e32c034c2d8b314a06f637cb5f2b753d/SuccessionRestore/RestoreViewController.m#L505), i couldnt be bothered to do it manually
         task.setStandardOutput(pipe)
         task.setStandardError(pipe)
         let outHandle = pipe.fileHandleForReading

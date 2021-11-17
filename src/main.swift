@@ -72,6 +72,7 @@ for args in CMDLineArgs {
         print("User manually specified MountPoint as \(mntPointSpecified)")
         SCLIInfo.shared.mountPoint = mntPointSpecified
         
+        // Support for passing in additional rsync args:
     case "--append-rsync-arg":
         guard let index = CMDLineArgs.firstIndex(of: "--append-rsync-arg"), let rsyncArgSpecified = CMDLineArgs[safe: index + 1] else {
             fatalError("User used --append-rsync-arg, however the program couldn't get rsync arg specified, make sure you specified one. See SuccessorCLI --help for more info.")

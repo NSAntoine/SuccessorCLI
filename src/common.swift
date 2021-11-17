@@ -24,7 +24,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
 
     var mountPoint = "/var/mnt/successor/"
     
-    var ver = "2.0.0 PROBABLY-WORKING-BETA"
+    var ver = "2.0.1 PROBABLY-WORKING-BETA"
     
     /// Prints help message
     func printHelp() {
@@ -45,7 +45,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
                  --append-rsync-arg RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync.
-            
+                 --rsync-dry-run                            Specifies that rsync should run with --dry-run.
             Notes:
             - You can't use both --dmg-path and --ipsw-path together at the same time.
             - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
