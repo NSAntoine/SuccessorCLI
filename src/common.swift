@@ -28,7 +28,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     var mountPoint = "/var/mnt/successor/"
     
     /// SuccessorCLI Version
-    var ver = "2.0.2 PROBABLY-WORKING-BETA"
+    var ver = "2.0.3 PROBABLY-WORKING-BETA"
     
     static let helpMessage = """
             SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Dabezt31.
@@ -50,7 +50,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
             Options for rsync:
-                 --append-rsync-arg RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync.
+                 --append-rsync-arg=RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync.
                  --dry                                      Specifies that rsync should run with --dry-run.
             
             Notes:

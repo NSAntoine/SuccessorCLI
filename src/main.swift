@@ -16,6 +16,7 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
 let CMDLineArgs = Array(CommandLine.arguments.dropFirst())
 printIfDebug("Args used: \(CMDLineArgs)")
 
+
 for args in CMDLineArgs {
     switch args {
     case "--help", "-h":
@@ -23,9 +24,6 @@ for args in CMDLineArgs {
         exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
-    case _ where CommandLine.arguments.contains("--dmg-path") && CommandLine.arguments.contains("--ipsw-path"):
-        fatalError("Can't use both --dmg-path AND --ipsw-path together..exiting..")
-        
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
@@ -73,12 +71,17 @@ for args in CMDLineArgs {
         SCLIInfo.shared.mountPoint = mntPointSpecified
         
         // Support for passing in additional rsync args:
-    case "--append-rsync-arg":
-        guard let index = CMDLineArgs.firstIndex(of: "--append-rsync-arg"), let rsyncArgSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --append-rsync-arg, however the program couldn't get rsync arg specified, make sure you specified one. See SuccessorCLI --help for more info.")
+    case _ where args.hasPrefix("--append-rsync-arg="):
+        let filteredCMDLineArgs = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
+        for arg in filteredCMDLineArgs {
+            guard let firstIndex = arg.firstIndex(of: "=") else {
+                fatalError("Improper input when using --append-rsync-arg. SYNTAX: --append-rsync-arg=RSYNCARG, example: `--append-rsync-arg=--exclude=/some/dir`")
+            }
+            let index: Int = arg.distance(from: arg.startIndex, to: firstIndex)
+            let rsyncArgSpecified = String(arg.dropFirst(index + 1))
+            print("User manually specified to add \"\(rsyncArgSpecified)\" to rsync args.")
+            deviceRestoreManager.rsyncArgs.append(rsyncArgSpecified)
         }
-        print("User specified to pass in \"\(rsyncArgSpecified)\" to rsync args.")
-        deviceRestoreManager.rsyncArgs.append(rsyncArgSpecified)
     default:
         break
     }
@@ -134,14 +137,14 @@ case true:
                         exit(0)
                     default:
                         guard let DMGSpecified = DMGManager.DMGSinSCLIPathArray[safe: intInput] else {
-                            fatalError("Inrpoper input.")
+                            fatalError("Improper input.")
                         }
                         DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGSpecified)"
                     }
                 }
             }
         default:
-            fatalError("Inproper input.")
+            fatalError("Improper input.")
         }
     }
 
@@ -158,7 +161,7 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
             iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
         } else {
             guard let dmgSpecified = DMGManager.DMGSinSCLIPathArray[safe: choiceInt] else {
-                fatalError("Inproper Input.")
+                fatalError("Improper Input.")
             }
             DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(dmgSpecified)"
         }
@@ -175,13 +178,13 @@ case false:
     }
     print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically")
     guard let input = readLine(), let intInput = Int(input) else {
-        fatalError("Inproper Input.")
+        fatalError("Improper Input.")
     }
     if intInput == iPSWManager.iPSWSInSCLIPathArray.count {
         iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
     } else {
         guard let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[safe: intInput] else {
-            fatalError("Inproper Input.")
+            fatalError("Improper Input.")
         }
         iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
         iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
@@ -200,7 +203,7 @@ if MntManager.shared.isMountPointMounted() {
         }
         printIfDebug("attachDMG: BSD Name of DMG: \(bsdName)")
         guard fm.fileExists(atPath: "/dev/\(bsdName)s1s1") else {
-            fatalError("Inproper DMG was attached.")
+            fatalError("Improper DMG was attached.")
         }
         diskNameToMnt = "/dev/\(bsdName)s1s1"
         print("Successfully attached \(DMGManager.shared.rfsDMGToUseFullPath) to \(diskNameToMnt)")

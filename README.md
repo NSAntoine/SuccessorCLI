@@ -28,7 +28,7 @@ The follwing options can be used with SuccessorCLI:
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with
 
 #### Options for rsync stuff:
-- `--append-rsync-arg RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg "--exclude=/some/directory` will pass in `--exclude=/some/directory` to rsync 
+- `--append-rsync-arg=RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg="--exclude=/some/directory"` will pass in `--exclude=/some/directory` to rsync 
 - `--dry` Specifies that rsync should run with `--dry-run`
 
 ##### Notes: 
