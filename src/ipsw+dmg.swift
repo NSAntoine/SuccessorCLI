@@ -16,7 +16,7 @@ class iPSWManager {
         }
         return ret
     }
-    /// Path for which iPSW is downloaded to/located, by defualt its /var/mobile/Library/SuccessorCLI/ipsw.ipsw
+    /// Path for which iPSW is downloaded to/located
     static var onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/ipsw.ipsw"
     static var extractedOnboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/extracted"
 

@@ -165,7 +165,7 @@ case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
     }
     break
     
-    // If the case below is triggered, its because theres no rfs.dmg or any type of DMG in /var/mobile/Library/SuccessorCLI, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path, explanation to why is at DMGManager.DMGSinSCLIPathArray's declaration
+    // If the case below is triggered, its because theres no rfs.dmg or any type of DMG in the SuccessorCLI Path, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path, explanation to why is at DMGManager.DMGSinSCLIPathArray's declaration
 case false:
     print("No RootfsDMG Detected, what'd you like to do?")
     if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
@@ -232,4 +232,4 @@ print("Proceeding to launch rsync..")
 
 deviceRestoreManager.launchRsync()
 print("Rsync done, now time to reset device.")
-deviceRestoreManager.callMobileObliterator()
+deviceRestoreManager.callSBDataReset()

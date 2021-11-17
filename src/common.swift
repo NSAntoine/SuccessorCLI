@@ -20,15 +20,17 @@ struct deviceInfo {
 /// Provides information about SuccessorCLI App, such as its path in /var/mobile/Library and the mount point.
 class SCLIInfo { // SCLI = SuccessorCLI
     static let shared = SCLIInfo()
+
+    /// If the user chooses to download or extract an iPSW, then it ends up here. This is also the path at which SuccessorCLI scans for iPSWs and DMGs
     var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
 
+    /// Directory to where the attached DMG will be mounted to, by default this is /var/mnt/successor/, however this can be changed with `--mnt-point-path`, see help message for more.
     var mountPoint = "/var/mnt/successor/"
     
+    /// SuccessorCLI Version
     var ver = "2.0.2 PROBABLY-WORKING-BETA"
     
-    /// Prints help message
-    func printHelp() {
-        print("""
+    static let helpMessage = """
             SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Dabezt31.
             Report issues to https://github.com/dabezt31/SuccessorCLI/issues
             Version \(SCLIInfo.shared.ver)
@@ -56,7 +58,10 @@ class SCLIInfo { // SCLI = SuccessorCLI
             - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
             - Manually specifying an iPSW or DMG is not required. SuccessorCLI will offer to download an iPSW, extract it then get the RootfsDMG from it.
             - All arguments are optional.
-            """)
+            """
+    
+    func printHelp() {
+        print(SCLIInfo.helpMessage)
     }
 }
 

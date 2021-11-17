@@ -7,6 +7,9 @@ class deviceRestoreManager {
     /// Path for the where rsync executable is located, though this is `/usr/bin/rsync` by defualt, it can manually be changed (see --rsync-bin-path in SuccessorCLI Options)
     static var rsyncBinPath = "/usr/bin/rsync"
     
+    /// Returns true or false based on whether or not the user used the `--dry` option
+    static let doDryRun = CMDLineArgs.contains("--dry")
+    
     /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
     static var rsyncArgs = ["-vaxcH",
                              "--delete",
@@ -44,14 +47,6 @@ class deviceRestoreManager {
                                       "--exclude=/var/tmp/xpcproxy",
                                       "--exclude=/usr/lib/substitute-inserter.dylib"]
     
-    /// Calls on to SBDataReset to reset the device like the reset in settings button does.
-    /// This is executed after the rsync function is complete
-    class func callMobileObliterator() {
-        let serverPort = SBSSpringBoardServerPort()
-        print("Located SBSSpringBoardServerPort at \(serverPort)")
-        print("And now we bring forth mass destruction. Do your job, mobile obliterator!")
-        SBDataReset(serverPort, 5)
-    }
     
     /// Function which launches rsync.
     class func launchRsync() {
@@ -61,7 +56,7 @@ class deviceRestoreManager {
         if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
             rsyncArgs += XPCProxyExcludeArgs
         }
-        if CMDLineArgs.contains("--dry") {
+        if doDryRun {
             rsyncArgs.append("--dry-run")
         }
         task.setArguments(rsyncArgs)
@@ -77,5 +72,18 @@ class deviceRestoreManager {
          }
         task.launch()
         task.waitUntilExit()
+    }
+    
+    /// Calls on to SBDataReset to reset the device like the reset in settings button does.
+    /// This is executed after the rsync function is complete
+    class func callSBDataReset() {
+        guard !doDryRun else {
+            print("User specified to do a dry run. Not calling mobile obliterator.")
+            exit(0)
+        }
+        let serverPort = SBSSpringBoardServerPort()
+        print("Located SBSSpringBoardServerPort at \(serverPort)")
+        print("Now launching SBDataReset.")
+        SBDataReset(serverPort, 5)
     }
 }
