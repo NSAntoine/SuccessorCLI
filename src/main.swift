@@ -69,19 +69,10 @@ for args in CMDLineArgs {
 }
 
 let appendRsyncArgArr = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
-// Check for --append-rsync-arg=
-if !appendRsyncArgArr.isEmpty {
-    for arg in appendRsyncArgArr {
-        // find index of first = in the argument
-        guard let firstIndex = arg.firstIndex(of: "=") else {
-            fatalError("Improper input when using --append-rsync-arg. SYNTAX: --append-rsync-arg=RSYNC-ARG, example: `--append-rsync-arg=--exclude=/some/dir`")
-        }
-        let index: Int = arg.distance(from: arg.startIndex, to: firstIndex)
-        // remove the first = and everything before it
-        let rsyncArgSpecified = String(arg.dropFirst(index + 1))
-        print("User manually specified to add \"\(rsyncArgSpecified)\" to rsync args.")
-        deviceRestoreManager.rsyncArgs.append(rsyncArgSpecified)
-    }
+for rawArg in appendRsyncArgArr {
+    let argToAppend = rawArg.replacingOccurrences(of: "--append-rsync-arg=", with: "")
+    print("User specified to append argument \"\(argToAppend)\" to rsync args.")
+    deviceRestoreManager.rsyncArgs.append(argToAppend)
 }
 
 // detecting for root

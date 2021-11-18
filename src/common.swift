@@ -49,7 +49,6 @@ class SCLIInfo { // SCLI = SuccessorCLI
             Options for Rsync / Restoring stuff:
                  --rsync-dry-run                            Specifies that rsync should run with --dry-run.
                  --restore                                  Do a full restore with rsync. Note that this WILL erase your device.
-            
                  --append-rsync-arg=RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync. Example: `--append-rsync-arg="--exclude=/random/dir"` Will add `--exclude=/random/dir` to rsync arguments.
             
             Notes:
