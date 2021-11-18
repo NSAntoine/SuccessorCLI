@@ -20,6 +20,8 @@ if CMDLineArgs.contains("--dmg-path") && CMDLineArgs.contains("--ipsw-path") {
     fatalError("--dmg-path and --ipsw-path cannot be used together.")
 }
 
+
+// MARK: Command Line Argument support
 for args in CMDLineArgs {
     switch args {
     case "--help", "-h":
@@ -27,6 +29,7 @@ for args in CMDLineArgs {
         exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
+        
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
@@ -52,6 +55,7 @@ for args in CMDLineArgs {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }
         deviceRestoreManager.rsyncBinPath = rsyncBinSpecified
+        
         // Support for manually specifying Mount Point:
     case "--mnt-point-path":
         let mntPointSpecified = retValueAfterCMDLineOpt(optionName: "--mnt-point-path", thingToParseName: "Mount Point")
@@ -59,20 +63,22 @@ for args in CMDLineArgs {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
         SCLIInfo.shared.mountPoint = mntPointSpecified
-        // Support for passing in additional rsync args:
-    case _ where args.hasPrefix("--append-rsync-arg="):
-        let filteredCMDLineArgs = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
-        for arg in filteredCMDLineArgs {
-            guard let firstIndex = arg.firstIndex(of: "=") else {
-                fatalError("Improper input when using --append-rsync-arg. SYNTAX: --append-rsync-arg=RSYNC-ARG, example: `--append-rsync-arg=--exclude=/some/dir`")
-            }
-            let index: Int = arg.distance(from: arg.startIndex, to: firstIndex)
-            let rsyncArgSpecified = String(arg.dropFirst(index + 1))
-            print("User manually specified to add \"\(rsyncArgSpecified)\" to rsync args.")
-            deviceRestoreManager.rsyncArgs.append(rsyncArgSpecified)
-        }
     default:
         break
+    }
+}
+
+// Check for --append-rsync-arg=
+if !CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }.isEmpty {
+    let filteredCMDLineArgs = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
+    for arg in filteredCMDLineArgs {
+        guard let firstIndex = arg.firstIndex(of: "=") else {
+            fatalError("Improper input when using --append-rsync-arg. SYNTAX: --append-rsync-arg=RSYNC-ARG, example: `--append-rsync-arg=--exclude=/some/dir`")
+        }
+        let index: Int = arg.distance(from: arg.startIndex, to: firstIndex)
+        let rsyncArgSpecified = String(arg.dropFirst(index + 1))
+        print("User manually specified to add \"\(rsyncArgSpecified)\" to rsync args.")
+        deviceRestoreManager.rsyncArgs.append(rsyncArgSpecified)
     }
 }
 

@@ -50,14 +50,15 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
             Options for rsync:
-                 --append-rsync-arg=RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync.
+                 --append-rsync-arg=RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync. Example: `--append-rsync-arg="--exclude=/random/dir"` Will add `--exclude=/random/dir` to rsync arguments.
                  --dry                                      Specifies that rsync should run with --dry-run.
             
             Notes:
+            - All options are optional.
+            - SuccessorCLI Needs to be run as root.
             - You can't use both --dmg-path and --ipsw-path together at the same time.
             - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
             - Manually specifying an iPSW or DMG is not required. SuccessorCLI will offer to download an iPSW, extract it then get the RootfsDMG from it.
-            - All arguments are optional.
             """
     
     func printHelp() {
