@@ -7,8 +7,8 @@ class deviceRestoreManager {
     /// Path for the where rsync executable is located, though this is `/usr/bin/rsync` by defualt, it can manually be changed (see --rsync-bin-path in SuccessorCLI Options)
     static var rsyncBinPath = "/usr/bin/rsync"
     
-    /// Returns true or false based on whether or not the user used the `--dry` option
-    static let doDryRun = CMDLineArgs.contains("--dry")
+    /// Returns true or false based on whether or not the user used the `--rsync-dry-run` option
+    static let doDryRun = CMDLineArgs.contains("--rsync-dry-run")
     
     /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
     static var rsyncArgs = ["-vaxcH",
@@ -85,4 +85,14 @@ class deviceRestoreManager {
         print("Now launching SBDataReset.")
         SBDataReset(serverPort, 5)
     }
+    
+    /// Function which launches Rsync then calls onto SBDataReset.
+    class func execRsyncThenCallDataReset() {
+        print("Proceeding to launch rsync..")
+        deviceRestoreManager.launchRsync()
+        print("Rsync done, now time to reset device.")
+        deviceRestoreManager.callSBDataReset()
+        exit(0)
+    }
+    
 }

@@ -18,24 +18,24 @@ The follwing options can be used with SuccessorCLI:
 - `-h, --help` Prints the help message then exits
 - `-d, --debug` Prints extra debug information which may be helpful
 
-- `--no-restore` Downloads and extracts iPSW, gets the RootfsDMG, attach and mount RootfsDMG, then exit right before the restore is supposed to start
-- `--no-wait` Removes the 15 seconds given to the user before the restore begins and instead begins the restore immediately
-
 #### Options for manually specifying:
-- `--mnt-point-path   /PATH/TO/MOUNT` Specify the directory to where the attached RootfsDMG will be mounted to
+- `--mnt-point-path /PATH/TO/MOUNT` Specify the directory to where the attached RootfsDMG will be mounted to
 - `--ipsw-path /PATH/TO/IPSW` Specify iPSW Which'll be used
 - `--dmg-path /PATH/TO/ROOTFSDMG` Specify the rootfsDMG to use
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with
 
-#### Options for rsync stuff:
+#### Options for Rsync / Restore stuff:
 - `--append-rsync-arg=RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg="--exclude=/some/directory"` will pass in `--exclude=/some/directory` to rsync 
-- `--dry` Specifies that rsync should run with `--dry-run`
+
+- `--rsync-dry-run` Specifies that rsync should run with `--dry-run`
+- `--restore` Do a full restore with rsync. Note that this WILL erase your device.
+
 
 ##### Notes: 
 - You can't use both `--dmg-path` and `--ipsw-path` together at the same time.
 - All arguments are optional.
+- If `--restore` is not used, then SuccessorCLI will not execute the rsync restore. Use `--restore` if you want SuccesorCLI to execute the restore.
 - If -`-mnt-point-path` is not used, then the default Mount Point is set to `/var/mnt/successor/`.
-
 
 # Project Status
 The program does work right now, I've tested it multiple times on an iPhone 8 running iOS 14.5, Im just polishing up the project right now.

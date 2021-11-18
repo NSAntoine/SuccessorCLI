@@ -68,14 +68,16 @@ for args in CMDLineArgs {
     }
 }
 
+let appendRsyncArgArr = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
 // Check for --append-rsync-arg=
-if !CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }.isEmpty {
-    let filteredCMDLineArgs = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
-    for arg in filteredCMDLineArgs {
+if !appendRsyncArgArr.isEmpty {
+    for arg in appendRsyncArgArr {
+        // find index of first = in the argument
         guard let firstIndex = arg.firstIndex(of: "=") else {
             fatalError("Improper input when using --append-rsync-arg. SYNTAX: --append-rsync-arg=RSYNC-ARG, example: `--append-rsync-arg=--exclude=/some/dir`")
         }
         let index: Int = arg.distance(from: arg.startIndex, to: firstIndex)
+        // remove the first = and everything before it
         let rsyncArgSpecified = String(arg.dropFirst(index + 1))
         print("User manually specified to add \"\(rsyncArgSpecified)\" to rsync args.")
         deviceRestoreManager.rsyncArgs.append(rsyncArgSpecified)
@@ -93,6 +95,16 @@ if isNT2() {
 }
 print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ver).")
 
+if MntManager.shared.isMountPointMounted() {
+    print("Mount Point at \(SCLIInfo.shared.mountPoint) already mounted, would you like to execute restore from the contents inside it?")
+    print("[1] Yes")
+    print("[Anything Else] No")
+    if let input = readLine() {
+        if input == "1" {
+            deviceRestoreManager.execRsyncThenCallDataReset()
+        }
+    }
+}
 // MARK: RootfsDMG and iPSW Detection
 /*
  The switch case below detects if a RootfsDMG is present in the SuccessorCLI directory.
@@ -212,22 +224,10 @@ if MntManager.shared.isMountPointMounted() {
     }
 }
 
-switch CMDLineArgs {
-case _ where CMDLineArgs.contains("--no-restore"):
-    print("Successfully attached and mounted RootfsDMG, exiting now because the user used --no-restore.")
+if !CMDLineArgs.contains("--restore") {
+    print("Attached and mounted DMG to \(SCLIInfo.shared.mountPoint), now exiting because the user did not use --restore.")
+    print("If you would like SuccessorCLI to execute a restore, please run it again but with the --restore option.")
     exit(0)
-case _ where !CMDLineArgs.contains("--no-wait"):
-    print("You have 15 seconds to cancel the restore before it starts, to cancel, Press CTRL+C.")
-    for time in 0...15 {
-        sleep(UInt32(time))
-        print("Starting restore in \(15 - time) Seconds.")
-    }
-default:
-    break
 }
 
-print("Proceeding to launch rsync..")
-
-deviceRestoreManager.launchRsync()
-print("Rsync done, now time to reset device.")
-deviceRestoreManager.callSBDataReset()
+deviceRestoreManager.execRsyncThenCallDataReset()

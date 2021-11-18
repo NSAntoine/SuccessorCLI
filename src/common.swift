@@ -40,25 +40,24 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  -h, --help         Prints this help message.
                  -d, --debug        Prints extra information which may be useful.
             
-                 --no-restore       Download and extract iPSW, rename the rootfilesystem DMG to rfs.dmg, then attach and mount rfs.dmg, but won't execute the restore itself.
-                 --no-wait          Removes the 15 seconds given for the user to cancel the restore before it starts.
-            
             Options for manually specifying:
                  --mnt-point-path   /PATH/TO/MOUNT          Manually specify path to mount the attached RootfsDMG to.
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.
                  --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
-            Options for rsync:
+            Options for Rsync / Restoring stuff:
+                 --rsync-dry-run                            Specifies that rsync should run with --dry-run.
+                 --restore                                  Do a full restore with rsync. Note that this WILL erase your device.
+            
                  --append-rsync-arg=RSYNC-ARG-TO-APPEND     Specify an additional rsync argument to be passed in to rsync. Example: `--append-rsync-arg="--exclude=/random/dir"` Will add `--exclude=/random/dir` to rsync arguments.
-                 --dry                                      Specifies that rsync should run with --dry-run.
             
             Notes:
-            - All options are optional.
             - SuccessorCLI Needs to be run as root.
+            - if --restore is not used, the rsync restore by default will not be executed. Use --restore to execute the rsync restore.
             - You can't use both --dmg-path and --ipsw-path together at the same time.
             - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
-            - Manually specifying an iPSW or DMG is not required. SuccessorCLI will offer to download an iPSW, extract it then get the RootfsDMG from it.
+            - Manually specifying an iPSW or DMG is not required, as SuccessorCLI will offer to download an iPSW for the user.
             """
     
     func printHelp() {
