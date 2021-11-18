@@ -27,14 +27,10 @@ for args in CMDLineArgs {
         exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
-        
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
-        guard let index = CMDLineArgs.firstIndex(of: "--ipsw-path"), let iPSWSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --ipsw-path, however the program couldn't get the iPSW Path specified, make sure you specified one. See SuccessorCLI --help for more info.")
-        }
-        print("User manually specified iPSW Path to \(iPSWSpecified)")
+        let iPSWSpecified = retValueAfterCMDLineOpt(optionName: "--ipsw-path", thingToParseName: "iPSW Path")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
             fatalError("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW")
         }
@@ -43,10 +39,7 @@ for args in CMDLineArgs {
         
         // Support for manually specifying rootfsDMG:
     case "--dmg-path":
-        guard let index = CMDLineArgs.firstIndex(of: "--dmg-path"), let dmgSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --dmg-path, however the program couldn't get DMG Path specified, make sure you specified one. See SuccessorCLI --help for more info.")
-        }
-        print("User manually specified DMG Path to \(dmgSpecified)")
+        let dmgSpecified = retValueAfterCMDLineOpt(optionName: "--dmg-path", thingToParseName: "DMG Path")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
             fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
         }
@@ -54,26 +47,18 @@ for args in CMDLineArgs {
         
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
-        guard let index = CMDLineArgs.firstIndex(of: "--rsync-bin-path"), let rsyncBinSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --rsync-bin-path, however the program couldn't get Rsync executable Path specified, make sure you specified one. See SuccessorCLI --help for more info.")
-        }
+        let rsyncBinSpecified = retValueAfterCMDLineOpt(optionName: "--rsync-bin-path", thingToParseName: "Rsync executable Path")
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }
-        print("User manually specified rsync executable path as \(rsyncBinSpecified)")
         deviceRestoreManager.rsyncBinPath = rsyncBinSpecified
-        
         // Support for manually specifying Mount Point:
     case "--mnt-point-path":
-        guard let index = CMDLineArgs.firstIndex(of: "--mnt-point-path"), let mntPointSpecified = CMDLineArgs[safe: index + 1] else {
-            fatalError("User used --mnt-point-path, however the program couldn't get the Mount Point specified, make sure you specified one. See SuccessorCLI --help for more info.")
-        }
+        let mntPointSpecified = retValueAfterCMDLineOpt(optionName: "--mnt-point-path", thingToParseName: "Mount Point")
         guard fm.fileExists(atPath: mntPointSpecified) else {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
-        print("User manually specified MountPoint as \(mntPointSpecified)")
         SCLIInfo.shared.mountPoint = mntPointSpecified
-        
         // Support for passing in additional rsync args:
     case _ where args.hasPrefix("--append-rsync-arg="):
         let filteredCMDLineArgs = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=")  }
