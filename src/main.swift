@@ -90,13 +90,27 @@ print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ver).")
 if MntManager.shared.isMountPointMounted() {
     print("Mount Point at \(SCLIInfo.shared.mountPoint) already mounted, would you like to execute restore from the contents inside it?")
     print("[1] Yes")
-    print("[Anything Else] No")
+    print("[2] No, unmount it and continue")
+    print("[3] No and exit")
     if let input = readLine() {
-        if input == "1" {
+        switch input {
+        case "1":
             deviceRestoreManager.execRsyncThenCallDataReset()
+        case "2":
+            let path = strdup(SCLIInfo.shared.mountPoint)
+            let unmnt = unmount(path, 0)
+            guard unmnt == 0 else {
+                fatalError("Error encountered while unmounting \(SCLIInfo.shared.mountPoint): \(String(cString: strerror(errno)))")
+            }
+            print("Unmounted \(SCLIInfo.shared.mountPoint).")
+        case "3":
+            exit(0)
+        default:
+            break
         }
     }
 }
+
 // MARK: RootfsDMG and iPSW Detection
 /*
  The switch case below detects if a RootfsDMG is present in the SuccessorCLI directory.
