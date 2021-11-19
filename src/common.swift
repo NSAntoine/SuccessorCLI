@@ -122,13 +122,13 @@ func isNT2() -> Bool {
 
 /* The following function returns the value that the user specified for a specific option. Example:
  --dmg-path randomDMG.dmg
- The function will return `randomDMG`.
+ The function will return `randomDMG.dmg`.
  
  The `thingToParse` parameter is there to be shown in the error message or if the parsing was successful
  */
-func retValueAfterCMDLineOpt(optionName:String, fromArgArr ArgArr:[String] = CMDLineArgs, thingToParseName:String) -> String {
-    guard let index = ArgArr.firstIndex(of: optionName), let specifiedThing = ArgArr[safe: index + 1] else {
-        fatalError("User used \(optionName), however the program couldn't get the \(thingToParseName) specified, make sure you specified one. See SuccessorCLI --help for more info.")
+func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, thingToParseName:String) -> String {
+    guard let index = ArgArr.firstIndex(of: longOpt), let specifiedThing = ArgArr[safe: index + 1] else {
+        fatalError("User used \(longOpt), however the program couldn't get the \(thingToParseName) specified, make sure you specified one. See SuccessorCLI --help for more info.")
     }
     print("User manually specified \(thingToParseName) as \(specifiedThing)")
     return specifiedThing
