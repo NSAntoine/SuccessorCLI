@@ -126,10 +126,12 @@ func isNT2() -> Bool {
  
  The `thingToParse` parameter is there to be shown in the error message or if the parsing was successful
  */
-func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, thingToParseName:String) -> String {
+func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, thingToParseName:String, shouldPrintThatUserHasSpecified:Bool = true) -> String {
     guard let index = ArgArr.firstIndex(of: longOpt), let specifiedThing = ArgArr[safe: index + 1] else {
         fatalError("User used \(longOpt), however the program couldn't get the \(thingToParseName) specified, make sure you specified one. See SuccessorCLI --help for more info.")
     }
-    print("User manually specified \(thingToParseName) as \(specifiedThing)")
+    if shouldPrintThatUserHasSpecified {
+        print("User manually specified \(thingToParseName) as \(specifiedThing)")
+    }
     return specifiedThing
 }

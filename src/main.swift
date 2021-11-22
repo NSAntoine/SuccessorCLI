@@ -221,12 +221,11 @@ if MntManager.shared.isMountPointMounted() {
         print("Successfully attached \(DMGManager.shared.rfsDMGToUseFullPath) to \(diskNameToMnt)")
     }
 
-    MntManager.mountNative(devDiskName: diskNameToMnt, mountPointPath: SCLIInfo.shared.mountPoint) { mntStatus in
-        guard mntStatus == 0 else {
-            fatalError("Wasn't able to mount successfully..error: \(String(cString: strerror(errno))). Exiting..")
-        }
-        print("Mounted \(diskNameToMnt) to \(SCLIInfo.shared.mountPoint) Successfully. Continiung!")
+    let mntStatus = MntManager.mountNative(devDiskName: diskNameToMnt, mountPointPath: SCLIInfo.shared.mountPoint)
+    guard mntStatus == 0 else {
+        fatalError("Wasn't able to mount successfully..error: \(String(cString: strerror(errno))). Exiting..")
     }
+    print("Mounted \(diskNameToMnt) to \(SCLIInfo.shared.mountPoint) Successfully. Continiung!")
 }
 
 if !CMDLineArgs.contains("--restore") {
