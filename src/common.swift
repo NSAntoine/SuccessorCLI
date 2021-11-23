@@ -28,7 +28,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     var mountPoint = "/var/mnt/successor/"
     
     /// SuccessorCLI Version
-    var ver = "2.2.0 PROBABLY-WORKING-BETA"
+    var ver = "2.2.5 PROBABLY-WORKING-BETA"
     
     static let helpMessage = """
             SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Dabezt31.
@@ -126,12 +126,10 @@ func isNT2() -> Bool {
  
  The `thingToParse` parameter is there to be shown in the error message or if the parsing was successful
  */
-func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, thingToParseName:String, shouldPrintThatUserHasSpecified:Bool = true) -> String {
+func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, thingToParseName:String) -> String {
     guard let index = ArgArr.firstIndex(of: longOpt), let specifiedThing = ArgArr[safe: index + 1] else {
         fatalError("User used \(longOpt), however the program couldn't get the \(thingToParseName) specified, make sure you specified one. See SuccessorCLI --help for more info.")
     }
-    if shouldPrintThatUserHasSpecified {
-        print("User manually specified \(thingToParseName) as \(specifiedThing)")
-    }
+    print("User manually specified \(thingToParseName) as \(specifiedThing)")
     return specifiedThing
 }

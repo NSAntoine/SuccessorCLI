@@ -94,17 +94,12 @@ class DMGManager {
      */
     class func attachDMG(dmgPath:String, completionHandler: (_ bsdName: String?, _ err:String?) -> Void) {
         let url = URL(fileURLWithPath: dmgPath)
-        var err:NSError? // if an error is encountered with Attach Parameters or Attaching itself, it will be set to this
-        var handler: DIDeviceHandle?
+        var err:NSError?
         let attachParams = DIAttachParams(url: url, error: err)
-        guard err == nil else {
-            return completionHandler(nil, err?.localizedFailureReason ?? err?.localizedDescription)
-        }
         attachParams?.autoMount = false
+        var handler:DIDeviceHandle?
         DiskImages2.attach(with: attachParams, handle: &handler, error: err)
-        guard err == nil else {
-            return completionHandler(nil, err?.localizedFailureReason ?? err?.localizedDescription)
-        }
-        completionHandler(handler?.bsdName(), nil)
+        let errToReturn = err?.localizedFailureReason ?? err?.localizedDescription
+        completionHandler(handler?.bsdName(), errToReturn)
     }
 }
