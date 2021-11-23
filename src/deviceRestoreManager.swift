@@ -95,4 +95,15 @@ class deviceRestoreManager {
         exit(0)
     }
     
+    // By default, it will select the DMG in DMGManager.shared.rfsDMGToUseFullPath as the dmg to attach/mount and SCLIInfo.shared.mountPoint as the default mount point
+    class func attachMntAndExecRestore(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
+        MntManager.attachAndMntDMG(DMGPath: DMGPath, mntPointPath: mntPoint)
+        if !CMDLineArgs.contains("--restore") && !CMDLineArgs.contains("-r") {
+            print("User did not use --restore, not executing restore.")
+            print("Please run SuccessorCLI again with `--restore` to execute the restore.")
+            print("Exiting.")
+            exit(0)
+        }
+        execRsyncThenCallDataReset()
+    }
 }

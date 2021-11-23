@@ -6,10 +6,6 @@ import PackageDescription
 let package = Package(
     name: "SuccessorCLI",
     platforms: [.iOS(.v14)], // Just for the code autocomplete tbh
-    products: [
-        .library(name: "SuccessorCLI",
-                 targets: ["SuccessorCLI"])
-    ],
     targets: [
         .target(
            name: "SuccessorCLI",

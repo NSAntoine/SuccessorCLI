@@ -64,4 +64,23 @@ class MntManager {
                 
                 return buffer.st_dev != p_buf.st_dev || buffer.st_ino == p_buf.st_ino
     }
+    
+    class func attachAndMntDMG(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
+        var diskName = ""
+        DMGManager.attachDMG(dmgPath: DMGPath) { bsdName, err in
+            guard let bsdName = bsdName, err == nil else {
+                fatalError("Error encountered while attaching DMG \"\(DMGPath)\": \(err ?? "Unknown Error")..Cannot proceed.")
+            }
+            printIfDebug("BSDName of attached DMG: \(bsdName)")
+            diskName = "/dev/\(bsdName)s1s1"
+        }
+        guard fm.fileExists(atPath: diskName) else {
+            fatalError("DMG \"\(DMGPath)\" was attached improperly..Cannot proceed.")
+        }
+        let diskNameMntStatus = mountNative(devDiskName: diskName, mountPointPath: mntPoint)
+        guard diskNameMntStatus == 0 else {
+            fatalError("Error encountered while mounting \(diskName) to \(mntPoint): \(String(cString: strerror(errno)))..Cannot proceed.")
+        }
+        print("Mounted \(diskName) to \(mntPoint) Successfully.")
+    }
 }

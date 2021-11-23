@@ -111,127 +111,52 @@ if MntManager.shared.isMountPointMounted() {
 }
 
 // MARK: RootfsDMG and iPSW Detection
-/*
- The switch case below detects if a RootfsDMG is present in the SuccessorCLI directory.
- If there isn't one, it also checks if there are other DMGs the SuccessorCLI directory, if there are any it'll ask the user if they want to use one.
- If there are also no other DMGs in the SuccessorCLI directory, it will also try to find existing iPSWs in the SuccssorCLI Directory
- If there are existing iPSWs, then they are listed, however whether or not there are existing iPSWs in the SuccessorCLI directory, it'll ask the user if they want SuccessorCLI to download an iPSW for them.
- */
-switch fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
-case true:
-    print("Found rootfsDMG at \(DMGManager.shared.rfsDMGToUseFullPath), Would you like to use it?")
+if fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
+    print("Rfs DMG at \(DMGManager.shared.rfsDMGToUseFullPath) already exists, would you like to use it?")
     print("[1] Yes")
     print("[2] No")
-    if let choice = readLine() {
-        switch choice {
-        case "1", "Y", "y":
-            print("Proceeding to use \(DMGManager.shared.rfsDMGToUseFullPath)")
-        case "2", "N", "n":
-            /*
-             If this case gets triggered, the following happens:
-             if there are other DMGs in the SuccessorCLIPath, it will list all of them and ask the user if they want to use them. Note this doesn't include subdirectories of the SuccessorCLIPath
-             the second to last option will always be asking the user if they want to download the iPSW for their device and version
-             the last option will be SuccessorCLI asking the user if they want to do nothing and exit the program
-            */
-            if !DMGManager.DMGSinSCLIPathArray.isEmpty {
-                print("Found other DMGs in \(SCLIInfo.shared.SuccessorCLIPath), What would you like to do?")
-                for i in 0...(DMGManager.DMGSinSCLIPathArray.count - 1) {
-                    print("[\(i)] Use DMG \(DMGManager.DMGSinSCLIPathArray[i])")
-                }
-                print("[\(DMGManager.DMGSinSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically then extract the RootfsDMG from said iPSW.")
-                print("[\(DMGManager.DMGSinSCLIPathArray.count + 1)] Do nothing and exit.")
-                if let input = readLine(), let intInput = Int(input) {
-                    switch intInput {
-                    case DMGManager.DMGSinSCLIPathArray.count:
-                        iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
-                    case (DMGManager.DMGSinSCLIPathArray.count + 1):
-                        print("Exiting because user specified to do so.")
-                        exit(0)
-                    default:
-                        guard let DMGSpecified = DMGManager.DMGSinSCLIPathArray[safe: intInput] else {
-                            fatalError("Improper input.")
-                        }
-                        DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGSpecified)"
-                    }
-                }
-            }
-        default:
-            fatalError("Improper input.")
-        }
+    let range = (1...2) // Range that the user is supposed to specify between
+    guard let input = readLine(), let inputInt = Int(input), range ~= inputInt else {
+        fatalError("Input must be a Int and has to be between 1 to 2.")
     }
+    if inputInt == 1 {
+        deviceRestoreManager.attachMntAndExecRestore()
+    }
+}
 
-        // If there's already a DMG in SuccessorCLI Path, inform the user and ask if they want to use it
-case false where !DMGManager.DMGSinSCLIPathArray.isEmpty:
-    print("Found Following DMGs in \(SCLIInfo.shared.SuccessorCLIPath), Which would you like to use?")
+if !DMGManager.DMGSinSCLIPathArray.isEmpty {
+    print("Found DMGs in \(SCLIInfo.shared.SuccessorCLIPath), Which would you like to use?")
     for i in 0...(DMGManager.DMGSinSCLIPathArray.count - 1) {
         print("[\(i)] Use DMG \(DMGManager.DMGSinSCLIPathArray[i])")
     }
-    print("[\(DMGManager.DMGSinSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically then extract the RootfsDMG from said iPSW.")
-    // Input needs to be Int
-    if let choice = readLine(), let choiceInt = Int(choice) {
-        if choiceInt == DMGManager.DMGSinSCLIPathArray.count {
-            iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
-        } else {
-            guard let dmgSpecified = DMGManager.DMGSinSCLIPathArray[safe: choiceInt] else {
-                fatalError("Improper Input.")
-            }
-            DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(dmgSpecified)"
-        }
+    print("[\(DMGManager.DMGSinSCLIPathArray.count)] None - Use/Download an iPSW")
+    // The input should be an integer and less than / equal to the count of DMGManager.DMGSinSCLIPathArray
+    guard let input = readLine(), let inputInt = Int(input), inputInt <= DMGManager.DMGSinSCLIPathArray.count else {
+        fatalError("Input must be a number and must be equal to or less than \(DMGManager.DMGSinSCLIPathArray.count)")
     }
-    break
-    
-    // If the case below is triggered, its because theres no rfs.dmg or any type of DMG in the SuccessorCLI Path, note that DMGManager.DMGSinSCLIPathArray doesn't search the extracted path, explanation to why is at DMGManager.DMGSinSCLIPathArray's declaration
-case false:
-    print("No RootfsDMG Detected, what'd you like to do?")
-    if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
+    if inputInt != DMGManager.DMGSinSCLIPathArray.count {
+        let DMGSpecified = DMGManager.DMGSinSCLIPathArray[inputInt]
+        DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGSpecified)"
+        deviceRestoreManager.attachMntAndExecRestore()
+    }
+}
+
+if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
+    print("Found following iPSWs in \(SCLIInfo.shared.SuccessorCLIPath), Which would you like to use?")
     for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
-        print("[\(i)] Extract and use iPSW \"\(iPSWManager.iPSWSInSCLIPathArray[i])\"")
-        }
-    }
-    print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] let SuccessorCLI download an iPSW for me automatically")
-    guard let input = readLine(), let intInput = Int(input) else {
-        fatalError("Improper Input.")
-    }
-    if intInput == iPSWManager.iPSWSInSCLIPathArray.count {
-        iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
-    } else {
-        guard let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[safe: intInput] else {
-            fatalError("Improper Input.")
-        }
-        iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
-        iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
+        print("[\(i)] Extract and use iPSW \(iPSWManager.iPSWSInSCLIPathArray[i])")
     }
 }
-
-if MntManager.shared.isMountPointMounted() {
-    print("\(SCLIInfo.shared.mountPoint) Already mounted, skipping right ahead to the restore.")
+print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] Download an iPSW")
+guard let input = readLine(), let inputInt = Int(input), inputInt <= iPSWManager.iPSWSInSCLIPathArray.count else {
+    fatalError("Input must be a number and must be equal to or less than \(iPSWManager.iPSWSInSCLIPathArray.count)")
+}
+if inputInt == iPSWManager.iPSWSInSCLIPathArray.count {
+    iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
 } else {
-    var diskNameToMnt = ""
-    printIfDebug("Proceeding to (try) to attach DMG \"\(DMGManager.shared.rfsDMGToUseFullPath)\"")
-    DMGManager.attachDMG(dmgPath: DMGManager.shared.rfsDMGToUseFullPath) { bsdName, err in
-        // If the "else" statement is executed here, then that means the program either encountered an error while attaching (see attachDMG function declariation) or it couldn't get the name of the attached disk
-        guard let bsdName = bsdName, err == nil else {
-            fatalError("Error encountered while attaching: \(err ?? "Unknown Error"). Exiting.")
-        }
-        printIfDebug("attachDMG: BSD Name of DMG: \(bsdName)")
-        guard fm.fileExists(atPath: "/dev/\(bsdName)s1s1") else {
-            fatalError("Improper DMG was attached.")
-        }
-        diskNameToMnt = "/dev/\(bsdName)s1s1"
-        print("Successfully attached \(DMGManager.shared.rfsDMGToUseFullPath) to \(diskNameToMnt)")
-    }
-
-    let mntStatus = MntManager.mountNative(devDiskName: diskNameToMnt, mountPointPath: SCLIInfo.shared.mountPoint)
-    guard mntStatus == 0 else {
-        fatalError("Wasn't able to mount successfully..error: \(String(cString: strerror(errno))). Exiting..")
-    }
-    print("Mounted \(diskNameToMnt) to \(SCLIInfo.shared.mountPoint) Successfully. Continiung!")
+    let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[inputInt]
+    iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
+    iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
 }
 
-if !CMDLineArgs.contains("--restore") {
-    print("Attached and mounted DMG to \(SCLIInfo.shared.mountPoint), now exiting because the user did not use --restore.")
-    print("If you would like SuccessorCLI to execute a restore, please run it again but with the --restore option.")
-    exit(0)
-}
-
-deviceRestoreManager.execRsyncThenCallDataReset()
+deviceRestoreManager.attachMntAndExecRestore()

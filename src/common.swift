@@ -28,7 +28,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     var mountPoint = "/var/mnt/successor/"
     
     /// SuccessorCLI Version
-    var ver = "2.0.5 PROBABLY-WORKING-BETA"
+    var ver = "2.2.0 PROBABLY-WORKING-BETA"
     
     static let helpMessage = """
             SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Dabezt31.
