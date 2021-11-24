@@ -10,6 +10,9 @@ class deviceRestoreManager {
     /// Returns true or false based on whether or not the user used the `--rsync-dry-run` option
     static let doDryRun = CMDLineArgs.contains("--rsync-dry-run")
     
+    /// Needs to be used to launch the rsync restore.
+    static let shouldDoRestore = CMDLineArgs.contains("--restore") || CMDLineArgs.contains("-r")
+    
     /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
     static var rsyncArgs = ["-vaxcH",
                             "--delete",
@@ -91,6 +94,12 @@ class deviceRestoreManager {
     
     /// Function which launches Rsync then calls onto SBDataReset.
     class func execRsyncThenCallDataReset() {
+        guard shouldDoRestore else {
+            print("Not launching restore because the user did not use --restore / -r.")
+            print("If you want SuccessorCLI to do the restore, please run SuccessorCLI again with --restore / -r.")
+            print("Exiting.")
+            exit(0)
+        }
         print("Proceeding to launch rsync..")
         deviceRestoreManager.launchRsync()
         print("Rsync done, now time to reset device.")
@@ -102,12 +111,6 @@ class deviceRestoreManager {
     class func attachMntAndExecRestore(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
         if !MntManager.shared.isMountPointMounted() {
         MntManager.attachAndMntDMG(DMGPath: DMGPath, mntPointPath: mntPoint)
-        }
-        if !CMDLineArgs.contains("--restore") && !CMDLineArgs.contains("-r") {
-            print("User did not use --restore, not executing restore.")
-            print("Please run SuccessorCLI again with `--restore` to execute the restore.")
-            print("Exiting.")
-            exit(0)
         }
         execRsyncThenCallDataReset()
     }
