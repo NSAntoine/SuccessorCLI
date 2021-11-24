@@ -81,13 +81,13 @@ for argToAppend in rsyncArgsSpecified {
 // detecting for root
 // root is needed to execute rsync with enough permissions to replace all files necessary
 guard getuid() == 0 else {
-    fatalError("ERROR: SuccessorCLI Must be run as root, eg `sudo \(CommandLine.arguments.joined(separator: " "))`")
+    fatalError("ERROR: SuccessorCLI Must be run as root, eg `\(SCLIInfo.shared.ProgramName) \(CMDLineArgs.joined(separator: " "))`")
 }
 
 if isNT2() {
     print("[WARNING] NewTerm 2 Detected, I advise you to SSH Instead, as the huge output by rsync may crash NewTerm 2 mid restore.")
 }
-print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ver).")
+print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ProgramVer).")
 
 if MntManager.shared.isMountPointMounted() {
     print("Mount Point at \(SCLIInfo.shared.mountPoint) already mounted, would you like to execute restore from the contents inside it?")
