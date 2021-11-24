@@ -46,9 +46,9 @@ class iPSWManager {
         }
 }
     
-    class func downloadAndExtractiPSW(iPSWURL: URL) {
+    class func downloadAndExtractiPSW(onlineiPSWURL: URL = onlineiPSWManager.onlineiPSWInfo.iPSWURL, destinationPath:String = iPSWManager.onboardiPSWPath) {
         print("Will now download iPSW..")
-        NetworkUtilities.shared.downloadItem(url: iPSWURL, destinationURL: URL(fileURLWithPath: iPSWManager.onboardiPSWPath))
+        NetworkUtilities.shared.downloadItem(url: onlineiPSWURL, destinationURL: URL(fileURLWithPath: destinationPath))
         print("Downloaded iPSW, now time to extract it..")
         iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
         print("Decompressed iPSW.")
@@ -56,22 +56,24 @@ class iPSWManager {
 }
 
 // MARK: Online iPSW Stuff
-struct onlineiPSWInfoProperties: Codable { // stuff thats in the JSON Response
-    let url:URL
-}
-var iPSWMEJSONDataResponse:String {
-    var ret = ""
-    NetworkUtilities.shared.retJSONFromURL(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { strResponse in
-        ret = strResponse
+struct onlineiPSWManager {
+    struct onlineiPSWInfoProperties: Codable { // stuff thats in the JSON Response
+        let url:URL
     }
-    return ret
-}
+    static var iPSWMEJSONDataResponse:String {
+        var ret = ""
+        NetworkUtilities.shared.retJSONFromURL(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { strResponse in
+            ret = strResponse
+        }
+        return ret
+    }
 
-let iPSWJSONRespData = iPSWMEJSONDataResponse.data(using: .utf8)!
-let iPSWJSONDataDecoded = try! JSONDecoder().decode(onlineiPSWInfoProperties.self, from: iPSWJSONRespData)
+    static let iPSWJSONRespData = iPSWMEJSONDataResponse.data(using: .utf8)!
+    static let iPSWJSONDataDecoded = try! JSONDecoder().decode(onlineiPSWInfoProperties.self, from: iPSWJSONRespData)
 
-struct onlineiPSWInfo {
-    static let iPSWURL = iPSWJSONDataDecoded.url
+    struct onlineiPSWInfo {
+        static let iPSWURL = iPSWJSONDataDecoded.url
+    }
 }
     
 

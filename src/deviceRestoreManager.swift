@@ -68,6 +68,9 @@ class deviceRestoreManager {
                  return
              }
              print(line)
+            signal(SIGINT) { _ in
+                fatalError("You done fucked up. Go restore rootfs NOW.")
+            }
          }
         task.launch()
         task.waitUntilExit()

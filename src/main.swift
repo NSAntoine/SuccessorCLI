@@ -152,7 +152,7 @@ guard let input = readLine(), let inputInt = Int(input), inputInt <= iPSWManager
     fatalError("Input must be a number and must be equal to or less than \(iPSWManager.iPSWSInSCLIPathArray.count)")
 }
 if inputInt == iPSWManager.iPSWSInSCLIPathArray.count {
-    iPSWManager.downloadAndExtractiPSW(iPSWURL: onlineiPSWInfo.iPSWURL)
+    iPSWManager.downloadAndExtractiPSW()
 } else {
     let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[inputInt]
     iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
