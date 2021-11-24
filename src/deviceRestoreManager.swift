@@ -10,7 +10,7 @@ class deviceRestoreManager {
     /// Returns true or false based on whether or not the user used the `--rsync-dry-run` option
     static let doDryRun = CMDLineArgs.contains("--rsync-dry-run")
     
-    /// Needs to be used to launch the rsync restore.
+    /// Needs to be true to launch the rsync restore, returns true or false based on whether or not the user used -`-restore/-r`
     static let shouldDoRestore = CMDLineArgs.contains("--restore") || CMDLineArgs.contains("-r")
     
     /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
@@ -79,8 +79,7 @@ class deviceRestoreManager {
         task.waitUntilExit()
     }
     
-    /// Calls on to SBDataReset to reset the device.
-    /// This is executed after the rsync function is complete
+    /// Calls on to `SBDataReset` to reset the device, if the user uses `dry run` then this will just exit before it calls onto `SBDataReset`
     class func callSBDataReset() {
         guard !doDryRun else {
             print("User specified to do a dry run. Not calling mobile obliterator.")
@@ -107,7 +106,8 @@ class deviceRestoreManager {
         exit(0)
     }
     
-    // By default, it will select the DMG in DMGManager.shared.rfsDMGToUseFullPath as the dmg to attach/mount and SCLIInfo.shared.mountPoint as the default mount point
+    // By default, it will select the DMG in DMGManager.shared.rfsDMGToUseFullPath as the dmg to attach/mount and SCLIInfo.shared.mountPoint as the default mount
+    /// Attaches and mounts specified DMG, then executes restore
     class func attachMntAndExecRestore(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
         if !MntManager.shared.isMountPointMounted() {
         MntManager.attachAndMntDMG(DMGPath: DMGPath, mntPointPath: mntPoint)
