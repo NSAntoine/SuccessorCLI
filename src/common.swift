@@ -28,7 +28,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     var mountPoint = "/var/mnt/successor/"
     
     /// SuccessorCLI Version
-    var ProgramVer = "2.3.0 EXPIREMTAL-BETA"
+    var ProgramVer = "2.3.0 EXPERIMENTAL-BETA"
     
     /// Program name, always the first argument in CommandLine.arguments
     var ProgramName = CommandLine.arguments[0]
@@ -52,14 +52,12 @@ class SCLIInfo { // SCLI = SuccessorCLI
             Options for Rsync / Restoring stuff:
                  --rsync-dry-run                            Specifies that rsync should run with --dry-run.
                  --restore                                  Do a full restore with rsync. Note that this WILL erase your device.
-                 -a, --append-rsync-arg=RSYNC-ARG           Specify an additional rsync argument to be passed in to rsync. Example: `--append-rsync-arg="--exclude=/random/dir"` Will add `--exclude=/random/dir` to rsync arguments.
+                 --append-rsync-arg=RSYNC-ARG               Specify an additional rsync argument to be passed in to rsync.
             
             Notes:
-            - SuccessorCLI Needs to be run as root.
-            - if --restore is not used, the rsync restore by default will not be executed. Use --restore to execute the rsync restore.
-            - You can't use both --dmg-path and --ipsw-path together at the same time.
-            - If --mnt-point-path is not used, then the default Mount Point is set to /var/mnt/successor/.
-            - Manually specifying an iPSW or DMG is not required, as SuccessorCLI will offer to download an iPSW for the user.
+            - All options for manually specifying are optional.
+            - SuccessorCLI Does not execute a restore if --restore / -r is not used. Use --restore / -r to execute the restore.
+            - The default Mount Point (if --mnt-point-path isn't used) is /var/mnt/successor/.
             """
     
     func printHelp() {

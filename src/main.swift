@@ -16,16 +16,12 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
 let CMDLineArgs = Array(CommandLine.arguments.dropFirst())
 printIfDebug("Args used: \(CMDLineArgs)")
 
-// CMDLineArgs that start with - or --
-let dashCMDLineArgs = CMDLineArgs.filter() { $0.hasPrefix("-") }
-printIfDebug("dashCMDLineArgs: \(dashCMDLineArgs)")
 if CMDLineArgs.contains("--dmg-path") && CMDLineArgs.contains("--ipsw-path") {
     fatalError("--dmg-path and --ipsw-path cannot be used together.")
 }
 
-
 // MARK: Command Line Argument support
-for arg in dashCMDLineArgs {
+for arg in CMDLineArgs {
     switch arg {
     case "--help", "-h":
         SCLIInfo.shared.printHelp()
@@ -67,7 +63,7 @@ for arg in dashCMDLineArgs {
         }
         SCLIInfo.shared.mountPoint = mntPointSpecified
     default:
-        fatalError("Unknown Argument \"\(arg)\"")
+        break
     }
 }
 
