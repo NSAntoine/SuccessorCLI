@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <sys/ioctl.h>
 #import <sys/mount.h>
+#import <sys/snapshot.h>
 
 struct hfs_mount_args {
     char    *fspec;            /* block special device to mount */

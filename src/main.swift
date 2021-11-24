@@ -94,7 +94,7 @@ if MntManager.shared.isMountPointMounted() {
     if let input = readLine() {
         switch input {
         case "1":
-            deviceRestoreManager.execRsyncThenCallDataReset()
+            deviceRestoreManager.attachMntAndExecRestore()
         case "2":
             let path = strdup(SCLIInfo.shared.mountPoint)
             let unmnt = unmount(path, 0)

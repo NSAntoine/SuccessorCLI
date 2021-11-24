@@ -5,7 +5,7 @@ import SuccessorCLIBridged
 class MntManager {
     static let shared = MntManager()
     
-    class func mountNative(devDiskName:String, mountPointPath:String) -> Int32 {
+    class func mountNative(devDiskName:String, mountPointPath:String, mntFlag:Int32 = MNT_WAIT) -> Int32 {
         if !fm.fileExists(atPath: mountPointPath) {
             print("Mount Point \(mountPointPath) doesn't exist.. will try to make it..")
             do {
@@ -27,14 +27,14 @@ class MntManager {
         gettimeofday(nil, &mntargs.hfs_timezone)
         
         // For the longest time, I had tried to mount natively instead of using NSTask with the mount_apfs command, however doing it natively literally never worked, becuase the way I did it was the same as the line below however instead of MNT_WAIT there was a 0, so for weeks I kept constantly trying to get it to work until one day i was trying all the MNT_ args, and suddenly MNT_WAIT worked. Otherwise I would somehow get a "Permission Denied" error
-        return mount("apfs", mountPointPath, MNT_WAIT, &mntargs)
+        return mount("apfs", mountPointPath, mntFlag, &mntargs)
     }
     
     
     //https://github.com/Odyssey-Team/Taurine/blob/0ee53dde05da8ce5a9b7192e4164ffdae7397f94/Taurine/post-exploit/utils/remount.swift#L63
     /// Returns true or false based on whether or not SCLIInfo.shared.mountPoint is mounted
-    func isMountPointMounted() -> Bool {
-        let path = strdup(SCLIInfo.shared.mountPoint)
+    func isMountPointMounted(mntPointPath:String = SCLIInfo.shared.mountPoint) -> Bool {
+        let path = strdup(mntPointPath)
                 defer {
                     free(path!)
                 }
