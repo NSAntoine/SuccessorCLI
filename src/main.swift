@@ -71,8 +71,9 @@ for arg in dashCMDLineArgs {
     }
 }
 
+// If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly
 /// Check if the user used --append-rsync-arg and append the values specified to the rsyncArgs array, see SuccessorCLI --help for more info.
-let rsyncArgsSpecified = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=") || $0.hasPrefix("-a=") }.map() { $0.replacingOccurrences(of: "--append-rsync-arg=", with: "").replacingOccurrences(of: "-a=", with: "") } // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly
+let rsyncArgsSpecified = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=") || $0.hasPrefix("-a=") }.map() { $0.replacingOccurrences(of: "--append-rsync-arg=", with: "").replacingOccurrences(of: "-a=", with: "") }
 for argToAppend in rsyncArgsSpecified {
     print("User specified to append argument \"\(argToAppend)\" to rsync args.")
     deviceRestoreManager.rsyncArgs.append(argToAppend)
@@ -81,7 +82,7 @@ for argToAppend in rsyncArgsSpecified {
 // detecting for root
 // root is needed to execute rsync with enough permissions to replace all files necessary
 guard getuid() == 0 else {
-    fatalError("ERROR: SuccessorCLI Must be run as root, eg `\(SCLIInfo.shared.ProgramName) \(CMDLineArgs.joined(separator: " "))`")
+    fatalError("ERROR: SuccessorCLI Must be run as root, eg `sudo \(SCLIInfo.shared.ProgramName) \(CMDLineArgs.joined(separator: " "))`")
 }
 
 if isNT2() {
