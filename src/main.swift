@@ -69,7 +69,7 @@ for arg in CMDLineArgs {
 
 // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly
 /// Check if the user used --append-rsync-arg and append the values specified to the rsyncArgs array, see SuccessorCLI --help for more info.
-let rsyncArgsSpecified = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=") || $0.hasPrefix("-a=") }.map() { $0.replacingOccurrences(of: "--append-rsync-arg=", with: "").replacingOccurrences(of: "-a=", with: "") }
+let rsyncArgsSpecified = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=") }.map() { $0.replacingOccurrences(of: "--append-rsync-arg=", with: "") }
 print("User manually specified to add these arguments to rsync args: \"\(rsyncArgsSpecified.joined(separator: ", "))\"")
 deviceRestoreManager.rsyncArgs += rsyncArgsSpecified
 
