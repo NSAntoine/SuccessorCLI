@@ -71,6 +71,8 @@ class deviceRestoreManager {
                  return
              }
              print(line)
+            
+            // If the user cancelled mid restore, trigger the statement below
             signal(SIGINT) { _ in
                 fatalError("You done fucked up. Go restore rootfs NOW.")
             }

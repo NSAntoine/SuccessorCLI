@@ -95,27 +95,30 @@ if isNT2() {
 }
 print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ProgramVer).")
 
+// If the mount point is already mounted, ask the user if they want to execute the restore from it
 if MntManager.shared.isMountPointMounted() {
     print("Mount Point at \(SCLIInfo.shared.mountPoint) already mounted, would you like to execute restore from the contents inside it?")
     print("[1] Yes")
     print("[2] No, unmount it and continue")
     print("[3] No and exit")
-    if let input = readLine() {
-        switch input {
-        case "1":
-            deviceRestoreManager.execRsyncThenCallDataReset()
-        case "2":
-            let path = strdup(SCLIInfo.shared.mountPoint)
-            let unmnt = unmount(path, 0)
-            guard unmnt == 0 else {
-                fatalError("Error encountered while unmounting \(SCLIInfo.shared.mountPoint): \(String(cString: strerror(errno)))")
-            }
-            print("Unmounted \(SCLIInfo.shared.mountPoint).")
-        case "3":
-            exit(0)
-        default:
-            break
+    // make sure input is int and within range
+    guard let input = readLine(), let inputInt = Int(input), (1...3) ~= inputInt else {
+        fatalError("Input must be a number and be from 1 to 3. Exiting.")
+    }
+    switch inputInt {
+    case 1:
+        deviceRestoreManager.execRsyncThenCallDataReset()
+    case 2:
+        let unmtStatus = unmount(SCLIInfo.shared.mountPoint, 0)
+        guard unmtStatus == 0 else {
+            let error = String(cString: strerror(errno))
+            fatalError("Error encountered while unmounting \"\(SCLIInfo.shared.mountPoint)\": \(error)")
         }
+        print("Unmounted \(SCLIInfo.shared.mountPoint)")
+    case 3:
+        exit(0)
+    default:
+        break
     }
 }
 

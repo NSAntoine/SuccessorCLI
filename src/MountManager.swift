@@ -5,7 +5,7 @@ import SuccessorCLIBridged
 class MntManager {
     static let shared = MntManager()
     
-    class func mountNative(devDiskName:String, mountPointPath:String, mntFlag:Int32 = MNT_WAIT) -> Int32 {
+    class func mountNative(devDiskName:String, mountPointPath:String) -> Int32 {
         if !fm.fileExists(atPath: mountPointPath) {
             print("Mount Point \(mountPointPath) doesn't exist.. will try to make it..")
             do {
@@ -26,8 +26,8 @@ class MntManager {
         mntargs.hfs_mask = 1
         gettimeofday(nil, &mntargs.hfs_timezone)
         
-        // For the longest time, I had tried to mount natively instead of using NSTask with the mount_apfs command, however doing it natively literally never worked, becuase the way I did it was the same as the line below however instead of MNT_WAIT there was a 0, so for weeks I kept constantly trying to get it to work until one day i was trying all the MNT_ args, and suddenly MNT_WAIT worked. Otherwise I would somehow get a "Permission Denied" error
-        return mount("apfs", mountPointPath, mntFlag, &mntargs)
+        // If you dont add MNT_WAIT as the flag here, this will fail with the error "Permission Denied"
+        return mount("apfs", mountPointPath, MNT_WAIT, &mntargs)
     }
     
     
