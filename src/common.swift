@@ -34,8 +34,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     var ProgramName = CommandLine.arguments[0]
     
     static let helpMessage = """
-            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Dabezt31.
-            Report issues to https://github.com/dabezt31/SuccessorCLI/issues
+            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Serena-io.
             Version \(SCLIInfo.shared.ProgramVer)
             Usage: successorcli <option>
             
@@ -94,8 +93,12 @@ extension FileManager {
     // Setting enumerate here to false will not search the subpaths of the path given, and the opposite if it's set to true
     /// Returns an array of all files in a specific path with a given extenstion
     func filesByFileExtenstion(atPath path: String, extenstion: String, enumerate: Bool) -> [String] {
-        let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? [] // Has all files rather than the ones with the file extenstion only
-        let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion } // Filters all items from the array to only include the ones with the extenstion specified
+        // Has all files rather than the ones with the file extenstion only
+        // If enumerate is true, use FileManager's enumerator, otherwise use FileManager's contentsOfDirectory
+        let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? []
+        
+        // Filters all items from the array to only include the ones with the extenstion specified
+        let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion }
         printIfDebug("\(#function): files in directory \"\(path)\" with extenstion \(extenstion): \(filteredArr)")
         return filteredArr
     }

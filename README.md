@@ -4,7 +4,7 @@ A CLI tool to restore iOS devices on the version they're already on, inspired by
 You must have Theos for this, and if you're not on macOS, you must've installed the swift toolchain for theos before aswell.
 To generate a deb, run the following:
 ```
-git clone https://github.com/dabezt31/SuccessorCLI
+git clone https://github.com/Serena-io/SuccessorCLI
 cd SuccessorCLI
 make package
 ```

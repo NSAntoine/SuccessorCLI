@@ -115,10 +115,8 @@ if MntManager.shared.isMountPointMounted() {
             fatalError("Error encountered while unmounting \"\(SCLIInfo.shared.mountPoint)\": \(error)")
         }
         print("Unmounted \(SCLIInfo.shared.mountPoint)")
-    case 3:
-        exit(0)
     default:
-        break
+        exit(0)
     }
 }
 

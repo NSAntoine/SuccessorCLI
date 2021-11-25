@@ -12,12 +12,10 @@ class NetworkUtilities:NSObject {
         let task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error ) in
             guard let data = data, error == nil,
                   let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                      print("Error while getting online iPSW Info: \(error?.localizedDescription ?? "Unknown error")")
-                      exit(EXIT_FAILURE)
+                      fatalError("Error while getting online iPSW Info: \(error?.localizedDescription ?? "Unknown error")")
                   }
             guard let strResponse = String(data: data, encoding: .utf8) else {
-                print("Error encountered while converting JSON Response from ipsw.me to string..exiting..")
-                exit(EXIT_FAILURE)
+                fatalError("Error encountered while converting JSON Response from ipsw.me to string..exiting..")
             }
             completion(strResponse)
             group.leave()
