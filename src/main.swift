@@ -62,6 +62,15 @@ for arg in CMDLineArgs {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
         SCLIInfo.shared.mountPoint = mntPointSpecified
+        
+        // Support for manually changing the SuccessorCLI Path:
+        // Changes where the iPSW gets downloaded to and changes where DMGs/iPSWs are searched for
+    case "--scli-path":
+        let pathSpecified = retValueAfterCMDLineOpt(longOpt: "--scli-path", thingToParseName: "SuccessorCLI Path")
+        guard fm.fileExists(atPath: pathSpecified) else {
+            fatalError("Path \"\(pathSpecified)\" can't be used to set SuccessorCLI Path if it doesn't even exist!")
+        }
+        SCLIInfo.shared.SuccessorCLIPath = pathSpecified
     default:
         break
     }
@@ -70,8 +79,10 @@ for arg in CMDLineArgs {
 // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly
 /// Check if the user used --append-rsync-arg and append the values specified to the rsyncArgs array, see SuccessorCLI --help for more info.
 let rsyncArgsSpecified = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=") }.map() { $0.replacingOccurrences(of: "--append-rsync-arg=", with: "") }
-print("User manually specified to add these arguments to rsync args: \"\(rsyncArgsSpecified.joined(separator: ", "))\"")
-deviceRestoreManager.rsyncArgs += rsyncArgsSpecified
+for arg in rsyncArgsSpecified {
+    print("User manually specified to append argument \"\(arg)\" to rsync args.")
+    deviceRestoreManager.rsyncArgs.append(arg)
+}
 
 // detecting for root
 // root is needed to execute rsync with enough permissions to replace all files necessary
@@ -92,7 +103,7 @@ if MntManager.shared.isMountPointMounted() {
     if let input = readLine() {
         switch input {
         case "1":
-            deviceRestoreManager.attachMntAndExecRestore()
+            deviceRestoreManager.execRsyncThenCallDataReset()
         case "2":
             let path = strdup(SCLIInfo.shared.mountPoint)
             let unmnt = unmount(path, 0)

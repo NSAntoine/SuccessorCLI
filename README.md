@@ -23,6 +23,7 @@ The follwing options can be used with SuccessorCLI:
 - `--ipsw-path /PATH/TO/IPSW` Specify iPSW Which'll be used
 - `--dmg-path /PATH/TO/ROOTFSDMG` Specify the rootfsDMG to use
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with
+- `--scli-path /PATH/TO/SET` Manually specify the SuccessorCLI directory.
 
 #### Options for Rsync / Restore stuff:
 - `--append-rsync-arg=RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg="--exclude=/some/directory"` will pass in `--exclude=/some/directory` to rsync 
@@ -36,6 +37,7 @@ The follwing options can be used with SuccessorCLI:
 - All arguments are optional.
 - If `--restore` is not used, then SuccessorCLI will not execute the rsync restore. Use `--restore` if you want SuccesorCLI to execute the restore.
 - If -`-mnt-point-path` is not used, then the default Mount Point is set to `/var/mnt/successor/`.
+- Using `--scli-path` will change the SuccessorCLI Path, which changes where DMGs/iPSWs are searched for and changes the path of where iPSWs are downloaded if the user chooses to do so
 
 # Project Status
 The program does work right now, I've tested it multiple times on an iPhone 8 running iOS 14.5, Im just polishing up the project right now.

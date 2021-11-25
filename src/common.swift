@@ -28,7 +28,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
     var mountPoint = "/var/mnt/successor/"
     
     /// SuccessorCLI Version
-    var ProgramVer = "2.3.0 EXPERIMENTAL-BETA"
+    var ProgramVer = "2.3.5 EXPERIMENTAL-BETA"
     
     /// Program name, always the first argument in CommandLine.arguments
     var ProgramName = CommandLine.arguments[0]
@@ -48,6 +48,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.
                  --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
+                 --scli-path        /PATH/TO/SET            Manually specify the SuccessorCLI directory.
             
             Options for Rsync / Restoring stuff:
                  --rsync-dry-run                            Specifies that rsync should run with --dry-run.
@@ -58,6 +59,7 @@ class SCLIInfo { // SCLI = SuccessorCLI
             - All options for manually specifying are optional.
             - SuccessorCLI Does not execute a restore if --restore / -r is not used. Use --restore / -r to execute the restore.
             - The default Mount Point (if --mnt-point-path isn't used) is /var/mnt/successor/.
+            - Using --scli-path will change the SuccessorCLI Path, which changes where DMGs/iPSWs are searched for and changes the path of where iPSWs are downloaded if the user chooses to do so
             """
     
     func printHelp() {
