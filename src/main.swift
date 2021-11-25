@@ -152,11 +152,12 @@ if !DMGManager.DMGSinSCLIPathArray.isEmpty {
 }
 
 if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
-    print("Found following iPSWs in \(SCLIInfo.shared.SuccessorCLIPath), Which would you like to use?")
+    print("Found following iPSWs in \(SCLIInfo.shared.SuccessorCLIPath).")
     for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
         print("[\(i)] Extract and use iPSW \(iPSWManager.iPSWSInSCLIPathArray[i])")
     }
 }
+print("Choose what to do below.")
 print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] Download an iPSW")
 guard let input = readLine(), let inputInt = Int(input), inputInt <= iPSWManager.iPSWSInSCLIPathArray.count else {
     fatalError("Input must be a number and must be equal to or less than \(iPSWManager.iPSWSInSCLIPathArray.count)")

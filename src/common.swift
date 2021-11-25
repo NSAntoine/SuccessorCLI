@@ -6,20 +6,20 @@ import Foundation
 /// Includes info such as the device iOS version, machine name, and the build ID
 struct deviceInfo {
     static func sysctl(name: String) -> String {
-            var size = 0
-            sysctlbyname(name, nil, &size, nil, 0)
-            var value = [CChar](repeating: 0,  count: size)
-            sysctlbyname(name, &value, &size, nil, 0)
-            return String(cString: value)
-        }
+        var size = 0
+        sysctlbyname(name, nil, &size, nil, 0)
+        var value = [CChar](repeating: 0,  count: size)
+        sysctlbyname(name, &value, &size, nil, 0)
+        return String(cString: value)
+    }
     static let machineName = sysctl(name: "hw.machine")
     static let buildID = sysctl(name: "kern.osversion")
     static let deviceiOSVersion = UIDevice.current.systemVersion
 }
 
 /// Provides information about SuccessorCLI App, such as its path in /var/mobile/Library and the mount point.
-class SCLIInfo { // SCLI = SuccessorCLI
-    static let shared = SCLIInfo()
+struct SCLIInfo { // SCLI = SuccessorCLI
+    static var shared = SCLIInfo()
 
     /// If the user chooses to download or extract an iPSW, then it ends up here. This is also the path at which SuccessorCLI scans for iPSWs and DMGs
     var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
@@ -34,7 +34,8 @@ class SCLIInfo { // SCLI = SuccessorCLI
     var ProgramName = CommandLine.arguments[0]
     
     static let helpMessage = """
-            SuccessorCLI - A CLI Utility to restore iOS devices, based off the original Succession by samg_is_a_ninja, created by Serena-io.
+            SuccessorCLI - By Serena-io
+            A utility to restore iOS devices, inspired by the original Succession.
             Version \(SCLIInfo.shared.ProgramVer)
             Usage: successorcli <option>
             
