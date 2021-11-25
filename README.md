@@ -28,7 +28,7 @@ The follwing options can be used with SuccessorCLI:
 #### Options for Rsync / Restore stuff:
 - `--append-rsync-arg=RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg="--exclude=/some/directory"` will pass in `--exclude=/some/directory` to rsync 
 
-- `--rsync-dry-run` Specifies that rsync should run with `--dry-run`
+- `--dry-run` Specifies that rsync should run with `--dry-run`
 - `--restore` Do a full restore with rsync. Note that this WILL erase your device.
 
 

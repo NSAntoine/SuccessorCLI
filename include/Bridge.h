@@ -29,8 +29,6 @@ struct hfs_mount_args {
  @property (readonly) long long terminationReason;
 @end
 
-extern mach_port_t SBSSpringBoardServerPort(void);
-extern int SBDataReset(mach_port_t, int);
 
 @interface DIBaseParams : NSObject <NSSecureCoding, NSCoding>
 -(id)initWithCoder:(id)arg1 ;

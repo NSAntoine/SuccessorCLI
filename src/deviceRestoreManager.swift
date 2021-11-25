@@ -7,11 +7,17 @@ class deviceRestoreManager {
     /// Path for the where rsync executable is located, though this is `/usr/bin/rsync` by defualt, it can manually be changed (see --rsync-bin-path in SuccessorCLI Options)
     static var rsyncBinPath = "/usr/bin/rsync"
     
-    /// Returns true or false based on whether or not the user used the `--rsync-dry-run` option
-    static let doDryRun = CMDLineArgs.contains("--rsync-dry-run")
+    /// Returns true or false based on whether or not the user used the `--dry-run` option
+    static let doDryRun = CMDLineArgs.contains("--dry-run")
     
     /// Needs to be true to launch the rsync restore, returns true or false based on whether or not the user used -`-restore/-r`
     static let shouldDoRestore = CMDLineArgs.contains("--restore") || CMDLineArgs.contains("-r")
+    
+    /// SpringBoardServerPort needed when calling SBDataReset
+    @_silgen_name("SBSSpringBoardServerPort") fileprivate static func SBServerPort() -> mach_port_t
+    
+    /// SBDataReset function which resets the device, @_silgen_name()  is needed here because this is an external symbol
+    @_silgen_name("SBDataReset") fileprivate static func SBDataReset(_ :mach_port_t, _ :Int32) -> Int32
     
     /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
     static var rsyncArgs = ["-vaxcH",
@@ -87,10 +93,9 @@ class deviceRestoreManager {
             print("User specified to do a dry run. Not calling mobile obliterator.")
             exit(0)
         }
-        let serverPort = SBSSpringBoardServerPort()
-        print("Located SBSSpringBoardServerPort at \(serverPort)")
+        print("Located SBSSpringBoardServerPort at \(SBServerPort())")
         print("Now launching SBDataReset.")
-        SBDataReset(serverPort, 5)
+        SBDataReset(SBServerPort(), 5)
     }
     
     /// Function which launches Rsync then calls onto SBDataReset.

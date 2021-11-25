@@ -51,7 +51,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
                  --scli-path        /PATH/TO/SET            Manually specify the SuccessorCLI directory.
             
             Options for Rsync / Restoring stuff:
-                 --rsync-dry-run                            Specifies that rsync should run with --dry-run.
+                 --dry-run                                  Specifies that rsync should run with --dry-run.
                  --restore                                  Do a full restore with rsync. Note that this WILL erase your device.
                  --append-rsync-arg=RSYNC-ARG               Specify an additional rsync argument to be passed in to rsync.
             
