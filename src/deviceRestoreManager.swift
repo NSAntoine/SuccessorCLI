@@ -13,11 +13,13 @@ class deviceRestoreManager {
     /// Needs to be true to launch the rsync restore, returns true or false based on whether or not the user used -`-restore/-r`
     static let shouldDoRestore = CMDLineArgs.contains("--restore") || CMDLineArgs.contains("-r")
     
-    /// SpringBoardServerPort needed when calling SBDataReset
-    @_silgen_name("SBSSpringBoardServerPort") fileprivate static func SBServerPort() -> mach_port_t
+    // SBSSpringBoardServerPort and SBDataReset both need @_silgen_name() because they're external symbols
     
-    /// SBDataReset function which resets the device, @_silgen_name()  is needed here because this is an external symbol
-    @_silgen_name("SBDataReset") fileprivate static func SBDataReset(_ :mach_port_t, _ :Int32) -> Int32
+    /// SpringBoardServerPort needed when calling SBDataReset
+    @_silgen_name("SBSSpringBoardServerPort") private static func SBServerPort() -> mach_port_t
+    
+    /// SBDataReset function which resets the device.
+    @_silgen_name("SBDataReset") private static func SBDataReset(_ :mach_port_t, _ :Int32) -> Int32
     
     /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
     static var rsyncArgs = ["-vaxcH",
@@ -60,6 +62,12 @@ class deviceRestoreManager {
     class func launchRsync() {
         let pipe = Pipe()
         let task = NSTask()
+        
+        // We need to make sure the rsyncBinPath exists before we start the restore, otherwise give the user an error and exit
+        guard fm.fileExists(atPath: rsyncBinPath) else {
+            fatalError("Rsync Binary Path is \(rsyncBinPath) However that path doesn't exist! Please (re)install your rsync and run SuccessorCLI Again!")
+        }
+        
         task.setLaunchPath(rsyncBinPath)
         if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
             rsyncArgs += XPCProxyExcludeArgs
