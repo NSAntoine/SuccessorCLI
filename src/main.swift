@@ -16,10 +16,15 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
 let CMDLineArgs = Array(CommandLine.arguments.dropFirst())
 printIfDebug("Args used: \(CMDLineArgs)")
 
-if CMDLineArgs.contains("--dmg-path") && CMDLineArgs.contains("--ipsw-path") {
-    fatalError("--dmg-path and --ipsw-path cannot be used together.")
+// Make sure user uses either --restore/-r or --no-restore/-n
+guard deviceRestoreManager.shouldDoRestore || deviceRestoreManager.shouldntDoRestore else {
+    fatalError("User must use either --restore/-r or --no-restore/-n.\n \(SCLIInfo.helpMessage)")
 }
 
+// Make sure the user didn't use both --restore/-r and --no-restore/-n
+guard !(deviceRestoreManager.shouldDoRestore && deviceRestoreManager.shouldntDoRestore) else {
+    fatalError("Can't use both --restore/-r and --no-restore/-n. Please specify only one.")
+}
 // MARK: Command Line Argument support
 for arg in CMDLineArgs {
     switch arg {

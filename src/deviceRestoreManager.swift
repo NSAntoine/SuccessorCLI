@@ -10,8 +10,11 @@ class deviceRestoreManager {
     /// Returns true or false based on whether or not the user used the `--dry-run` option
     static let doDryRun = CMDLineArgs.contains("--dry-run")
     
-    /// Needs to be true to launch the rsync restore, returns true or false based on whether or not the user used -`-restore/-r`
+    /// Needs to be true to launch the rsync restore, returns true or false based on whether or not the user used `--restore/-r`
     static let shouldDoRestore = CMDLineArgs.contains("--restore") || CMDLineArgs.contains("-r")
+    
+    /// If this is true, the rsync restore will not be executed and instead exit before starting it.
+    static let shouldntDoRestore = CMDLineArgs.contains("--no-restore") || CMDLineArgs.contains("-n")
     
     // SBSSpringBoardServerPort and SBDataReset both need @_silgen_name() because they're external symbols
     
@@ -60,6 +63,9 @@ class deviceRestoreManager {
     
     /// Function which launches rsync.
     class func launchRsync() {
+        guard shouldDoRestore && !shouldntDoRestore else {
+            fatalError("To execute the rsync restore, the user HAS to use --restore/-r and NOT have used --no-restore/-n. If you want to execute the restore, please run SuccessorCLI again with --restore/-r")
+        }
         let pipe = Pipe()
         let task = NSTask()
         
@@ -108,12 +114,6 @@ class deviceRestoreManager {
     
     /// Function which launches Rsync then calls onto SBDataReset.
     class func execRsyncThenCallDataReset() {
-        guard shouldDoRestore else {
-            print("Not launching restore because the user did not use --restore / -r.")
-            print("If you want SuccessorCLI to do the restore, please run SuccessorCLI again with --restore / -r.")
-            print("Exiting.")
-            exit(0)
-        }
         print("Proceeding to launch rsync..")
         deviceRestoreManager.launchRsync()
         print("Rsync done, now time to reset device.")

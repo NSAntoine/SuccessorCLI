@@ -1,6 +1,6 @@
 Package: com.serena.successorcli
 Name: Successorcli
-Version: 2.3.5
+Version: 2.4.0
 Architecture: iphoneos-arm
 Description: A CLI Tool to Restore iOS devices on versions they're already on, based on the original Succession
 Maintainer: Serena-io

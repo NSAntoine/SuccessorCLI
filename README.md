@@ -10,7 +10,9 @@ make package
 ```
 Due to this project using private frameworks, you must be compiling with a patched SDK rather than a normal one.
 # Usage
-Simply run `sudo successorcli` in terminal through SSH or NewTerm 2. See below for options that can be used with SuccessorCLI, although aren't neccessary.
+Open NewTerm2 or SSH Into your device (Preferrably SSH), then run the following command: `sudo successorcli [--restore/-r or --no-restore/-n]`. You must use `--restore/-r` or `--no-restore/-n` Depending on whether or not you want to execute the restore. For example: `sudo successorcli --restore`.
+
+See below for options that can be used with SuccessorCLi
 
 # Options  
 The follwing options can be used with SuccessorCLI:
@@ -33,9 +35,7 @@ The follwing options can be used with SuccessorCLI:
 
 
 ##### Notes: 
-- You can't use both `--dmg-path` and `--ipsw-path` together at the same time.
-- All arguments are optional.
-- If `--restore` is not used, then SuccessorCLI will not execute the rsync restore. Use `--restore` if you want SuccesorCLI to execute the restore.
+- The user must use eiher `--restore/-r` or `--no-restore/-n` depending on whether or not they want to execute the restore.
 - If -`-mnt-point-path` is not used, then the default Mount Point is set to `/var/mnt/successor/`.
 - Using `--scli-path` will change the SuccessorCLI Path, which changes where DMGs/iPSWs are searched for and changes the path of where iPSWs are downloaded if the user chooses to do so
 
