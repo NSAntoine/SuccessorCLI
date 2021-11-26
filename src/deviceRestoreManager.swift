@@ -64,7 +64,8 @@ class deviceRestoreManager {
     /// Function which launches rsync.
     class func launchRsync() {
         guard shouldDoRestore && !shouldntDoRestore else {
-            fatalError("To execute the rsync restore, the user HAS to use --restore/-r and NOT have used --no-restore/-n. If you want to execute the restore, please run SuccessorCLI again with --restore/-r")
+            print("To execute the rsync restore, the user HAS to use --restore/-r and NOT have used --no-restore/-n. If you want to execute the restore, please run SuccessorCLI again with --restore/-r")
+            exit(0)
         }
         let pipe = Pipe()
         let task = NSTask()
