@@ -9,11 +9,13 @@ class NetworkUtilities:NSObject {
     /// Returns info from ipsw.me's v4 API, which can be returned in other JSON or XML, docs: https://ipswdownloads.docs.apiary.io/
     func retJSONFromURL(url:String, completion: @escaping (String) -> Void) {
         group.enter()
-        let task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error ) in
+        let task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
+            // Make sure we encountered no errors
             guard let data = data, error == nil,
-                  let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                      fatalError("Error while getting online iPSW Info: \(error?.localizedDescription ?? "Unknown error")")
-                  }
+                let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                    fatalError("Error while getting online iPSW Info: \(error?.localizedDescription ?? "Unknown error")")
+                }
+            // Make sure the string response is valid
             guard let strResponse = String(data: data, encoding: .utf8) else {
                 fatalError("Error encountered while converting JSON Response from ipsw.me to string..exiting..")
             }
@@ -23,6 +25,7 @@ class NetworkUtilities:NSObject {
         task.resume()
         group.wait()
     }
+    
     var downloadItemDestination = ""
     func downloadItem(url: URL, destinationURL: URL) {
         downloadItemDestination = destinationURL.path

@@ -16,20 +16,11 @@ if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
 let CMDLineArgs = Array(CommandLine.arguments.dropFirst())
 printIfDebug("Args used: \(CMDLineArgs)")
 
-// Make sure user uses either --restore/-r or --no-restore/-n
-guard deviceRestoreManager.shouldDoRestore || deviceRestoreManager.shouldntDoRestore else {
-    fatalError("User must use either --restore/-r or --no-restore/-n.\n \(SCLIInfo.helpMessage)")
-}
-
-// Make sure the user didn't use both --restore/-r and --no-restore/-n
-guard !(deviceRestoreManager.shouldDoRestore && deviceRestoreManager.shouldntDoRestore) else {
-    fatalError("Can't use both --restore/-r and --no-restore/-n. Please specify only one.")
-}
 // MARK: Command Line Argument support
 for arg in CMDLineArgs {
     switch arg {
     case "--help", "-h":
-        SCLIInfo.shared.printHelp()
+        print(SCLIInfo.helpMessage)
         exit(0)
     case "-d", "--debug":
         printIfDebug("DEBUG Mode Triggered.")
@@ -79,6 +70,16 @@ for arg in CMDLineArgs {
     default:
         break
     }
+}
+
+// Make sure user uses either --restore/-r or --no-restore/-n
+guard deviceRestoreManager.shouldDoRestore || deviceRestoreManager.shouldntDoRestore else {
+    fatalError("User must use either --restore/-r or --no-restore/-n.\n \(SCLIInfo.helpMessage)")
+}
+
+// Make sure the user didn't use both --restore/-r and --no-restore/-n
+guard !(deviceRestoreManager.shouldDoRestore && deviceRestoreManager.shouldntDoRestore) else {
+    fatalError("Can't use both --restore/-r and --no-restore/-n. Please specify only one.")
 }
 
 // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly

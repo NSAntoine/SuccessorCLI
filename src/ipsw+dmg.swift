@@ -75,7 +75,6 @@ struct onlineiPSWManager {
         static let iPSWURL = iPSWJSONDataDecoded.url
     }
 }
-    
 
 // MARK: DMG Stuff
 /// Manages the several operations for the RootfsDMG
