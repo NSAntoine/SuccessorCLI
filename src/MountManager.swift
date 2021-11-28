@@ -35,34 +35,34 @@ class MntManager {
     /// Returns true or false based on whether or not SCLIInfo.shared.mountPoint is mounted
     func isMountPointMounted(mntPointPath:String = SCLIInfo.shared.mountPoint) -> Bool {
         let path = strdup(mntPointPath)
-                defer {
-                    free(path!)
-                }
-                
-                var buffer = stat()
-                if lstat(path, &buffer) != 0 {
-                    return false
-                }
-                
-                let S_IFMT = 0o170000
-                let S_IFDIR = 0o040000
-                
-                guard Int(buffer.st_mode) & S_IFMT == S_IFDIR else {
-                    return false
-                }
-                
-                let cwd = getcwd(nil, 0)
-                chdir(path)
-                
-                var p_buf = stat()
-                lstat("..", &p_buf)
-                
-                if let cwd = cwd {
-                    chdir(cwd)
-                    free(cwd)
-                }
-                
-                return buffer.st_dev != p_buf.st_dev || buffer.st_ino == p_buf.st_ino
+        defer {
+            free(path!)
+        }
+        
+        var buffer = stat()
+        if lstat(path, &buffer) != 0 {
+            return false
+        }
+        
+        let S_IFMT = 0o170000
+        let S_IFDIR = 0o040000
+        
+        guard Int(buffer.st_mode) & S_IFMT == S_IFDIR else {
+            return false
+        }
+        
+        let cwd = getcwd(nil, 0)
+        chdir(path)
+        
+        var p_buf = stat()
+        lstat("..", &p_buf)
+        
+        if let cwd = cwd {
+            chdir(cwd)
+            free(cwd)
+        }
+        
+        return buffer.st_dev != p_buf.st_dev || buffer.st_ino == p_buf.st_ino
     }
     
     class func attachAndMntDMG(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
