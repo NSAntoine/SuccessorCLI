@@ -20,10 +20,10 @@ struct deviceInfo {
 /// Provides information about SuccessorCLI App, such as its path in /var/mobile/Library and the mount point.
 struct SCLIInfo { // SCLI = SuccessorCLI
     static var shared = SCLIInfo()
-
+    
     /// If the user chooses to download or extract an iPSW, then it ends up here. This is also the path at which SuccessorCLI scans for iPSWs and DMGs
     var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
-
+    
     /// Directory to where the attached DMG will be mounted to, by default this is /var/mnt/successor/, however this can be changed with `--mnt-point-path`, see help message for more.
     var mountPoint = "/var/mnt/successor/"
     
@@ -130,10 +130,10 @@ func isNT2() -> Bool {
  
  The `thingToParse` parameter is there to be shown in the error message or if the parsing was successful
  */
-func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, thingToParseName:String) -> String {
+func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, descriptionOfThingToParse:String) -> String {
     guard let index = ArgArr.firstIndex(of: longOpt), let specifiedThing = ArgArr[safe: index + 1] else {
-        fatalError("User used \(longOpt), however the program couldn't get the \(thingToParseName) specified, make sure you specified one. See SuccessorCLI --help for more info.")
+        fatalError("User used \(longOpt), however the program couldn't get the \(descriptionOfThingToParse) specified, make sure you specified one. See SuccessorCLI --help for more info.")
     }
-    print("User manually specified \(thingToParseName) as \(specifiedThing)")
+    print("User manually specified \(descriptionOfThingToParse) as \(specifiedThing)")
     return specifiedThing
 }

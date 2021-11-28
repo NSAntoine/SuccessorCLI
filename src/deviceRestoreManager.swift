@@ -16,43 +16,11 @@ class deviceRestoreManager {
     /// If this is true, the rsync restore will not be executed and instead exit before starting it.
     static let shouldntDoRestore = CMDLineArgs.contains("--no-restore") || CMDLineArgs.contains("-n")
     
-    // SBSSpringBoardServerPort and SBDataReset both need @_silgen_name() because they're external symbols
-    
     /// SpringBoardServerPort needed when calling SBDataReset
     @_silgen_name("SBSSpringBoardServerPort") private static func SBServerPort() -> mach_port_t
     
     /// SBDataReset function which resets the device.
     @_silgen_name("SBDataReset") private static func SBDataReset(_ :mach_port_t, _ :Int32) -> Int32
-    
-    /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
-    static var rsyncArgs = ["-vaxcH",
-                            "--delete",
-                            "--progress",
-                            "--ignore-errors",
-                            "--force",
-                            "--exclude=/Developer",
-                            "--exclude=/System/Library/Caches/com.apple.kernelcaches/kernelcache",
-                            "--exclude=/System/Library/Caches/apticket.der",
-                            "--exclude=/System/Library/Caches/com.apple.factorydata/",
-                            "--exclude=/usr/standalone/firmware/sep-firmware.img4",
-                            "--exclude=/usr/local/standalone/firmware/Baseband",
-                            "--exclude=/private\(SCLIInfo.shared.mountPoint)",
-                            "--exclude=/private/etc/fstab",
-                            "--exclude=/etc/fstab",
-                            "--exclude=/usr/standalone/firmware/FUD/",
-                            "--exclude=/usr/standalone/firmware/Savage/",
-                            "--exclude=/System/Library/Pearl",
-                            "--exclude=/usr/standalone/firmware/Yonkers/",
-                            "--exclude=/private/var/containers/",
-                            "--exclude=/var/containers/",
-                            "--exclude=/private/var/keybags/",
-                            "--exclude=/var/keybags/",
-                            "--exclude=/applelogo",
-                            "--exclude=/devicetree",
-                            "--exclude=/kernelcache",
-                            "--exclude=/ramdisk",
-                            "/private\(SCLIInfo.shared.mountPoint)",
-                            "/"]
     
     /// Contains directories which will be excluded if certain xpcproxy directories exists on the device
     static let XPCProxyExcludeArgs = ["--exclude=/Library/Caches/",
@@ -60,6 +28,48 @@ class deviceRestoreManager {
                                       "--exclude=/tmp/xpcproxy",
                                       "--exclude=/var/tmp/xpcproxy",
                                       "--exclude=/usr/lib/substitute-inserter.dylib"]
+    
+    /// Arguments that will be passed in to rsync, note that the user can add more arguments by using `--append-rsync-arg`, see SuccessorCLI --help or the README for more info.
+    static var rsyncArgs = { () -> [String] in
+        var args = ["-vaxcH",
+                    "--delete",
+                    "--progress",
+                    "--ignore-errors",
+                    "--force",
+                    "--exclude=/Developer",
+                    "--exclude=/System/Library/Caches/com.apple.kernelcaches/kernelcache",
+                    "--exclude=/System/Library/Caches/apticket.der",
+                    "--exclude=/System/Library/Caches/com.apple.factorydata/",
+                    "--exclude=/usr/standalone/firmware/sep-firmware.img4",
+                    "--exclude=/usr/local/standalone/firmware/Baseband",
+                    "--exclude=/private\(SCLIInfo.shared.mountPoint)",
+                    "--exclude=/private/etc/fstab",
+                    "--exclude=/etc/fstab",
+                    "--exclude=/usr/standalone/firmware/FUD/",
+                    "--exclude=/usr/standalone/firmware/Savage/",
+                    "--exclude=/System/Library/Pearl",
+                    "--exclude=/usr/standalone/firmware/Yonkers/",
+                    "--exclude=/private/var/containers/",
+                    "--exclude=/var/containers/",
+                    "--exclude=/private/var/keybags/",
+                    "--exclude=/var/keybags/",
+                    "--exclude=/applelogo",
+                    "--exclude=/devicetree",
+                    "--exclude=/kernelcache",
+                    "--exclude=/ramdisk",
+                    "/private\(SCLIInfo.shared.mountPoint)",
+                    "/"]
+        
+        // If the user used --dry-run, append --dry-run to the args to return
+        if doDryRun {
+            args.append("--dry-run")
+        }
+        // If the 2 xpcproxy directories exist, add the xpcproxy exclude args to the args to return
+        if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
+            args += XPCProxyExcludeArgs
+        }
+        return args
+    }()
     
     /// Function which launches rsync.
     class func launchRsync() {
@@ -76,28 +86,22 @@ class deviceRestoreManager {
         }
         
         task.setLaunchPath(rsyncBinPath)
-        if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
-            rsyncArgs += XPCProxyExcludeArgs
-        }
-        if doDryRun {
-            rsyncArgs.append("--dry-run")
-        }
         task.setArguments(rsyncArgs)
         task.setStandardOutput(pipe)
         task.setStandardError(pipe)
         let outHandle = pipe.fileHandleForReading
         outHandle.readabilityHandler = { pipe in
-             guard let line = String(data: pipe.availableData, encoding: .utf8) else {
-                 print("Error decoding data: \(pipe.availableData)")
-                 return
-             }
-             print(line)
+            guard let line = String(data: pipe.availableData, encoding: .utf8) else {
+                print("Error decoding data: \(pipe.availableData)")
+                return
+            }
+            print(line)
             
             // If the user cancelled mid restore, trigger the statement below
             signal(SIGINT) { _ in
                 fatalError("You done fucked up. Go restore rootfs NOW.")
             }
-         }
+        }
         task.launch()
         task.waitUntilExit()
     }
@@ -126,7 +130,7 @@ class deviceRestoreManager {
     /// Attaches and mounts specified DMG, then executes restore
     class func attachMntAndExecRestore(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
         if !MntManager.shared.isMountPointMounted() {
-        MntManager.attachAndMntDMG(DMGPath: DMGPath, mntPointPath: mntPoint)
+            MntManager.attachAndMntDMG(DMGPath: DMGPath, mntPointPath: mntPoint)
         }
         execRsyncThenCallDataReset()
     }

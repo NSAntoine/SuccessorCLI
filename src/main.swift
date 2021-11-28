@@ -28,7 +28,7 @@ for arg in CMDLineArgs {
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
-        let iPSWSpecified = retValueAfterCMDLineOpt(longOpt: "--ipsw-path", thingToParseName: "iPSW Path")
+        let iPSWSpecified = retValueAfterCMDLineOpt(longOpt: "--ipsw-path", descriptionOfThingToParse: "iPSW Path")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
             fatalError("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW")
         }
@@ -37,7 +37,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying rootfsDMG:
     case "--dmg-path":
-        let dmgSpecified = retValueAfterCMDLineOpt(longOpt: "--dmg-path", thingToParseName: "DMG Path")
+        let dmgSpecified = retValueAfterCMDLineOpt(longOpt: "--dmg-path", descriptionOfThingToParse: "DMG Path")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
             fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
         }
@@ -45,7 +45,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
-        let rsyncBinSpecified = retValueAfterCMDLineOpt(longOpt: "--rsync-bin-path", thingToParseName: "Rsync executable Path")
+        let rsyncBinSpecified = retValueAfterCMDLineOpt(longOpt: "--rsync-bin-path", descriptionOfThingToParse: "Rsync executable Path")
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }
@@ -53,7 +53,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying Mount Point:
     case "--mnt-point-path":
-        let mntPointSpecified = retValueAfterCMDLineOpt(longOpt: "--mnt-point-path", thingToParseName: "Mount Point")
+        let mntPointSpecified = retValueAfterCMDLineOpt(longOpt: "--mnt-point-path", descriptionOfThingToParse: "Mount Point")
         guard fm.fileExists(atPath: mntPointSpecified) else {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
@@ -62,7 +62,7 @@ for arg in CMDLineArgs {
         // Support for manually changing the SuccessorCLI Path:
         // Changes where the iPSW gets downloaded to and changes where DMGs/iPSWs are searched for
     case "--scli-path":
-        let pathSpecified = retValueAfterCMDLineOpt(longOpt: "--scli-path", thingToParseName: "SuccessorCLI Path")
+        let pathSpecified = retValueAfterCMDLineOpt(longOpt: "--scli-path", descriptionOfThingToParse: "SuccessorCLI Path")
         guard fm.fileExists(atPath: pathSpecified) else {
             fatalError("Path \"\(pathSpecified)\" can't be used to set SuccessorCLI Path if it doesn't even exist!")
         }
@@ -85,9 +85,9 @@ guard !(deviceRestoreManager.shouldDoRestore && deviceRestoreManager.shouldntDoR
 // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly
 /// Check if the user used --append-rsync-arg and append the values specified to the rsyncArgs array, see SuccessorCLI --help for more info.
 let rsyncArgsSpecified = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=") }.map() { $0.replacingOccurrences(of: "--append-rsync-arg=", with: "") }
-for arg in rsyncArgsSpecified {
-    print("User manually specified to append argument \"\(arg)\" to rsync args.")
-    deviceRestoreManager.rsyncArgs.append(arg)
+deviceRestoreManager.rsyncArgs += rsyncArgsSpecified
+if !rsyncArgsSpecified.isEmpty {
+    print("User specified to add these args to rsync: \(rsyncArgsSpecified.joined(separator: ", "))")
 }
 
 // detecting for root
@@ -131,15 +131,17 @@ if fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
     print("Rfs DMG at \(DMGManager.shared.rfsDMGToUseFullPath) already exists, would you like to use it?")
     print("[1] Yes")
     print("[2] No")
-    let range = (1...2) // Range that the user is supposed to specify between
-    guard let input = readLine(), let inputInt = Int(input), range ~= inputInt else {
-        fatalError("Input must be a Int and has to be between 1 to 2.")
+    guard let input = readLine(), let inputInt = Int(input) else {
+        fatalError("Input must be a Int.")
     }
     if inputInt == 1 {
         deviceRestoreManager.attachMntAndExecRestore()
     }
 }
 
+print("Choose what to do below.")
+
+// If there are DMGs in the SuccessorCLI directory, ask the user if they want to use them
 if !DMGManager.DMGSinSCLIPathArray.isEmpty {
     print("Found DMGs in \(SCLIInfo.shared.SuccessorCLIPath), Which would you like to use?")
     for i in 0...(DMGManager.DMGSinSCLIPathArray.count - 1) {
@@ -157,13 +159,14 @@ if !DMGManager.DMGSinSCLIPathArray.isEmpty {
     }
 }
 
-print("Choose what to do below.")
+// If there are no DMGs in the SuccessorCLI directory or if the user declined to use a DMG, it'll search for iPSWs in the SuccessorCLI directory, if there are any, itll ask the user if they want to use them
 if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
     print("Found following iPSWs in \(SCLIInfo.shared.SuccessorCLIPath).")
     for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
         print("[\(i)] Extract and use iPSW \(iPSWManager.iPSWSInSCLIPathArray[i])")
     }
 }
+// The choice to download an iPSW will also always be present
 print("[\(iPSWManager.iPSWSInSCLIPathArray.count)] Download an iPSW")
 guard let input = readLine(), let inputInt = Int(input), inputInt <= iPSWManager.iPSWSInSCLIPathArray.count else {
     fatalError("Input must be a number and must be equal to or less than \(iPSWManager.iPSWSInSCLIPathArray.count)")
