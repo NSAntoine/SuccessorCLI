@@ -5,7 +5,7 @@ import SuccessorCLIBridged
 class MntManager {
     static let shared = MntManager()
     
-    class func mountNative(devDiskName:String, mountPointPath:String) -> Int32 {
+    class func mountDisk(devDiskName:String, mountPointPath:String) -> Int32 {
         if !fm.fileExists(atPath: mountPointPath) {
             print("Mount Point \(mountPointPath) doesn't exist.. will try to make it..")
             do {
@@ -78,7 +78,7 @@ class MntManager {
         guard fm.fileExists(atPath: diskName) else {
             fatalError("DMG \"\(DMGPath)\" was attached improperly..Cannot proceed.")
         }
-        let diskNameMntStatus = mountNative(devDiskName: diskName, mountPointPath: mntPoint)
+        let diskNameMntStatus = mountDisk(devDiskName: diskName, mountPointPath: mntPoint)
         guard diskNameMntStatus == 0 else {
             fatalError("Error encountered while mounting \(diskName) to \(mntPoint): \(String(cString: strerror(errno)))..Cannot proceed.")
         }

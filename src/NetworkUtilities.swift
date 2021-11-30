@@ -40,19 +40,20 @@ extension NetworkUtilities: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo: URL) {
         print("finished downloading item to \(didFinishDownloadingTo)")
         if fm.fileExists(atPath: self.downloadItemDestination) {
-            print("\(self.downloadItemDestination) Already exists.. will try to remove it and put the newly downloaded file..")
+            print("File already exists at \(self.downloadItemDestination).. will now try to replace it.")
             do {
-                try fm.removeItem(atPath: self.downloadItemDestination)
-                print("Removed \(self.downloadItemDestination), now placing \(didFinishDownloadingTo) there..")
+                try fm.replaceItemAt(URL(fileURLWithPath:  self.downloadItemDestination), withItemAt: didFinishDownloadingTo)
+                print("Successfully replaced \(self.downloadItemDestination) with \(didFinishDownloadingTo)")
             } catch {
-                fatalError("Error encountered while removing \(self.downloadItemDestination): \(error.localizedDescription). Exiting..")
+                fatalError("Error with replacing \(self.downloadItemDestination): \(error)..")
             }
-        }
-        do {
-            try fm.moveItem(at: didFinishDownloadingTo, to: URL(fileURLWithPath: self.downloadItemDestination))
-            print("Successfuly moved \(didFinishDownloadingTo) to \(self.downloadItemDestination)")
+        } else {
+            do {
+                try fm.moveItem(at: didFinishDownloadingTo, to: URL(fileURLWithPath: self.downloadItemDestination))
+                print("Successfully Moved item at \(didFinishDownloadingTo) to \(self.downloadItemDestination)")
             } catch {
-            fatalError("Error moving file from \(didFinishDownloadingTo) to \(self.downloadItemDestination), error:\n\(error)\nExiting..")
+                fatalError("Error encountered while moving \(didFinishDownloadingTo) to \(self.downloadItemDestination): \(error)")
+            }
         }
         sema.signal()
     }
