@@ -28,7 +28,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
     var mountPoint = "/var/mnt/successor/"
     
     /// SuccessorCLI Version
-    var ProgramVer = "2.4.0 EXPERIMENTAL-BETA"
+    var ProgramVer = "2.4.5 EXPERIMENTAL-BETA"
     
     /// Program name, always the first argument in CommandLine.arguments
     var ProgramName = CommandLine.arguments[0]
@@ -48,7 +48,6 @@ struct SCLIInfo { // SCLI = SuccessorCLI
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.
                  --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
-                 --scli-path        /PATH/TO/SET            Manually specify the SuccessorCLI directory.
             
             Options for Rsync / Restoring stuff:
                  --dry-run                                  Specifies that rsync should run with --dry-run.
@@ -60,7 +59,6 @@ struct SCLIInfo { // SCLI = SuccessorCLI
             - All options for manually specifying are optional.
             - The user must either use --restore/-r or --no-restore/-n.
             - The default Mount Point (if --mnt-point-path isn't used) is /var/mnt/successor/.
-            - Using --scli-path will change the SuccessorCLI Path, which changes where DMGs/iPSWs are searched for and changes the path of where iPSWs are downloaded if the user chooses to do so
             """
 }
 
@@ -130,10 +128,20 @@ func isNT2() -> Bool {
  
  The `thingToParse` parameter is there to be shown in the error message or if the parsing was successful
  */
-func retValueAfterCMDLineOpt(longOpt:String, fromArgArr ArgArr:[String] = CMDLineArgs, descriptionOfThingToParse:String) -> String {
-    guard let index = ArgArr.firstIndex(of: longOpt), let specifiedThing = ArgArr[safe: index + 1] else {
-        fatalError("User used \(longOpt), however the program couldn't get the \(descriptionOfThingToParse) specified, make sure you specified one. See SuccessorCLI --help for more info.")
+
+func parseArgument(longOpt:String, shortOpt:String? = nil, fromArray ArgArr:[String] = CMDLineArgs, description:String) -> String {
+    
+    var argToParse = ""
+    if let shortOpt = shortOpt {
+        // If a short option was provided in the parameters, make it the argument to parse if the long one wasn't used by the user
+        argToParse = CMDLineArgs.contains(longOpt) ? longOpt : shortOpt
+    } else {
+        // Otherwise, only target the longOpt
+        argToParse = longOpt
     }
-    print("User manually specified \(descriptionOfThingToParse) as \(specifiedThing)")
-    return specifiedThing
+    guard let index = ArgArr.firstIndex(of: argToParse), let specifiedValue = CMDLineArgs[safe: index + 1] else {
+        fatalError("User used \(argToParse) however did not specify a \(description). See SuccessorCLI --help for more info.")
+    }
+    print("User manually specified \(description) as \(specifiedValue)")
+    return specifiedValue
 }

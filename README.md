@@ -12,7 +12,7 @@ Due to this project using private frameworks, you must be compiling with a patch
 # Usage
 Open NewTerm2 or SSH Into your device (Preferrably SSH), then run the following command: `sudo successorcli [--restore/-r or --no-restore/-n]`. You must use `--restore/-r` or `--no-restore/-n` Depending on whether or not you want to execute the restore. For example: `sudo successorcli --restore`.
 
-See below for options that can be used with SuccessorCLi
+See below for options that can be used with SuccessorCLI
 
 # Options  
 The follwing options can be used with SuccessorCLI:
@@ -25,7 +25,6 @@ The follwing options can be used with SuccessorCLI:
 - `--ipsw-path /PATH/TO/IPSW` Specify iPSW Which'll be used
 - `--dmg-path /PATH/TO/ROOTFSDMG` Specify the rootfsDMG to use
 - `--rsync-bin-path /PATH/TO/RSYNC/BIN` Specify the Rsync executable to launch rsync restore with
-- `--scli-path /PATH/TO/SET` Manually specify the SuccessorCLI directory.
 
 #### Options for Rsync / Restore stuff:
 - `--append-rsync-arg=RSYNC-ARG-TO-APPEND` Specify an additional rsync argument to be passed in to rsync, for example: `--append-rsync-arg="--exclude=/some/directory"` will pass in `--exclude=/some/directory` to rsync 
@@ -37,7 +36,6 @@ The follwing options can be used with SuccessorCLI:
 ##### Notes: 
 - The user must use eiher `--restore/-r` or `--no-restore/-n` depending on whether or not they want to execute the restore.
 - If -`-mnt-point-path` is not used, then the default Mount Point is set to `/var/mnt/successor/`.
-- Using `--scli-path` will change the SuccessorCLI Path, which changes where DMGs/iPSWs are searched for and changes the path of where iPSWs are downloaded if the user chooses to do so
 
 # Project Status
 The program does work right now, I've tested it multiple times on an iPhone 8 running iOS 14.5, Im just polishing up the project right now.

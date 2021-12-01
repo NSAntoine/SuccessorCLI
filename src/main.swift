@@ -28,7 +28,7 @@ for arg in CMDLineArgs {
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
-        let iPSWSpecified = retValueAfterCMDLineOpt(longOpt: "--ipsw-path", descriptionOfThingToParse: "iPSW Path")
+        let iPSWSpecified = parseArgument(longOpt: "--ipsw-path", description: "iPSW")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
             fatalError("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW")
         }
@@ -37,7 +37,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying rootfsDMG:
     case "--dmg-path":
-        let dmgSpecified = retValueAfterCMDLineOpt(longOpt: "--dmg-path", descriptionOfThingToParse: "DMG Path")
+        let dmgSpecified = parseArgument(longOpt: "--dmg-path", description: "DMG")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
             fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
         }
@@ -45,7 +45,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
-        let rsyncBinSpecified = retValueAfterCMDLineOpt(longOpt: "--rsync-bin-path", descriptionOfThingToParse: "Rsync executable Path")
+        let rsyncBinSpecified = parseArgument(longOpt: "--rsync-bin-path", description: "Rsync Executable")
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }
@@ -53,20 +53,12 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying Mount Point:
     case "--mnt-point-path":
-        let mntPointSpecified = retValueAfterCMDLineOpt(longOpt: "--mnt-point-path", descriptionOfThingToParse: "Mount Point")
+        let mntPointSpecified = parseArgument(longOpt: "--mnt-point-path", shortOpt: nil, description: "Mount Point")
         guard fm.fileExists(atPath: mntPointSpecified) else {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
         SCLIInfo.shared.mountPoint = mntPointSpecified
         
-        // Support for manually changing the SuccessorCLI Path:
-        // Changes where the iPSW gets downloaded to and changes where DMGs/iPSWs are searched for
-    case "--scli-path":
-        let pathSpecified = retValueAfterCMDLineOpt(longOpt: "--scli-path", descriptionOfThingToParse: "SuccessorCLI Path")
-        guard fm.fileExists(atPath: pathSpecified) else {
-            fatalError("Path \"\(pathSpecified)\" can't be used to set SuccessorCLI Path if it doesn't even exist!")
-        }
-        SCLIInfo.shared.SuccessorCLIPath = pathSpecified
     default:
         break
     }
