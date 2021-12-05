@@ -26,9 +26,18 @@ class iPSWManager {
         let unzipTask = NSTask() /* Yes i know.. calling CLI just to unzip files is bad practice..but its better than waiting like 20 minutes with libzip.. */
         unzipTask.setLaunchPath("/usr/bin/unzip")
         unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"]) // Doing *.dmg here only extracts the DMGs
+        
+        // Get the time at the start of extracting the iPSW
+        let start = CFAbsoluteTimeGetCurrent()
+        
+        // Start extracting
         unzipTask.launch()
         unzipTask.waitUntilExit()
         
+        // Then subtract it by the time that extracting finished to get the time it took to extract the iPSW
+        let timeTaken = Int(CFAbsoluteTimeGetCurrent() - start)
+        print("Extracting iPSW took \(timeTaken)")
+
         guard unzipTask.terminationStatus == 0 else {
             fatalError("Error: Couldn't successfully unzip the iPSW. Exiting.")
         }
