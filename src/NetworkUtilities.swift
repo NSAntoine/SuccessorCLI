@@ -34,7 +34,7 @@ class NetworkUtilities:NSObject {
         task.downloadTask(with: url).resume()
         sema.wait()
         let timeTakenToDownload = Int(CFAbsoluteTimeGetCurrent()) - downloadTimeStarted
-        print("Downloading iPSW took \(timeTakenToDownload) seconds to download")
+        print("Downloading iPSW took \(timeTakenToDownload) seconds (\(timeTakenToDownload / 60) minutes) to download")
         }
 }
 
