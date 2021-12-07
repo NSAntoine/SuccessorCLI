@@ -113,23 +113,7 @@ func printIfDebug(_ message:Any, file:String = #file, line:Int = #line) {
     }
 }
 
-
-/// Returns true or false based on whether or not the current user terminal is NewTerm.
-func isNT2() -> Bool {
-    guard let lcTerm = ProcessInfo.processInfo.environment["LC_TERMINAL"] else {
-        return false // NewTerm 2 sets the LC_TERMINAL enviroment variable
-    }
-    return lcTerm == "NewTerm"
-}
-
-/* The following function returns the value that the user specified for a specific option. Example:
- --dmg-path randomDMG.dmg
- The function will return `randomDMG.dmg`.
- 
- The `thingToParse` parameter is there to be shown in the error message or if the parsing was successful
- */
-
-func parseArgument(longOpt:String, shortOpt:String? = nil, fromArray ArgArr:[String] = CMDLineArgs, description:String) -> String {
+func parseCMDLineArgument(longOpt:String, shortOpt:String? = nil, fromArray ArgArr:[String] = CMDLineArgs, description:String) -> String {
     
     var argToParse = ""
     if let shortOpt = shortOpt {

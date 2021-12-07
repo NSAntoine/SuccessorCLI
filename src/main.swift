@@ -28,7 +28,7 @@ for arg in CMDLineArgs {
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.
     case "--ipsw-path":
-        let iPSWSpecified = parseArgument(longOpt: "--ipsw-path", description: "iPSW")
+        let iPSWSpecified = parseCMDLineArgument(longOpt: "--ipsw-path", description: "iPSW")
         guard fm.fileExists(atPath: iPSWSpecified) && NSString(string: iPSWSpecified).pathExtension == "ipsw" else {
             fatalError("ERROR: file \"\(iPSWSpecified)\" Either doesn't exist or isn't an iPSW")
         }
@@ -37,7 +37,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying rootfsDMG:
     case "--dmg-path":
-        let dmgSpecified = parseArgument(longOpt: "--dmg-path", description: "DMG")
+        let dmgSpecified = parseCMDLineArgument(longOpt: "--dmg-path", description: "DMG")
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
             fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
         }
@@ -45,7 +45,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
-        let rsyncBinSpecified = parseArgument(longOpt: "--rsync-bin-path", description: "Rsync Executable")
+        let rsyncBinSpecified = parseCMDLineArgument(longOpt: "--rsync-bin-path", description: "Rsync Executable")
         guard fm.fileExists(atPath: rsyncBinSpecified), fm.isExecutableFile(atPath: rsyncBinSpecified) else {
             fatalError("File \"\(rsyncBinSpecified)\" Can't be used because it either doesn't exist or is not an executable file.")
         }
@@ -53,7 +53,7 @@ for arg in CMDLineArgs {
         
         // Support for manually specifying Mount Point:
     case "--mnt-point-path":
-        let mntPointSpecified = parseArgument(longOpt: "--mnt-point-path", shortOpt: nil, description: "Mount Point")
+        let mntPointSpecified = parseCMDLineArgument(longOpt: "--mnt-point-path", shortOpt: nil, description: "Mount Point")
         guard fm.fileExists(atPath: mntPointSpecified) else {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
@@ -88,9 +88,6 @@ guard getuid() == 0 else {
     fatalError("ERROR: SuccessorCLI Must be run as root, eg `sudo \(SCLIInfo.shared.ProgramName) \(CMDLineArgs.joined(separator: " "))`")
 }
 
-if isNT2() {
-    print("[WARNING] NewTerm 2 Detected, I advise you to SSH Instead, as the huge output by rsync may crash NewTerm 2 mid restore.")
-}
 print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ProgramVer).")
 
 // If the mount point is already mounted, ask the user if they want to execute the restore from it
