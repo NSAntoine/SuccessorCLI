@@ -7,9 +7,10 @@ let package = Package(
     name: "SuccessorCLI",
     platforms: [.iOS(.v14)], // Just for the code autocomplete tbh
     targets: [
+        .target(name: "SuccessorCLIBridged"),
         .target(
            name: "SuccessorCLI",
-           path: "src"
+           dependencies: ["SuccessorCLIBridged"]
         )
     ]
 )
