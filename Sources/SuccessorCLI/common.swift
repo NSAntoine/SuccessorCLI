@@ -68,41 +68,6 @@ func formatBytes(_ bytes: Int64) -> String {
     return formatter.string(fromByteCount: bytes)
 }
 
-extension FileManager {
-    func getLargestFile(atPath directoryToSearch:String) -> String? {
-        var fileDict = [String:Int64]()
-        let enumerator = fm.enumerator(atPath: directoryToSearch)
-        while let file = enumerator?.nextObject() as? String {
-            let attributes = try? fm.attributesOfItem(atPath: "\(directoryToSearch)/\(file)")
-            fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
-        }
-        let sortedFiles = fileDict.sorted(by: { $0.value > $1.value } )
-        printIfDebug("\(#function): sortedFiles: \(sortedFiles)")
-        printIfDebug("\(#function): Biggest file at directory \"\(directoryToSearch)\": \(sortedFiles.first?.key ?? "Unknown")")
-        return sortedFiles.first?.key
-    }
-    
-    // Setting enumerate here to false will not search the subpaths of the path given, and the opposite if it's set to true
-    /// Returns an array of all files in a specific path with a given extenstion
-    func filesByFileExtenstion(atPath path: String, extenstion: String, enumerate: Bool) -> [String] {
-        // Has all files rather than the ones with the file extenstion only
-        // If enumerate is true, use FileManager's enumerator, otherwise use FileManager's contentsOfDirectory
-        let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? []
-        
-        // Filters all items from the array to only include the ones with the extenstion specified
-        let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion }
-        printIfDebug("\(#function): files in directory \"\(path)\" with extenstion \(extenstion): \(filteredArr)")
-        return filteredArr
-    }
-}
-
-extension Collection {
-    /// Returns the element at the specified index if it is within bounds, otherwise nil.
-    subscript (safe index: Index) -> Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
-}
-
 func printIfDebug(_ message:Any, file:String = #file, line:Int = #line) {
     if CMDLineArgs.contains("--debug") || CMDLineArgs.contains("-d") {
         print("[SCLI Debug]: \(file):\(line): \(message)")
