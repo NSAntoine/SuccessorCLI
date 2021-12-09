@@ -83,7 +83,6 @@ class MntManager {
             guard let bsdName = bsdName, err == nil else {
                 fatalError("Error encountered while attaching DMG \"\(DMGPath)\": \(err ?? "Unknown Error")..Cannot proceed.")
             }
-            printIfDebug("BSDName of attached DMG: \(bsdName)")
             diskName = "/dev/\(bsdName)s1s1"
         }
         guard fm.fileExists(atPath: diskName) else {

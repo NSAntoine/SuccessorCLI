@@ -37,7 +37,6 @@ struct SCLIInfo { // SCLI = SuccessorCLI
             
             General Options:
                  -h, --help         Prints this help message.
-                 -d, --debug        Prints extra information which may be useful.
             
             Options for manually specifying:
                  --mnt-point-path   /PATH/TO/MOUNT          Manually specify path to mount the attached RootfsDMG to.
@@ -66,12 +65,6 @@ func formatBytes(_ bytes: Int64) -> String {
     formatter.isAdaptive = true
     
     return formatter.string(fromByteCount: bytes)
-}
-
-func printIfDebug(_ message:Any, file:String = #file, line:Int = #line) {
-    if CMDLineArgs.contains("--debug") || CMDLineArgs.contains("-d") {
-        print("[SCLI Debug]: \(file):\(line): \(message)")
-    }
 }
 
 func parseCMDLineArgument(longOpt:String, shortOpt:String? = nil, fromArray ArgArr:[String] = CMDLineArgs, description:String) -> String {

@@ -13,7 +13,6 @@ extension FileManager {
             fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
         }
         let sortedFiles = fileDict.sorted(by: { $0.value > $1.value } )
-        printIfDebug("\(#function): Biggest file at directory \"\(path)\": \(sortedFiles.first?.key ?? "Unknown")")
         return sortedFiles.first?.key
     }
     
@@ -26,7 +25,6 @@ extension FileManager {
         
         // Filters all items from the array to only include the ones with the extenstion specified
         let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion }
-        printIfDebug("\(#function): files in directory \"\(path)\" with extenstion \(extenstion): \(filteredArr)")
         return filteredArr
     }
     

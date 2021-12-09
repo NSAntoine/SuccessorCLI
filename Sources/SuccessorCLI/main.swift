@@ -9,7 +9,6 @@ if let safeCreateSCLIPathError = fm.safeCreatePath(SCLIInfo.SuccessorCLIPath) {
 
 // Due to the first argument from CommandLine.arguments being the program name, we need to drop that.
 let CMDLineArgs = Array(CommandLine.arguments.dropFirst())
-printIfDebug("Args used: \(CMDLineArgs)")
 
 // MARK: Command Line Argument support
 for arg in CMDLineArgs {
@@ -17,8 +16,6 @@ for arg in CMDLineArgs {
     case "--help", "-h":
         print(SCLIInfo.helpMessage)
         exit(0)
-    case "-d", "--debug":
-        printIfDebug("DEBUG Mode Triggered.")
         
         // Support for manually specifying iPSW:
         // This will unzip the iPSW, get RootfsDMG from it, attach and mount that, then execute restore.

@@ -18,7 +18,6 @@ See below for options that can be used with SuccessorCLI
 The follwing options can be used with SuccessorCLI:
 #### General options:
 - `-h, --help` Prints the help message then exits
-- `-d, --debug` Prints extra debug information which may be helpful
 
 #### Options for manually specifying:
 - `--mnt-point-path /PATH/TO/MOUNT` Specify the directory to where the attached RootfsDMG will be mounted to
