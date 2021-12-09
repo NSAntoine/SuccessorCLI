@@ -24,7 +24,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
     static var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
     
     /// SuccessorCLI Version
-   static var ProgramVer = "2.5.0 MOSTLY-STABLE-BETA"
+   static var ProgramVer = "2.5.5 MOSTLY-STABLE-BETA"
     
     /// Program name, always the first argument in CommandLine.arguments
     static var ProgramName = CommandLine.arguments[0]
