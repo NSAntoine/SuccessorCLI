@@ -18,14 +18,8 @@ class MntManager {
     }
 
     class func mountDisk(devDiskName:String, mountPointPath:String) -> Int32 {
-        if !fm.fileExists(atPath: mountPointPath) {
-            print("Mount Point \(mountPointPath) doesn't exist.. will try to make it..")
-            do {
-                try fm.createDirectory(atPath: mountPointPath, withIntermediateDirectories: true, attributes: nil)
-                print("Successfully create \(mountPointPath), Continuing..")
-            } catch {
-                fatalError("Error encountered while creating directory \(mountPointPath): \(error.localizedDescription)\nPlease create the \(mountPointPath) directory again and run SuccessorCLI Again\nExiting..")
-            }
+        if let safeCreateMntPointError = fm.safeCreatePath(mountPointPath) {
+            fatalError("Error creating Mount Point Path \(mountPointPath): \(safeCreateMntPointError). Please create said directory yourself then run SuccessorCLI again.")
         }
         
         //https://github.com/Odyssey-Team/Taurine/blob/0ee53dde05da8ce5a9b7192e4164ffdae7397f94/Taurine/post-exploit/utils/remount.swift#L169

@@ -2,14 +2,9 @@ import Foundation
 
 let fm = FileManager.default
 
-if !fm.fileExists(atPath: SCLIInfo.SuccessorCLIPath) {
-    printIfDebug("Didn't find \(SCLIInfo.SuccessorCLIPath) directory..proceeding to try to create it..")
-    do {
-        try fm.createDirectory(atPath: SCLIInfo.SuccessorCLIPath, withIntermediateDirectories: true, attributes: nil)
-        printIfDebug("Successfully created directory. Continuing.")
-    } catch {
-        fatalError("Error encountered while creating directory \(SCLIInfo.SuccessorCLIPath): \(error.localizedDescription)\nNote: Please create the directory yourself and run SuccessorCLI again. Exiting")
-    }
+// Now lets make sure the SuccessorCLI Path is created if it doesnt already exist
+if let safeCreateSCLIPathError = fm.safeCreatePath(SCLIInfo.SuccessorCLIPath) {
+    fatalError("Couldn't create path \(SCLIInfo.SuccessorCLIPath), Error: \(safeCreateSCLIPathError). Please create said path yourself and run SuccessorCLI again.")
 }
 
 // Due to the first argument from CommandLine.arguments being the program name, we need to drop that.

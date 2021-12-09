@@ -89,6 +89,7 @@ class deviceRestoreManager {
         task.setArguments(rsyncArgs)
         task.setStandardOutput(pipe)
         task.setStandardError(pipe)
+        
         let outHandle = pipe.fileHandleForReading
         outHandle.readabilityHandler = { pipe in
             guard let line = String(data: pipe.availableData, encoding: .utf8) else {

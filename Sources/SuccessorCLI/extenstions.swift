@@ -1,16 +1,19 @@
 import Foundation
 
 extension FileManager {
-    func getLargestFile(atPath directoryToSearch:String) -> String? {
+    func getLargestFile(atPath path:String) -> String? {
+        // Return nil if the contents of said directory is empty
+        let contentsOfDir = (try? contentsOfDirectory(atPath: path)) ?? []
+        if contentsOfDir.isEmpty { return nil }
+        
         var fileDict = [String:Int64]()
-        let enumerator = fm.enumerator(atPath: directoryToSearch)
+        let enumerator = fm.enumerator(atPath: path)
         while let file = enumerator?.nextObject() as? String {
-            let attributes = try? fm.attributesOfItem(atPath: "\(directoryToSearch)/\(file)")
+            let attributes = try? fm.attributesOfItem(atPath: "\(path)/\(file)")
             fileDict[file] = attributes?[FileAttributeKey.size] as? Int64
         }
         let sortedFiles = fileDict.sorted(by: { $0.value > $1.value } )
-        printIfDebug("\(#function): sortedFiles: \(sortedFiles)")
-        printIfDebug("\(#function): Biggest file at directory \"\(directoryToSearch)\": \(sortedFiles.first?.key ?? "Unknown")")
+        printIfDebug("\(#function): Biggest file at directory \"\(path)\": \(sortedFiles.first?.key ?? "Unknown")")
         return sortedFiles.first?.key
     }
     
@@ -25,6 +28,18 @@ extension FileManager {
         let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion }
         printIfDebug("\(#function): files in directory \"\(path)\" with extenstion \(extenstion): \(filteredArr)")
         return filteredArr
+    }
+    
+    /// Creates a path if it doesnt exist, returns nil if creation was successfull, otherwise it returns the errors description
+    func safeCreatePath(_ path:String) -> String? {
+        let url = URL(fileURLWithPath: path)
+        do {
+            try fm.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+            print("created Path \(path) Successfully.")
+            return nil
+        } catch {
+            return error.localizedDescription
+        }
     }
 }
 
