@@ -33,7 +33,7 @@ for arg in CMDLineArgs {
         guard fm.fileExists(atPath: dmgSpecified) && NSString(string: dmgSpecified).pathExtension == "dmg" else {
             fatalError("File \"\(dmgSpecified)\" Either doesnt exist or isnt a DMG file.")
         }
-        DMGManager.shared.rfsDMGToUseFullPath = dmgSpecified
+        DMGManager.rfsDMGToUseFullPath = dmgSpecified
         
         // Support for manually specifying rsync binary:
     case "--rsync-bin-path":
@@ -85,7 +85,7 @@ guard getuid() == 0 else {
 print("Welcome to SuccessorCLI! Version \(SCLIInfo.ProgramVer).")
 
 // If the mount point is already mounted, ask the user if they want to execute the restore from it
-if MntManager.shared.isMountPointMounted() {
+if MntManager.isMountPointMounted() {
     print("Mount Point at \(MntManager.mountPoint) already mounted, would you like to execute restore from the contents inside it?")
     print("[1] Yes")
     print("[2] No, unmount it and continue")
@@ -110,8 +110,8 @@ if MntManager.shared.isMountPointMounted() {
 }
 
 // MARK: RootfsDMG and iPSW Detection
-if fm.fileExists(atPath: DMGManager.shared.rfsDMGToUseFullPath) {
-    print("Rfs DMG at \(DMGManager.shared.rfsDMGToUseFullPath) already exists, would you like to use it?")
+if fm.fileExists(atPath: DMGManager.rfsDMGToUseFullPath) {
+    print("Rfs DMG at \(DMGManager.rfsDMGToUseFullPath) already exists, would you like to use it?")
     print("[1] Yes")
     print("[2] No")
     guard let input = readLine(), let inputInt = Int(input) else {
@@ -137,7 +137,7 @@ if !DMGManager.DMGSinSCLIPathArray.isEmpty {
     }
     if inputInt != DMGManager.DMGSinSCLIPathArray.count {
         let DMGSpecified = DMGManager.DMGSinSCLIPathArray[inputInt]
-        DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.SuccessorCLIPath)/\(DMGSpecified)"
+        DMGManager.rfsDMGToUseFullPath = "\(SCLIInfo.SuccessorCLIPath)/\(DMGSpecified)"
         deviceRestoreManager.attachMntAndExecRestore()
     }
 }

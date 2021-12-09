@@ -74,7 +74,9 @@ class deviceRestoreManager {
     /// Function which launches rsync.
     class func launchRsync() {
         guard shouldDoRestore && !shouldntDoRestore else {
-            print("To execute the rsync restore, the user HAS to use --restore/-r and NOT have used --no-restore/-n. If you want to execute the restore, please run SuccessorCLI again with --restore/-r")
+            print("Not launching the rsync restore because the user did not use --restore/-r.")
+            print("If you want the restore to be executed, run SuccessorCLI with --restore/-r.")
+            print("Exiting.")
             exit(0)
         }
         let pipe = Pipe()
@@ -127,11 +129,11 @@ class deviceRestoreManager {
         exit(0)
     }
     
-    // By default, it will select the DMG in DMGManager.shared.rfsDMGToUseFullPath as the dmg to attach/mount and MntManager.mountPoint as the default mount
+    // By default, it will select the DMG in DMGManager.rfsDMGToUseFullPath as the dmg to attach/mount and MntManager.mountPoint as the default mount
     /// Attaches and mounts specified DMG, then executes restore
-    class func attachMntAndExecRestore(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath,
+    class func attachMntAndExecRestore(DMGPath:String = DMGManager.rfsDMGToUseFullPath,
                                        mntPointPath mntPoint:String = MntManager.mountPoint) {
-        if !MntManager.shared.isMountPointMounted() {
+        if !MntManager.isMountPointMounted() {
             MntManager.attachAndMntDMG(DMGPath: DMGPath, mntPointPath: mntPoint)
         }
         execRsyncThenCallDataReset()

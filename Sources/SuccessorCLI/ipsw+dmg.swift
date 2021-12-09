@@ -50,9 +50,9 @@ class iPSWManager {
         }
         
         do {
-            try fm.moveItem(atPath: fileToMove, toPath: DMGManager.shared.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
+            try fm.moveItem(atPath: fileToMove, toPath: DMGManager.rfsDMGToUseFullPath) /* Moves and renames the rootfs dmg */
         } catch {
-            fatalError("Error encountered while trying to move to \(fileToMove) to \(DMGManager.shared.rfsDMGToUseFullPath): \(error.localizedDescription). Exiting")
+            fatalError("Error encountered while trying to move to \(fileToMove) to \(DMGManager.rfsDMGToUseFullPath): \(error.localizedDescription). Exiting")
         }
     }
     
@@ -97,10 +97,9 @@ struct onlineiPSWManager {
 // MARK: DMG Stuff
 /// Manages the several operations for the RootfsDMG
 class DMGManager {
-    static let shared = DMGManager()
     
-    var rfsDMGToUseFullPath = SCLIInfo.SuccessorCLIPath + "/rfs.dmg"
-    
+    /// The full path at which the rfsDMG will/is located at, can be changed with the `--dmg-path` option, see the help page for more info
+    static var rfsDMGToUseFullPath = SCLIInfo.SuccessorCLIPath + "/rfs.dmg"
     
     // enumerate is set to `false` here in order to stop the function to stop from searching subpaths, the reason we want it to stop from searching subpaths is that the extracted directory usually contains 2-3 DMGs, only one of which being the RootfsDMG, and we don't want to detect the useless ones
     /// Returns the DMGs that are in SCLIInfo.SuccessorCLIPath, doesn't include subdirectories

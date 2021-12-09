@@ -3,7 +3,6 @@ import SuccessorCLIBridged
 
 /// Manages stuff such as mount status and mounting function, etc
 class MntManager {
-    static let shared = MntManager()
     
     /// Directory to where the attached DMG will be mounted to, by default this is /var/mnt/successor/, however this can be changed with `--mnt-point-path`, see help message for more.
     static var mountPoint = "/var/mnt/successor/"
@@ -42,7 +41,7 @@ class MntManager {
     
     //https://github.com/Odyssey-Team/Taurine/blob/0ee53dde05da8ce5a9b7192e4164ffdae7397f94/Taurine/post-exploit/utils/remount.swift#L63
     /// Returns true or false based on whether or not MntManager.mountPoint is mounted
-    func isMountPointMounted(mntPointPath:String = mountPoint) -> Bool {
+    class func isMountPointMounted(mntPointPath:String = mountPoint) -> Bool {
         let path = strdup(mntPointPath)
         defer {
             if let path = path {
@@ -76,7 +75,7 @@ class MntManager {
         return buffer.st_dev != p_buf.st_dev || buffer.st_ino == p_buf.st_ino
     }
     
-    class func attachAndMntDMG(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath,
+    class func attachAndMntDMG(DMGPath:String = DMGManager.rfsDMGToUseFullPath,
                                mntPointPath mntPoint:String = MntManager.mountPoint) {
         var diskName = ""
         DMGManager.attachDMG(dmgPath: DMGPath) { bsdName, err in
