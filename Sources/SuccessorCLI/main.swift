@@ -57,8 +57,7 @@ for arg in CMDLineArgs {
         guard fm.fileExists(atPath: mntPointSpecified) else {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
-        MntManager.mountPoint
- = mntPointSpecified
+        MntManager.mountPoint = mntPointSpecified
         
     default:
         break
