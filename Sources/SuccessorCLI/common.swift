@@ -17,7 +17,7 @@ struct deviceInfo {
     static let deviceiOSVersion = UIDevice.current.systemVersion
 }
 
-/// Provides information about SuccessorCLI App, such as its path in /var/mobile/Library and the mount point.
+/// Provides information about SuccessorCLI Program
 struct SCLIInfo { // SCLI = SuccessorCLI
     
     /// If the user chooses to download or extract an iPSW, then it ends up here. This is also the path at which SuccessorCLI scans for iPSWs and DMGs

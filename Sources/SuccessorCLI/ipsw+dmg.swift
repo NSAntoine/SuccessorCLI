@@ -67,22 +67,30 @@ class iPSWManager {
 
 // MARK: Online iPSW Stuff
 struct onlineiPSWManager {
-    struct onlineiPSWInfoProperties: Codable { // stuff thats in the JSON Response
-        let url:URL
-    }
-    static var iPSWMEJSONDataResponse:String {
+    static private var iPSWMEJSONResponse:String {
+        let apiURLStr = "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)"
         var ret = ""
-        NetworkUtilities.shared.retJSONFromURL(url: "https://api.ipsw.me/v4/ipsw/\(deviceInfo.machineName)/\(deviceInfo.buildID)") { strResponse in
-            ret = strResponse
+        NetworkUtilities.shared.retJSONFromURL(url: apiURLStr) { responseStr in
+            ret = responseStr
         }
         return ret
     }
     
-    static let iPSWJSONRespData = iPSWMEJSONDataResponse.data(using: .utf8)!
-    static let iPSWJSONDataDecoded = try! JSONDecoder().decode(onlineiPSWInfoProperties.self, from: iPSWJSONRespData)
+     private struct onlineiPSWProperties: Codable {
+        let url:URL
+    }
+    
+    static private var JSONResponseDecoded:onlineiPSWProperties {
+        guard let data = iPSWMEJSONResponse.data(using: .utf8),
+              let decoded = try? JSONDecoder().decode(onlineiPSWProperties.self, from: data) else {
+                  fatalError("Couldn't get online iPSW Info. can't proceed.")
+              }
+        
+        return decoded
+    }
     
     struct onlineiPSWInfo {
-        static let iPSWURL = iPSWJSONDataDecoded.url
+        static let iPSWURL = JSONResponseDecoded.url
     }
 }
 

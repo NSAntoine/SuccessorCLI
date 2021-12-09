@@ -33,7 +33,6 @@ extension FileManager {
         let url = URL(fileURLWithPath: path)
         do {
             try fm.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
-            print("created Path \(path) Successfully.")
             return nil
         } catch {
             return error.localizedDescription
