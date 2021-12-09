@@ -42,7 +42,7 @@ class deviceRestoreManager {
                     "--exclude=/System/Library/Caches/com.apple.factorydata/",
                     "--exclude=/usr/standalone/firmware/sep-firmware.img4",
                     "--exclude=/usr/local/standalone/firmware/Baseband",
-                    "--exclude=/private\(SCLIInfo.shared.mountPoint)",
+                    "--exclude=\(MntManager.mountPointRealPath)",
                     "--exclude=/private/etc/fstab",
                     "--exclude=/etc/fstab",
                     "--exclude=/usr/standalone/firmware/FUD/",
@@ -57,7 +57,7 @@ class deviceRestoreManager {
                     "--exclude=/devicetree",
                     "--exclude=/kernelcache",
                     "--exclude=/ramdisk",
-                    "/private\(SCLIInfo.shared.mountPoint)",
+                    MntManager.mountPointRealPath,
                     "/"]
         
         // If the user used --dry-run, append --dry-run to the args to return
@@ -126,9 +126,10 @@ class deviceRestoreManager {
         exit(0)
     }
     
-    // By default, it will select the DMG in DMGManager.shared.rfsDMGToUseFullPath as the dmg to attach/mount and SCLIInfo.shared.mountPoint as the default mount
+    // By default, it will select the DMG in DMGManager.shared.rfsDMGToUseFullPath as the dmg to attach/mount and MntManager.mountPoint as the default mount
     /// Attaches and mounts specified DMG, then executes restore
-    class func attachMntAndExecRestore(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
+    class func attachMntAndExecRestore(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath,
+                                       mntPointPath mntPoint:String = MntManager.mountPoint) {
         if !MntManager.shared.isMountPointMounted() {
             MntManager.attachAndMntDMG(DMGPath: DMGPath, mntPointPath: mntPoint)
         }

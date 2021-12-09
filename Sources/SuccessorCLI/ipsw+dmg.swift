@@ -8,8 +8,8 @@ import SuccessorCLIBridged
 class iPSWManager {
     static let shared = iPSWManager()
     
-    /// Returns the iPSWs that are in SCLIInfo.shared.SuccessorCLIPath, this is used mainly for iPSW detection
-    static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "ipsw", enumerate: true)
+    /// Returns the iPSWs that are in SCLIInfo.SuccessorCLIPath, this is used mainly for iPSW detection
+    static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.SuccessorCLIPath, extenstion: "ipsw", enumerate: true)
     
     var largestFileInsideExtractedDir:String {
         guard let ret = fm.getLargestFile(atPath: iPSWManager.extractedOnboardiPSWPath) else {
@@ -18,8 +18,8 @@ class iPSWManager {
         return ret
     }
     
-    static var onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/ipsw.ipsw"
-    static var extractedOnboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/extracted"
+    static var onboardiPSWPath = "\(SCLIInfo.SuccessorCLIPath)/ipsw.ipsw"
+    static var extractedOnboardiPSWPath = "\(SCLIInfo.SuccessorCLIPath)/extracted"
     
     /// Function which unzips iPSW to where its specified.
     func unzipiPSW(iPSWFilePath: String, destinationPath: String) {
@@ -41,7 +41,7 @@ class iPSWManager {
         guard unzipTask.terminationStatus == 0 else {
             fatalError("Error: Couldn't successfully unzip the iPSW. Exiting.")
         }
-        print("Will now try to move largest file inside \(destinationPath) (should be a DMG) to \(SCLIInfo.shared.SuccessorCLIPath) With the name \"rfs.dmg\"")
+        print("Will now try to move largest file inside \(destinationPath) (should be a DMG) to \(SCLIInfo.SuccessorCLIPath) With the name \"rfs.dmg\"")
         let fileToMove = "\(destinationPath)/\(iPSWManager.shared.largestFileInsideExtractedDir)"
         
         // Make sure the file is a DMG
@@ -91,12 +91,12 @@ struct onlineiPSWManager {
 class DMGManager {
     static let shared = DMGManager()
     
-    var rfsDMGToUseFullPath = SCLIInfo.shared.SuccessorCLIPath + "/rfs.dmg"
+    var rfsDMGToUseFullPath = SCLIInfo.SuccessorCLIPath + "/rfs.dmg"
     
     
     // enumerate is set to `false` here in order to stop the function to stop from searching subpaths, the reason we want it to stop from searching subpaths is that the extracted directory usually contains 2-3 DMGs, only one of which being the RootfsDMG, and we don't want to detect the useless ones
-    /// Returns the DMGs that are in SCLIInfo.shared.SuccessorCLIPath, doesn't include subdirectories
-    static let DMGSinSCLIPathArray =  fm.filesByFileExtenstion(atPath: SCLIInfo.shared.SuccessorCLIPath, extenstion: "dmg", enumerate: false)
+    /// Returns the DMGs that are in SCLIInfo.SuccessorCLIPath, doesn't include subdirectories
+    static let DMGSinSCLIPathArray =  fm.filesByFileExtenstion(atPath: SCLIInfo.SuccessorCLIPath, extenstion: "dmg", enumerate: false)
     
     /*
      The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted.

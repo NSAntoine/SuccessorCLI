@@ -2,13 +2,13 @@ import Foundation
 
 let fm = FileManager.default
 
-if !fm.fileExists(atPath: SCLIInfo.shared.SuccessorCLIPath) {
-    printIfDebug("Didn't find \(SCLIInfo.shared.SuccessorCLIPath) directory..proceeding to try to create it..")
+if !fm.fileExists(atPath: SCLIInfo.SuccessorCLIPath) {
+    printIfDebug("Didn't find \(SCLIInfo.SuccessorCLIPath) directory..proceeding to try to create it..")
     do {
-        try fm.createDirectory(atPath: SCLIInfo.shared.SuccessorCLIPath, withIntermediateDirectories: true, attributes: nil)
+        try fm.createDirectory(atPath: SCLIInfo.SuccessorCLIPath, withIntermediateDirectories: true, attributes: nil)
         printIfDebug("Successfully created directory. Continuing.")
     } catch {
-        fatalError("Error encountered while creating directory \(SCLIInfo.shared.SuccessorCLIPath): \(error.localizedDescription)\nNote: Please create the directory yourself and run SuccessorCLI again. Exiting")
+        fatalError("Error encountered while creating directory \(SCLIInfo.SuccessorCLIPath): \(error.localizedDescription)\nNote: Please create the directory yourself and run SuccessorCLI again. Exiting")
     }
 }
 
@@ -57,21 +57,24 @@ for arg in CMDLineArgs {
         guard fm.fileExists(atPath: mntPointSpecified) else {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
-        SCLIInfo.shared.mountPoint = mntPointSpecified
+        MntManager.mountPoint
+ = mntPointSpecified
         
     default:
         break
     }
 }
 
-// Make sure user uses either --restore/-r or --no-restore/-n
-guard deviceRestoreManager.shouldDoRestore || deviceRestoreManager.shouldntDoRestore else {
-    fatalError("User must use either --restore/-r or --no-restore/-n.\n \(SCLIInfo.helpMessage)")
+/// Returns true or false if the user used either --restore/-r or --no-restore/-n
+let userUsedRestoreOrNoRestore = deviceRestoreManager.shouldDoRestore || deviceRestoreManager.shouldntDoRestore
+guard userUsedRestoreOrNoRestore else {
+    fatalError("User must use either use --restore/-r or --no-restore. See SuccessorCLI --help for more.")
 }
 
-// Make sure the user didn't use both --restore/-r and --no-restore/-n
-guard !(deviceRestoreManager.shouldDoRestore && deviceRestoreManager.shouldntDoRestore) else {
-    fatalError("Can't use both --restore/-r and --no-restore/-n. Please specify only one.")
+/// Returns true or false if the user used both --restore/-r and --no-restore/-n
+let userUsedBothRestoreAndNoRestore = deviceRestoreManager.shouldDoRestore && deviceRestoreManager.shouldntDoRestore
+guard !userUsedBothRestoreAndNoRestore else {
+    fatalError("Can't use both --restore/-r and --no-restore/-n together. See SuccessorCLI --help for more.")
 }
 
 // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly
@@ -85,14 +88,14 @@ if !rsyncArgsSpecified.isEmpty {
 // detecting for root
 // root is needed to execute rsync with enough permissions to replace all files necessary
 guard getuid() == 0 else {
-    fatalError("ERROR: SuccessorCLI Must be run as root, eg `sudo \(SCLIInfo.shared.ProgramName) \(CMDLineArgs.joined(separator: " "))`")
+    fatalError("ERROR: SuccessorCLI Must be run as root, eg `sudo \(SCLIInfo.ProgramName) \(CMDLineArgs.joined(separator: " "))`")
 }
 
-print("Welcome to SuccessorCLI! Version \(SCLIInfo.shared.ProgramVer).")
+print("Welcome to SuccessorCLI! Version \(SCLIInfo.ProgramVer).")
 
 // If the mount point is already mounted, ask the user if they want to execute the restore from it
 if MntManager.shared.isMountPointMounted() {
-    print("Mount Point at \(SCLIInfo.shared.mountPoint) already mounted, would you like to execute restore from the contents inside it?")
+    print("Mount Point at \(MntManager.mountPoint) already mounted, would you like to execute restore from the contents inside it?")
     print("[1] Yes")
     print("[2] No, unmount it and continue")
     print("[3] No and exit")
@@ -104,12 +107,12 @@ if MntManager.shared.isMountPointMounted() {
     case 1:
         deviceRestoreManager.execRsyncThenCallDataReset()
     case 2:
-        let unmtStatus = unmount(SCLIInfo.shared.mountPoint, 0)
+        let unmtStatus = unmount(MntManager.mountPoint, 0)
         guard unmtStatus == 0 else {
             let error = String(cString: strerror(errno))
-            fatalError("Error encountered while unmounting \"\(SCLIInfo.shared.mountPoint)\": \(error)")
+            fatalError("Error encountered while unmounting \"\(MntManager.mountPoint)\": \(error)")
         }
-        print("Unmounted \(SCLIInfo.shared.mountPoint)")
+        print("Unmounted \(MntManager.mountPoint)")
     default:
         exit(0)
     }
@@ -132,7 +135,7 @@ print("Choose what to do below.")
 
 // If there are DMGs in the SuccessorCLI directory, ask the user if they want to use them
 if !DMGManager.DMGSinSCLIPathArray.isEmpty {
-    print("Found DMGs in \(SCLIInfo.shared.SuccessorCLIPath), Which would you like to use?")
+    print("Found DMGs in \(SCLIInfo.SuccessorCLIPath), Which would you like to use?")
     for i in 0...(DMGManager.DMGSinSCLIPathArray.count - 1) {
         print("[\(i)] Use DMG \(DMGManager.DMGSinSCLIPathArray[i])")
     }
@@ -143,14 +146,14 @@ if !DMGManager.DMGSinSCLIPathArray.isEmpty {
     }
     if inputInt != DMGManager.DMGSinSCLIPathArray.count {
         let DMGSpecified = DMGManager.DMGSinSCLIPathArray[inputInt]
-        DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(DMGSpecified)"
+        DMGManager.shared.rfsDMGToUseFullPath = "\(SCLIInfo.SuccessorCLIPath)/\(DMGSpecified)"
         deviceRestoreManager.attachMntAndExecRestore()
     }
 }
 
 // If there are no DMGs in the SuccessorCLI directory or if the user declined to use a DMG, it'll search for iPSWs in the SuccessorCLI directory, if there are any, itll ask the user if they want to use them
 if !iPSWManager.iPSWSInSCLIPathArray.isEmpty {
-    print("Found following iPSWs in \(SCLIInfo.shared.SuccessorCLIPath).")
+    print("Found following iPSWs in \(SCLIInfo.SuccessorCLIPath).")
     for i in 0...(iPSWManager.iPSWSInSCLIPathArray.count - 1) {
         print("[\(i)] Extract and use iPSW \(iPSWManager.iPSWSInSCLIPathArray[i])")
     }
@@ -164,7 +167,7 @@ if inputInt == iPSWManager.iPSWSInSCLIPathArray.count {
     iPSWManager.downloadAndExtractiPSW()
 } else {
     let iPSWSpecified = iPSWManager.iPSWSInSCLIPathArray[inputInt]
-    iPSWManager.onboardiPSWPath = "\(SCLIInfo.shared.SuccessorCLIPath)/\(iPSWSpecified)"
+    iPSWManager.onboardiPSWPath = "\(SCLIInfo.SuccessorCLIPath)/\(iPSWSpecified)"
     iPSWManager.shared.unzipiPSW(iPSWFilePath: iPSWManager.onboardiPSWPath, destinationPath: iPSWManager.extractedOnboardiPSWPath)
 }
 

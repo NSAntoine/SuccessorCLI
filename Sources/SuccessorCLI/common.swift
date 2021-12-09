@@ -19,24 +19,20 @@ struct deviceInfo {
 
 /// Provides information about SuccessorCLI App, such as its path in /var/mobile/Library and the mount point.
 struct SCLIInfo { // SCLI = SuccessorCLI
-    static var shared = SCLIInfo()
     
     /// If the user chooses to download or extract an iPSW, then it ends up here. This is also the path at which SuccessorCLI scans for iPSWs and DMGs
-    var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
-    
-    /// Directory to where the attached DMG will be mounted to, by default this is /var/mnt/successor/, however this can be changed with `--mnt-point-path`, see help message for more.
-    var mountPoint = "/var/mnt/successor/"
+    static var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
     
     /// SuccessorCLI Version
-    var ProgramVer = "2.4.5 EXPERIMENTAL-BETA"
+   static var ProgramVer = "2.5.0 MOSTLY-STABLE-BETA"
     
     /// Program name, always the first argument in CommandLine.arguments
-    var ProgramName = CommandLine.arguments[0]
+    static var ProgramName = CommandLine.arguments[0]
     
     static let helpMessage = """
             SuccessorCLI - By Serena-io
             A utility to restore iOS devices, inspired by the original Succession.
-            Version \(SCLIInfo.shared.ProgramVer)
+            Version \(SCLIInfo.ProgramVer)
             Usage: successorcli [--restore/-r or --no-restore/-n] <option>
             
             General Options:
@@ -50,9 +46,9 @@ struct SCLIInfo { // SCLI = SuccessorCLI
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
             
             Options for Rsync / Restoring stuff:
-                 --dry-run                                  Specifies that rsync should run with --dry-run.
                  -r, --restore                              Do a full restore with rsync. Note that this WILL erase your device.
                  -n, --no-restore                           Attach and mount rootfsDMG, but exit before starting the restore.
+                 --dry-run                                  Specifies that rsync should run with --dry-run.
                  --append-rsync-arg=RSYNC-ARG               Specify an additional rsync argument to be passed in to rsync.
             
             Notes:

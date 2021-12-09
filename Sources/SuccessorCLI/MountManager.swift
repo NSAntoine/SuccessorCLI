@@ -5,6 +5,18 @@ import SuccessorCLIBridged
 class MntManager {
     static let shared = MntManager()
     
+    /// Directory to where the attached DMG will be mounted to, by default this is /var/mnt/successor/, however this can be changed with `--mnt-point-path`, see help message for more.
+    static var mountPoint = "/var/mnt/successor/"
+    
+    /// Returns the mountPoint but with symlinks resvolved
+    static var mountPointRealPath:String {
+        guard let realpathCStr = realpath(mountPoint, nil) else {
+            // If the realpath can't be obtained, just return the normal path instead
+            return mountPoint
+        }
+        return String(cString: realpathCStr)
+    }
+
     class func mountDisk(devDiskName:String, mountPointPath:String) -> Int32 {
         if !fm.fileExists(atPath: mountPointPath) {
             print("Mount Point \(mountPointPath) doesn't exist.. will try to make it..")
@@ -35,8 +47,8 @@ class MntManager {
     
     
     //https://github.com/Odyssey-Team/Taurine/blob/0ee53dde05da8ce5a9b7192e4164ffdae7397f94/Taurine/post-exploit/utils/remount.swift#L63
-    /// Returns true or false based on whether or not SCLIInfo.shared.mountPoint is mounted
-    func isMountPointMounted(mntPointPath:String = SCLIInfo.shared.mountPoint) -> Bool {
+    /// Returns true or false based on whether or not MntManager.mountPoint is mounted
+    func isMountPointMounted(mntPointPath:String = mountPoint) -> Bool {
         let path = strdup(mntPointPath)
         defer {
             if let path = path {
@@ -70,7 +82,8 @@ class MntManager {
         return buffer.st_dev != p_buf.st_dev || buffer.st_ino == p_buf.st_ino
     }
     
-    class func attachAndMntDMG(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath, mntPointPath mntPoint:String = SCLIInfo.shared.mountPoint) {
+    class func attachAndMntDMG(DMGPath:String = DMGManager.shared.rfsDMGToUseFullPath,
+                               mntPointPath mntPoint:String = MntManager.mountPoint) {
         var diskName = ""
         DMGManager.attachDMG(dmgPath: DMGPath) { bsdName, err in
             guard let bsdName = bsdName, err == nil else {
