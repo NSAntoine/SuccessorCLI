@@ -10,7 +10,7 @@ make package
 ```
 Due to this project using private frameworks, you must be compiling with a patched SDK rather than a normal one.
 # Usage
-Open NewTerm2 or SSH Into your device (Preferrably SSH), then run the following command: `sudo successorcli [--restore/-r or --no-restore/-n]`. You must use `--restore/-r` or `--no-restore/-n` Depending on whether or not you want to execute the restore. For example: `sudo successorcli --restore`.
+Open NewTerm2 or SSH Into your device (Preferrably SSH), then run the following command: `sudo successorcli`. If you want the rsync restore to be executed, use `--restore/-r`.
 
 See below for options that can be used with SuccessorCLI
 
@@ -33,7 +33,7 @@ The follwing options can be used with SuccessorCLI:
 
 
 ##### Notes: 
-- The user must use eiher `--restore/-r` or `--no-restore/-n` depending on whether or not they want to execute the restore.
+- `--restore/-r` must be used if the user wants the restore to be executed.
 - If -`-mnt-point-path` is not used, then the default Mount Point is set to `/var/mnt/successor/`.
 
 # Project Status

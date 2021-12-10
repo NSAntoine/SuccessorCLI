@@ -36,7 +36,7 @@ class iPSWManager {
         
         // Then subtract it by the time that extracting finished to get the time it took to extract the iPSW
         let timeTaken = Int(CFAbsoluteTimeGetCurrent() - start)
-        print("Extracting iPSW took \(timeTaken)")
+        print("Extracting iPSW took \(timeTaken) seconds (\(timeTaken / 60) minutes)")
 
         guard unzipTask.terminationStatus == 0 else {
             fatalError("Error: Couldn't successfully unzip the iPSW. Exiting.")

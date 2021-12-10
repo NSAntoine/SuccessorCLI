@@ -24,8 +24,7 @@ extension FileManager {
         let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? []
         
         // Filters all items from the array to only include the ones with the extenstion specified
-        let filteredArr = arr.filter() { NSString(string: $0).pathExtension == extenstion }
-        return filteredArr
+        return arr.filter() { NSString(string: $0).pathExtension == extenstion }
     }
     
     /// Creates a path if it doesnt exist, returns nil if creation was successfull, otherwise it returns the errors description

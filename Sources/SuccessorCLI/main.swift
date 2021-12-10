@@ -56,16 +56,8 @@ for arg in CMDLineArgs {
     }
 }
 
-/// Returns true or false if the user used either --restore/-r or --no-restore/-n
-let userUsedRestoreOrNoRestore = deviceRestoreManager.shouldDoRestore || deviceRestoreManager.shouldntDoRestore
-guard userUsedRestoreOrNoRestore else {
-    fatalError("User must use either use --restore/-r or --no-restore. See SuccessorCLI --help for more.")
-}
-
-/// Returns true or false if the user used both --restore/-r and --no-restore/-n
-let userUsedBothRestoreAndNoRestore = deviceRestoreManager.shouldDoRestore && deviceRestoreManager.shouldntDoRestore
-guard !userUsedBothRestoreAndNoRestore else {
-    fatalError("Can't use both --restore/-r and --no-restore/-n together. See SuccessorCLI --help for more.")
+if !deviceRestoreManager.shouldDoRestore {
+    print("Note: User did not use --restore/-r, therefore the restore will not be executed, see SuccessorCLI --help for more.")
 }
 
 // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly

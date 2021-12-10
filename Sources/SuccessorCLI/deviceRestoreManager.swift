@@ -13,9 +13,6 @@ class deviceRestoreManager {
     /// Needs to be true to launch the rsync restore, returns true or false based on whether or not the user used `--restore/-r`
     static let shouldDoRestore = CMDLineArgs.contains("--restore") || CMDLineArgs.contains("-r")
     
-    /// If this is true, the rsync restore will not be executed and instead exit before starting it.
-    static let shouldntDoRestore = CMDLineArgs.contains("--no-restore") || CMDLineArgs.contains("-n")
-    
     /// SpringBoardServerPort needed when calling SBDataReset
     @_silgen_name("SBSSpringBoardServerPort") private static func SBServerPort() -> mach_port_t
     
@@ -68,14 +65,15 @@ class deviceRestoreManager {
         if fm.fileExists(atPath: "/Library/Caches/xpcproxy") || fm.fileExists(atPath: "/var/tmp/xpcproxy") {
             args += XPCProxyExcludeArgs
         }
+        
         return args
     }()
     
     /// Function which launches rsync.
     class func launchRsync() {
-        guard shouldDoRestore && !shouldntDoRestore else {
-            print("Not launching the rsync restore because the user did not use --restore/-r.")
-            print("If you want the restore to be executed, run SuccessorCLI with --restore/-r.")
+        guard shouldDoRestore else {
+            print("The user did not use --restore/-r, therefore the restore will not be executed.")
+            print("If you want the restore to be executed, run SuccessorCLI again with --restore/-r")
             print("Exiting.")
             exit(0)
         }

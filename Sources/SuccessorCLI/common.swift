@@ -24,7 +24,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
     static var SuccessorCLIPath = "/var/mobile/Library/SuccessorCLI"
     
     /// SuccessorCLI Version
-   static var ProgramVer = "2.5.5 MOSTLY-STABLE-BETA"
+   static var ProgramVer = "2.5.6 MOSTLY-STABLE-BETA"
     
     /// Program name, always the first argument in CommandLine.arguments
     static var ProgramName = CommandLine.arguments[0]
@@ -33,7 +33,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
             SuccessorCLI - By Serena-io
             A utility to restore iOS devices, inspired by the original Succession.
             Version \(SCLIInfo.ProgramVer)
-            Usage: successorcli [--restore/-r or --no-restore/-n] <option>
+            Usage: successorcli <option>
             
             General Options:
                  -h, --help         Prints this help message.
@@ -46,13 +46,12 @@ struct SCLIInfo { // SCLI = SuccessorCLI
             
             Options for Rsync / Restoring stuff:
                  -r, --restore                              Do a full restore with rsync. Note that this WILL erase your device.
-                 -n, --no-restore                           Attach and mount rootfsDMG, but exit before starting the restore.
                  --dry-run                                  Specifies that rsync should run with --dry-run.
                  --append-rsync-arg=RSYNC-ARG               Specify an additional rsync argument to be passed in to rsync.
             
             Notes:
             - All options for manually specifying are optional.
-            - The user must either use --restore/-r or --no-restore/-n.
+            - If the user wants the rsync restore to be executed, the user must use --restore/-r.
             - The default Mount Point (if --mnt-point-path isn't used) is /var/mnt/successor/.
             """
 }
