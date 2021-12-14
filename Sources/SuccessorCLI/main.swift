@@ -56,10 +56,6 @@ for arg in CMDLineArgs {
     }
 }
 
-if !deviceRestoreManager.shouldDoRestore {
-    print("Note: User did not use --restore/-r, therefore the restore will not be executed, see SuccessorCLI --help for more.")
-}
-
 // If the user used --append-rsync-arg=/-a=, remove --append-rsync-arg=/-a and parse the specified arg directly
 /// Check if the user used --append-rsync-arg and append the values specified to the rsyncArgs array, see SuccessorCLI --help for more info.
 let rsyncArgsSpecified = CMDLineArgs.filter() { $0.hasPrefix("--append-rsync-arg=") }.map() { $0.replacingOccurrences(of: "--append-rsync-arg=", with: "") }

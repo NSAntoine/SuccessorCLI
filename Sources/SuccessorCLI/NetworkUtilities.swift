@@ -29,12 +29,15 @@ class NetworkUtilities:NSObject {
     var downloadItemDestination = ""
     func downloadItem(url: URL, destinationURL: URL) {
         downloadItemDestination = destinationURL.path
-        let downloadTimeStarted = Int(CFAbsoluteTimeGetCurrent())
+        // get the time at which the download started
+        let downloadTimeStarted = CFAbsoluteTimeGetCurrent()
         let task = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         task.downloadTask(with: url).resume()
         sema.wait()
-        let timeTakenToDownload = Int(CFAbsoluteTimeGetCurrent()) - downloadTimeStarted
-        print("Downloading iPSW took \(timeTakenToDownload) seconds (\(timeTakenToDownload / 60) minutes) to download")
+        // get the time at which the download ended
+        let downloadTimeEnded = CFAbsoluteTimeGetCurrent()
+        let timeTakenToDownload = differenceInTime(from: downloadTimeStarted, to: downloadTimeEnded)
+        print("Downloading iPSW took \(timeTakenToDownload)")
         }
 }
 

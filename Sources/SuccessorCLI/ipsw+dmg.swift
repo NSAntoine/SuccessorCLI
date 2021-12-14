@@ -28,15 +28,16 @@ class iPSWManager {
         unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"]) // Doing *.dmg here only extracts the DMGs
         
         // Get the time at the start of extracting the iPSW
-        let start = CFAbsoluteTimeGetCurrent()
+        let startTime = CFAbsoluteTimeGetCurrent()
         
         // Start extracting
         unzipTask.launch()
         unzipTask.waitUntilExit()
         
         // Then subtract it by the time that extracting finished to get the time it took to extract the iPSW
-        let timeTaken = Int(CFAbsoluteTimeGetCurrent() - start)
-        print("Extracting iPSW took \(timeTaken) seconds (\(timeTaken / 60) minutes)")
+        let endTime = CFAbsoluteTimeGetCurrent()
+        let timeTaken = differenceInTime(from: startTime, to: endTime)
+        print("Extracting iPSW took \(timeTaken)")
 
         guard unzipTask.terminationStatus == 0 else {
             fatalError("Error: Couldn't successfully unzip the iPSW. Exiting.")
@@ -76,7 +77,7 @@ struct onlineiPSWManager {
         return ret
     }
     
-     private struct onlineiPSWProperties: Codable {
+    private struct onlineiPSWProperties: Codable {
         let url:URL
     }
     

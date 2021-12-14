@@ -56,6 +56,8 @@ struct SCLIInfo { // SCLI = SuccessorCLI
             """
 }
 
+// Takes a specified amount of bytes and formats them
+// Ie "1024kb" = "1 MB"
 func formatBytes(_ bytes: Int64) -> String {
     let formatter = ByteCountFormatter()
     formatter.allowedUnits = .useAll
@@ -64,6 +66,23 @@ func formatBytes(_ bytes: Int64) -> String {
     formatter.isAdaptive = true
     
     return formatter.string(fromByteCount: bytes)
+}
+
+
+/// Returns the difference in time between 2 date points
+func differenceInTime(from startDate: Double, to endDate: Double) -> String {
+    // Convert both of our startDate and endDate parameters to Date
+    // Because formatter.string(from: to:) requires the parameters to be Date()
+    let firstDate = Date(timeIntervalSince1970: startDate)
+    let secondDate = Date(timeIntervalSince1970: endDate)
+    
+    let formatter = DateComponentsFormatter()
+    formatter.unitsStyle = .full
+    
+    formatter.allowedUnits = [.minute, .hour, .second]
+    formatter.includesApproximationPhrase = true
+    let formattedStr = formatter.string(from: firstDate, to: secondDate)
+    return formattedStr ?? "Unknown"
 }
 
 func parseCMDLineArgument(longOpt:String, shortOpt:String? = nil, fromArray ArgArr:[String] = CMDLineArgs, description:String) -> String {
