@@ -85,17 +85,17 @@ func differenceInTime(from startDate: Double, to endDate: Double) -> String {
     return formattedStr ?? "Unknown"
 }
 
-func parseCMDLineArgument(longOpt:String, shortOpt:String? = nil, fromArray ArgArr:[String] = CMDLineArgs, description:String) -> String {
+func parseCMDLineArgument(longOpt:String, shortOpt:String? = nil, fromArray Arguments:[String] = CMDLineArgs, description:String) -> String {
     
     var argToParse = ""
     if let shortOpt = shortOpt {
         // If a short option was provided in the parameters, make it the argument to parse if the long one wasn't used by the user
-        argToParse = CMDLineArgs.contains(longOpt) ? longOpt : shortOpt
+        argToParse = Arguments.contains(longOpt) ? longOpt : shortOpt
     } else {
         // Otherwise, only target the longOpt
         argToParse = longOpt
     }
-    guard let index = ArgArr.firstIndex(of: argToParse), let specifiedValue = CMDLineArgs[safe: index + 1] else {
+    guard let index = Arguments.firstIndex(of: argToParse), let specifiedValue = CMDLineArgs[safe: index + 1] else {
         fatalError("User used \(argToParse) however did not specify a \(description). See SuccessorCLI --help for more info.")
     }
     print("User manually specified \(description) as \(specifiedValue)")

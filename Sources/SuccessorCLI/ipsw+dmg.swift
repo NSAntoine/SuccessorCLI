@@ -1,5 +1,7 @@
 // Manages stuff to do with iPSW And RootfsDMG
 import Foundation
+import AppleArchive
+import System // for FilePath() and stuff
 import SuccessorCLIBridged
 
 // MARK: Onboard iPSW Stuff
@@ -9,7 +11,7 @@ class iPSWManager {
     static let shared = iPSWManager()
     
     /// Returns the iPSWs that are in SCLIInfo.SuccessorCLIPath, this is used mainly for iPSW detection
-    static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.SuccessorCLIPath, extenstion: "ipsw", enumerate: true)
+    static var iPSWSInSCLIPathArray = fm.filesByFileExtenstion(atPath: SCLIInfo.SuccessorCLIPath, fileExtenstion: "ipsw", enumerate: true)
     
     var largestFileInsideExtractedDir:String {
         guard let ret = fm.getLargestFile(atPath: iPSWManager.extractedOnboardiPSWPath) else {
@@ -23,9 +25,10 @@ class iPSWManager {
     
     /// Function which unzips iPSW to where its specified.
     func unzipiPSW(iPSWFilePath: String, destinationPath: String) {
-        let unzipTask = NSTask() /* Yes i know.. calling CLI just to unzip files is bad practice..but its better than waiting like 20 minutes with libzip.. */
+        let unzipTask = NSTask()
         unzipTask.setLaunchPath("/usr/bin/unzip")
-        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"]) // Doing *.dmg here only extracts the DMGs
+        // Adding "*.dmg" to the arguments here will only extract the DMGs from the iPSW
+        unzipTask.setArguments([iPSWFilePath, "-d", destinationPath, "*.dmg"])
         
         // Get the time at the start of extracting the iPSW
         let startTime = CFAbsoluteTimeGetCurrent()
@@ -34,7 +37,7 @@ class iPSWManager {
         unzipTask.launch()
         unzipTask.waitUntilExit()
         
-        // Then subtract it by the time that extracting finished to get the time it took to extract the iPSW
+        // then get the time at which extracting ended, and get time taken to extract
         let endTime = CFAbsoluteTimeGetCurrent()
         let timeTaken = differenceInTime(from: startTime, to: endTime)
         print("Extracting iPSW took \(timeTaken)")
@@ -102,15 +105,16 @@ class DMGManager {
     /// The full path at which the rfsDMG will/is located at, can be changed with the `--dmg-path` option, see the help page for more info
     static var rfsDMGToUseFullPath = SCLIInfo.SuccessorCLIPath + "/rfs.dmg"
     
-    // enumerate is set to `false` here in order to stop the function to stop from searching subpaths, the reason we want it to stop from searching subpaths is that the extracted directory usually contains 2-3 DMGs, only one of which being the RootfsDMG, and we don't want to detect the useless ones
+    // We dont want to search the subpaths in the SuccessorCLI directory
+    // for DMGs, so we set enumerate to false
     /// Returns the DMGs that are in SCLIInfo.SuccessorCLIPath, doesn't include subdirectories
-    static let DMGSinSCLIPathArray =  fm.filesByFileExtenstion(atPath: SCLIInfo.SuccessorCLIPath, extenstion: "dmg", enumerate: false)
+    static let DMGSinSCLIPathArray =  fm.filesByFileExtenstion(atPath: SCLIInfo.SuccessorCLIPath, fileExtenstion: "dmg", enumerate: false)
     
-    /*
-     The BSDName is the disk name returned once a disk is attached, usually something like `disk7`, the disk name with `s1s1` added on it is what's supposed to be mounted.
-     So for example you could have disk7, disk7s1, disk7s1s1, but disk7s1s1 is the only one we care about because thats the one that's supposed to be mounted.
-     If an error was encountered with either Attach Parameters or the Attaching process itself, err returns that error in the completionHandler (see function parameters below).
-     */
+
+    // The BSDName returned is the base name of the disk once its attached.
+    // the number is randomized, but usually something like disk7, disk7s1, and disk7s1s1 are returned
+    // we only care about the one with s1s1 (in the case above, disk7s1s1)
+    // due to that being the only disk that can be mounted
     class func attachDMG(dmgPath:String, completionHandler: (_ bsdName: String?, _ err:String?) -> Void) {
         let url = URL(fileURLWithPath: dmgPath)
         var err:NSError?

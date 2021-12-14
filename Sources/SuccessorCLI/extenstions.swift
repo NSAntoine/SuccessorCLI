@@ -18,13 +18,13 @@ extension FileManager {
     
     // Setting enumerate here to false will not search the subpaths of the path given, and the opposite if it's set to true
     /// Returns an array of all files in a specific path with a given extenstion
-    func filesByFileExtenstion(atPath path: String, extenstion: String, enumerate: Bool) -> [String] {
+    func filesByFileExtenstion(atPath path: String, fileExtenstion: String, enumerate: Bool) -> [String] {
         // Has all files rather than the ones with the file extenstion only
         // If enumerate is true, use FileManager's enumerator, otherwise use FileManager's contentsOfDirectory
         let arr = (enumerate ? fm.enumerator(atPath: path)?.allObjects.compactMap { $0 as? String } : try? fm.contentsOfDirectory(atPath: path) ) ?? []
         
         // Filters all items from the array to only include the ones with the extenstion specified
-        return arr.filter() { NSString(string: $0).pathExtension == extenstion }
+        return arr.filter() { NSString(string: $0).pathExtension == fileExtenstion }
     }
     
     /// Creates a path if it doesnt exist, returns nil if creation was successfull, otherwise it returns the errors description
