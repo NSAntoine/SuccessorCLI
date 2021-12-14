@@ -1,7 +1,5 @@
 // Manages stuff to do with iPSW And RootfsDMG
 import Foundation
-import AppleArchive
-import System // for FilePath() and stuff
 import SuccessorCLIBridged
 
 // MARK: Onboard iPSW Stuff
