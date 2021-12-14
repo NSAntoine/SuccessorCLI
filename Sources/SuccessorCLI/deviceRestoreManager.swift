@@ -103,8 +103,12 @@ class deviceRestoreManager {
                 fatalError("You done fucked up. Go restore rootfs NOW.")
             }
         }
+        let restoreStartTime = CFAbsoluteTimeGetCurrent()
         task.launch()
         task.waitUntilExit()
+        let restoreEndTime = CFAbsoluteTimeGetCurrent()
+        let timeTakenToRestore = differenceInTime(from: restoreStartTime, to: restoreEndTime)
+        print("Rsync restore took \(timeTakenToRestore)")
     }
     
     /// Calls on to `SBDataReset` to reset the device, if the user uses `dry run` then this will just exit before it calls onto `SBDataReset`
