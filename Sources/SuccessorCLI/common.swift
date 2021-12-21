@@ -1,7 +1,7 @@
 // Includes general information about device, the SuccessorCLI program, and general functions.
 
 import UIKit
-import Foundation
+import SuccessorCLIBridged
 
 /// Includes info such as the device iOS version, machine name, and the build ID
 struct deviceInfo {
@@ -33,6 +33,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
             SuccessorCLI - By Serena-io
             A utility to restore iOS devices, inspired by the original Succession.
             Version \(SCLIInfo.ProgramVer)
+            Compiled \(compileDate) at \(compileTime)
             Usage: successorcli <option>
             
             General Options:

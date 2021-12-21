@@ -3,6 +3,9 @@
 #import <sys/mount.h>
 #import <sys/snapshot.h>
 
+NSString *compileDate = @__DATE__;
+NSString *compileTime = @__TIME__;
+
 struct hfs_mount_args {
     char    *fspec;            /* block special device to mount */
     uid_t    hfs_uid;        /* uid that owns hfs files (standard HFS only) */
