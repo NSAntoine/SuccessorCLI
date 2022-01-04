@@ -50,7 +50,12 @@ for arg in CMDLineArgs {
             fatalError("Can't set \(mntPointSpecified) to Mount Point if it doesn't even exist!")
         }
         MntManager.mountPoint = mntPointSpecified
-        
+    case "--rootfs-path":
+        let rootfsPathSpecified = parseCMDLineArgument(longOpt: "--rootfs-path", description: "Rootfs Path")
+        guard fm.fileExists(atPath: rootfsPathSpecified) else {
+            fatalError("Can't set \(rootfsPathSpecified) to Rootfs Path if it doesn't exist")
+        }
+        deviceRestoreManager.rootfsPath = rootfsPathSpecified
     default:
         break
     }

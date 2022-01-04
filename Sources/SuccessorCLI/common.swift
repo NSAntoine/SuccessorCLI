@@ -44,6 +44,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
                  --ipsw-path        /PATH/TO/IPSW           Manually specify path of iPSW to use.
                  --dmg-path         /PATH/TO/ROOTFSDMG      Manually specify the rootfs DMG To use.
                  --rsync-bin-path   /PATH/TO/RSYNC/BIN      Manually specify rsync executable to execute restore with.
+                 --rootfs-path      /PATH/TO/ROOTFS         Manually specify the Rootfs path to restore. DO NOT USE THIS IF YOU DON'T KNOW WHAT YOU'RE DOING
             
             Options for Rsync / Restoring stuff:
                  -r, --restore                              Do a full restore with rsync. Note that this WILL erase your device.

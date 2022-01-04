@@ -7,6 +7,9 @@ class deviceRestoreManager {
     /// Path for the where rsync executable is located, though this is `/usr/bin/rsync` by defualt, it can manually be changed (see --rsync-bin-path in SuccessorCLI Options)
     static var rsyncBinPath = "/usr/bin/rsync"
     
+    /// The Rootfs Path to restore, `/` by defaut, can be changed with `--rootfs-path`
+    static var rootfsPath = "/"
+    
     /// Returns true or false based on whether or not the user used the `--dry-run` option
     static let doDryRun = CMDLineArgs.contains("--dry-run")
     
@@ -55,7 +58,7 @@ class deviceRestoreManager {
                     "--exclude=/kernelcache",
                     "--exclude=/ramdisk",
                     MntManager.mountPointRealPath,
-                    "/"]
+                    rootfsPath]
         
         // If the user used --dry-run, append --dry-run to the args to return
         if doDryRun {
