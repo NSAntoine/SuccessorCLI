@@ -33,7 +33,6 @@ struct SCLIInfo { // SCLI = SuccessorCLI
             SuccessorCLI - By Serena-io
             A utility to restore iOS devices, inspired by the original Succession.
             Version \(SCLIInfo.ProgramVer)
-            Compiled \(compileDate) at \(compileTime)
             Usage: successorcli <option>
             
             General Options:
