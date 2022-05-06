@@ -30,7 +30,7 @@ struct SCLIInfo { // SCLI = SuccessorCLI
     static var ProgramName = CommandLine.arguments[0]
     
     static let helpMessage = """
-            SuccessorCLI - By Serena-io
+            SuccessorCLI - By CFSerena
             A utility to restore iOS devices, inspired by the original Succession.
             Version \(SCLIInfo.ProgramVer)
             Usage: successorcli <option>
